@@ -38,6 +38,7 @@ export function ActorsPage() {
 
   return allActors && <Stack direction='column'>
     <Typography variant='h4' sx={{ mb: 2 }}>Actores</Typography>
+    
     <Grid container direction='row'>
       { allActors.map(actorData => (
         <Grid item key={actorData.id} xs={12} md={6} sx={{ px: 2, py: 2 }}><ActorCard actor={actorData} /></Grid>
