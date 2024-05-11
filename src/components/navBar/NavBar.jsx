@@ -4,42 +4,15 @@ import { AppBar, Button, Drawer, IconButton, Toolbar, Typography, Box, Icon } fr
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
-import ConstructionIcon from '@mui/icons-material/Construction';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import {NavLink} from 'react-router-dom'
 
 
-const navLinks = [
-    {
-        title:"Taller", path:"#", icon: <ConstructionIcon />
-    },
-    {
-        title:"Agenda", path:"#login", icon: <EventNoteIcon />
-    },
-    {
-        title:"Cancelar Alquiler", path:"#cancelarAlquiler", icon: <EventBusyIcon />
-    },
-    {
-        title:"Estadisticas", path:"#estadisticas", icon: <LeaderboardIcon />
-    },
-    {
-        title:"Registrar Pago", path:"#registrarPago", icon: <CurrencyExchangeIcon />
-    },
-    {
-        title:"Home", path:"#home", icon: <HomeIcon />
-    },
-    {
-        title:"Login", path:"#login", icon: <LoginIcon />
-    }
 
-]
-
-function NavBar() {
+function NavBar({navArrayLinks}) {
 
 const [open, setOpen] = useState(false)
+const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos elementos Home y Login para que no los muestre.
 
     return (
         <>
@@ -65,15 +38,15 @@ const [open, setOpen] = useState(false)
                     </Typography>
                     <Box sx={{ display:{xs:"none",sm:"block"}  }}>
                         {
-                            navLinks.map(item => (
+                            //(cond)?true:false
+                            navArrayLinksShort.map(item => (
                                 <Button 
                                     color="inherit"
                                     variant="body1"
                                     key={item.title}
-                                    component= "a"
-                                    href={item.path}
+                                    component= {NavLink}
+                                    to={item.path}
                                     >
-                                    {/* href={item.path} */}
                                     {item.title}
                                 </Button>
                             ))   
@@ -99,7 +72,12 @@ const [open, setOpen] = useState(false)
                 onClose={() => setOpen(false)}
                 sx={{display: {xs: "flex", sm:"none"}}} //x experiencia de usuario en tablets no se va a ver en simultaneo.
                 >
-                <NavListDrawer navLinks={navLinks}/>
+                <NavListDrawer 
+                    navArrayLinks={navArrayLinks} 
+                    NavLink={NavLink}
+                    setOpen={setOpen}
+                    />
+                    
             </Drawer>
             
         </>

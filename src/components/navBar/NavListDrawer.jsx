@@ -6,21 +6,22 @@ import React from 'react';
 // import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 // import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
-function NavListDrawer({navLinks}) {
+function NavListDrawer({navArrayLinks, NavLink, setOpen}) {
     return (
         <Box sx={{width:250}}>
             
             <nav>
                 <List>
                     {
-                        navLinks.map((item) => (
+                        navArrayLinks.map((item) => (
                             <ListItem 
                                 disablePadding 
                                 key={item.title}
                                 > 
                                 <ListItemButton 
-                                    component="a"
-                                    href={item.path}
+                                    component={NavLink}
+                                    to={item.path}
+                                    onClick={() => setOpen(false)}
                                     >
                                     <ListItemIcon>
                                         {item.icon}
