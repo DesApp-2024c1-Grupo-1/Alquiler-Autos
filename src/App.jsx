@@ -21,14 +21,11 @@ export function App() {
     <BrowserRouter>
       <Stack direction='column'>
         <Grid container direction='row'>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12}>
             <TopMenu />
           </Grid>
-          <Grid item xs={12} md={4}>
-            <WeatherIndicator weatherData={weatherData} />
-          </Grid>
         </Grid>
-        <Box sx={{mx: { xs: 1, md: 4 }, my: 4}}>
+        <Box sx={{ my: 4}}>
           <AppRouter />
         </Box>
       </Stack>

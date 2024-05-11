@@ -24,32 +24,41 @@ export function HomePage() {
     fetchAllCars();
   }, [fetchAllCars]);
 
-  return <>
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2} sx={{ flexGrow: 1, height: '50rem', width: '110rem', backgroundColor: pink[100] }}>
+  return (
+    <Container maxWidth="100%">
+      <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap' }}>
+        <Grid container spacing={2} sx={{ flexGrow: 1, height: '', backgroundColor: pink[200] }}>
 
-        <Grid xs={6} md={5} lg={3}>
-          {/* Acá va el componente de filtros */}
-          <Item sx={{ backgroundColor: red[100], height: '100%' }}>Filtros</Item>
-        </Grid>
+          <Grid xs={12} md={4} lg={3} xl={3}>
 
-        <Grid xs={6} md={7} lg={9}>
+            {/*TODO: Acá va el componente de filtros */}
+            <Item sx={{ backgroundColor: "#B3D0FB", height: '100%' }}>Filtros</Item>
+          </Grid>
 
-          <Buscador sx={{ height: '10rem' }}></Buscador>
+          <Grid item xs={12} md={8} lg={9} xl={9} sx={{ display: 'flex', flexDirection: 'column', alignItems: '', backgroundColor: "whitesmoke" }}>
 
-          <Grid sx={{ height: '45rem', backgroundColor: blue[100]}}>
-            {allCars && allCars.map(carData => (
-              <Grid key={carData.id} xs={12} md={6} lg={4} sx={{ px: 2, py: 2 }}>
-                <CarCard car={carData}/>
-              </Grid>
-            ))}
+            <Buscador sx={{ mx: 20, my: 20 }} />
+
+            <Grid container spacing={2} sx={{ mt: '1rem' }}>
+              {allCars && allCars.map((carData) => (
+                <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
+                  {/* TODO: A mejorar diseño de la card */}
+                  <CarCard car={carData} />
+                </Grid>
+              ))}
+            </Grid>
+
+            <Grid sx={{display: 'flex', flexDirection: 'column', alignItems:'center', color: "darkblue"}}>
+              {/*TODO: Aca va el componente de pagina / Cargar más */}
+              <h1>{'< 1 2 3 >'}</h1>
+            </Grid>
+
           </Grid>
 
         </Grid>
-
-      </Grid>
-    </Box>
-  </>
+      </Box>
+    </Container>
+  )
 }
 
 

@@ -12,7 +12,7 @@ export function Buscador() {
   return <Box sx={{ml:4, mt:2}}>
   <Paper
     component="form"
-    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '90%' }}
   >
     <InputBase
       sx={{ ml: 1, flex: 1 }}
