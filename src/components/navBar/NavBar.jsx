@@ -12,6 +12,7 @@ import {NavLink} from 'react-router-dom'
 function NavBar({navArrayLinks}) {
 
 const [open, setOpen] = useState(false)
+const navArrayLinks2Elements = navArrayLinks.slice(-2);
 const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos elementos Home y Login para que no los muestre.
 
     return (
@@ -38,7 +39,6 @@ const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos ele
                     </Typography>
                     <Box sx={{ display:{xs:"none",sm:"block"}  }}>
                         {
-                            //(cond)?true:false
                             navArrayLinksShort.map(item => (
                                 <Button 
                                     color="inherit"
@@ -52,18 +52,20 @@ const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos ele
                             ))   
                         }
                     </Box>
-                    <IconButton 
-                        color="inherit"
-                        size="large"
-                        >
-                        <HomeIcon />
-                   </IconButton>
-                   <IconButton 
-                        color="inherit"
-                        size="large"
-                        >
-                        <LoginIcon />
-                   </IconButton>
+                        {
+                            navArrayLinks2Elements.map(item =>(
+                                <IconButton
+                                    color="inherit"
+                                    variant="body1"
+                                    key={item.title}
+                                    component= {NavLink}
+                                    to={item.path}
+                                    >
+                                    {item.icon}
+                                </IconButton>
+                                
+                            ))
+                        }
                 </Toolbar>
             </AppBar>
             <Drawer
