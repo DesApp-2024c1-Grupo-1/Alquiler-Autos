@@ -87,7 +87,7 @@ function App() {
   return (
     <>
       <NavBar navArrayLinks={navArrayLinks}/>
-      <Container sx={{ mt:5 }}>
+      <Container>
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/taller" element={<Taller />}/>
