@@ -7,7 +7,7 @@ export async function getAllActors() {
 
 const images = {
   'Jonathan Pryce': "https://mr.comingsoon.it/imgdb/persone/79985_ico.jpg",
-  'Kim Greist': "https://64.media.tumblr.com/118fb2349e3b6419483599415ddb0b88/tumblr_pwhlrhfA6V1vi27yvo3_500.jpg",
+  //'Kim Greist': "https://64.media.tumblr.com/118fb2349e3b6419483599415ddb0b88/tumblr_pwhlrhfA6V1vi27yvo3_500.jpg",
   'Robert de Niro': "https://qph.cf2.quoracdn.net/main-qimg-bc0e66d553c518852ab26e0b0faebe4f-lq",
   'Michael Palin': "https://www.lismore-immrama.com/images/michaelpalin.jpg",
   'Keanu Reeves': "https://qph.cf2.quoracdn.net/main-qimg-78a45f543a05c451eb58787958fafe14-lq",
