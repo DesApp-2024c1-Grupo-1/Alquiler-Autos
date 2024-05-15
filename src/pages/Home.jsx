@@ -2,14 +2,9 @@ import { Box, Container, Grid, Pagination } from '@mui/material';
 import React from 'react';
 import CarCard from '../components/CarCard';
 
-import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
-import { StaticDateTimePicker } from '@mui/x-date-pickers/StaticDateTimePicker';
+import Filter from '../components/Filter';
 
 const carsArrayList = [
     {
@@ -46,40 +41,28 @@ function Home() {
             <Grid
                 sx={{
                     backgroundColor:"#B3D0FB", 
-                    mt:2,
+                    mt:4,
+                    pr:2,
+                    mb:2,
+                    borderRadius:2
                     }}
                 item
-                    xs={3}
-                    sm={3}
-                    md={6}
-                    lg={5}
+                    xs={5}
+                    sm={5}
+                    md={5}
+                    lg={4}
             >
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <Grid
-                            item
-                                xs={12}
-                                sm={12}
-                                md={12}
-                                lg={12}
-                        >
-                            <DemoContainer
-                                components={[
-                                'DateTimePicker'
-                                ]}
-                            >
-                                <DemoItem label="Responsive variant">
-                                <DateTimePicker defaultValue={dayjs('2022-04-17T15:30')} />
-                                </DemoItem>
-                            </DemoContainer>
-                        </Grid>
+                        <Filter />
                     </LocalizationProvider>
             </Grid>
             <Grid
+                sx={{pr:1}}
                 item
-                xs={9}
-                sm={9}
-                md={6}
-                lg={7}
+                xs={7}
+                sm={7}
+                md={7}
+                lg={8}
             >
                 <Grid 
                     container spacing={3}
