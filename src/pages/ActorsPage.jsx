@@ -5,8 +5,9 @@ import { blueGrey } from "@mui/material/colors";
 
 const unknownPersonImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/813px-Unknown_person.jpg";
 
+
 function ActorCard({ actor }) {
-  return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'row' }} elevation={2}>
+  return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
     <Stack direction='column' sx={{ flexGrow: 1, mt: 1, ml: 2 }}>
       <Box sx={{ typography: 'h5', mb: 2 }}>{actor.name}</Box>
       <Box sx={{ typography: 'h6', mb: 1 }}>Películas</Box>
@@ -18,7 +19,7 @@ function ActorCard({ actor }) {
       component="img"
       image={actor.image || unknownPersonImage}
       alt="Jonathan Pryce"
-      sx={{ width: { xs: 100, sm: 140 }, height: 200 }}
+      sx={{ width: { xs: 100, sm: 140 }, height: 600 }}
     />          
   </Card>;
 }
