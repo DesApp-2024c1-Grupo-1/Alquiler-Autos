@@ -30,12 +30,12 @@ export function HomePage() {
       <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap' }}>
         <Grid container spacing={2} sx={{ flexGrow: 1, height: '', backgroundColor: pink[200] }}>
 
-          <Grid xs={12} md={4} lg={3} xl={3}>
+          <Grid xs={12} md={5} lg={4} xl={4}>
             <Filtros/>
             {/*TODO: Acá va el componente de filtros */}
           </Grid>
 
-          <Grid item xs={12} md={8} lg={9} xl={9} sx={{ display: 'flex', flexDirection: 'column', alignItems: '', backgroundColor: "whitesmoke" }}>
+          <Grid item xs={12} md={7} lg={8} xl={8} sx={{ display: 'flex', flexDirection: 'column', alignItems: '', backgroundColor: "whitesmoke" }}>
 
             <Buscador sx={{ mx: 20, my: 20 }} />
 
