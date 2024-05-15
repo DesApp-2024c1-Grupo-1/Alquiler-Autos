@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { CarCard } from '../components/CarCard.jsx';
 import { getAllCars } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
+import  Filtros  from '../components/Filtros.jsx';
 
 
 const Item = styled(Card)({
@@ -30,9 +31,8 @@ export function HomePage() {
         <Grid container spacing={2} sx={{ flexGrow: 1, height: '', backgroundColor: pink[200] }}>
 
           <Grid xs={12} md={4} lg={3} xl={3}>
-
+            <Filtros/>
             {/*TODO: Acá va el componente de filtros */}
-            <Item sx={{ backgroundColor: "#B3D0FB", height: '100%' }}>Filtros</Item>
           </Grid>
 
           <Grid item xs={12} md={8} lg={9} xl={9} sx={{ display: 'flex', flexDirection: 'column', alignItems: '', backgroundColor: "whitesmoke" }}>
