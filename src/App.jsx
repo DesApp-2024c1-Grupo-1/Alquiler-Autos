@@ -2,13 +2,17 @@ import React from 'react';
 import { Container } from '@mui/material';
 import NavBar from "./components/navBar/NavBar"
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
 import Taller from './pages/Taller';
 import Agenda from './pages/Agenda';
 import CancelarAlquiler from './pages/CancelarAlquiler';
 import Estadisticas from './pages/Estadisticas';
 import RegistrarPago from './pages/RegistrarPago';
 import Login from './pages/Login';
+import { BrowserRouter } from 'react-router-dom';
+import { Stack, Grid, Box } from '@mui/material';
+import {  TopMenu } from './components/TopMenu';
+import { WeatherIndicator } from './components/WeatherIndicator';
+import { AppRouter } from './AppRouter';
 
 
 import ConstructionIcon from '@mui/icons-material/Construction';
@@ -28,9 +32,9 @@ const navArrayLinks = [
   {
       title:"Agenda", path:"/agenda", icon: <EventNoteIcon />
   },
-  {
-      title:"Cancelar Alquiler", path:"/cancelarAlquiler", icon: <EventBusyIcon />
-  },
+  // {
+  //     title:"Cancelar Alquiler", path:"/cancelarAlquiler", icon: <EventBusyIcon />
+  // },
   {
       title:"Estadisticas", path:"/estadisticas", icon: <LeaderboardIcon />
   },
@@ -50,34 +54,17 @@ const navArrayLinks = [
 function App() {
   return (
     <>
-      <BrowserRouter>
+      {/* <BrowserRouter> */}
         <Stack direction='column'>
           <Grid container direction='row'>
-            <Grid item xs={12} md={8}>
-              <TopMenu />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <WeatherIndicator weatherData={weatherData} />
+            <Grid item xs={12}>
+            <NavBar navArrayLinks={navArrayLinks}/>
             </Grid>
           </Grid>
           <Box sx={{mx: { xs: 1, md: 4 }, my: 4}}>
             <AppRouter />
           </Box>
         </Stack>
-      </BrowserRouter>
-      {/* Soy una separacion */}
-      <NavBar navArrayLinks={navArrayLinks}/>
-      <Container>
-        <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/taller" element={<Taller />}/>
-          <Route path="/agenda" element={<Agenda />}/>
-          <Route path="/cancelarAlquiler" element={<CancelarAlquiler />}/>
-          <Route path="/estadisticas" element={<Estadisticas />}/>
-          <Route path="/registrarPago" element={<RegistrarPago />}/>
-          <Route path="/login" element={<Login />}/>
-        </Routes>
-      </Container>
     </>
   )
 }

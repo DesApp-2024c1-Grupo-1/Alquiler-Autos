@@ -8,10 +8,10 @@ import { Buscador } from '../components/Buscador.jsx';
 import  Filtros  from '../components/Filtros.jsx';
 
 
-const Item = styled(Card)({
-  textAlign: 'center',
-  border: '1px solid red',
-});
+// const Item = styled(Card)({
+//   textAlign: 'center',
+//   border: '1px solid red',
+// });
 
 export function HomePage() {
   const [allCars, setAllCars] = useState();
@@ -28,11 +28,10 @@ export function HomePage() {
   return (
     <Container maxWidth="100%">
       <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <Grid container spacing={2} sx={{ flexGrow: 1, height: '', backgroundColor: pink[200] }}>
+        <Grid container spacing={2} sx={{ flexGrow: 1, height: ''}}>
 
-          <Grid xs={12} md={5} lg={4} xl={4}>
+          <Grid item xs={12} md={5} lg={4} xl={4}>
             <Filtros/>
-            {/*TODO: Acá va el componente de filtros */}
           </Grid>
 
           <Grid item xs={12} md={7} lg={8} xl={8} sx={{ display: 'flex', flexDirection: 'column', alignItems: '', backgroundColor: "whitesmoke" }}>
