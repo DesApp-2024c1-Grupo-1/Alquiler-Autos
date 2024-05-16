@@ -14,7 +14,7 @@ function Filter() {
     return (
         
         <div>
-                    <Grid direction="column" container spacing={2} my={2.5}>
+                    {/* <Grid direction="column" container spacing={2} my={2.5}>
                         <Grid
                             pr={1} 
                             item xs={12} sm={12} xl={12} lg={12}>
@@ -33,7 +33,7 @@ function Filter() {
                                     </DemoItem>
                                 </DemoContainer> 
                         </Grid>
-                    </Grid>
+                    </Grid> */}
         </div>
     );
 }
