@@ -9,7 +9,7 @@ import { grey } from "@mui/material/colors";
 export function AppRouter() {
   return (
     <Routes>
-      <Route path='/reserve' element={<ActorsPage />} />
+      <Route path='/reserve/*' element={<ActorsPage />} />
       <Route path='/home' element={<HomePage />} />
       <Route path='/' element={<HomePage />} />
     </Routes>
