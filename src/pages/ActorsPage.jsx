@@ -87,7 +87,7 @@ function FormAlquiler() {
         <div>
           <FormControl sx={{ m: 2, display: 'flex', justifyContent: 'center' }} variant="outlined">
           </FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ mb:2, display: 'flex', justifyContent: 'center' }}>
             <Stack direction="row" spacing={5}>
               <Button variant="contained" color="success">
                 Reservar
