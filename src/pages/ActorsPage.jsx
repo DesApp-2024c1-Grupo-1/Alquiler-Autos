@@ -6,7 +6,7 @@ import { getAllActors } from "../services/ActorsService";
 import { blueGrey } from "@mui/material/colors";
 
 
-function CardAlquiler({  }) {
+function CardAlquiler() {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
     <CardMedia
       image={"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Orange_Enzo_Ferrari_%287191948164%29.jpg/800px-Orange_Enzo_Ferrari_%287191948164%29.jpg"}
