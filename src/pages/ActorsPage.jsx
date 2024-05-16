@@ -33,7 +33,7 @@ function CardAlquiler({car}) {
 
 function FormAlquiler() {
   return (
-    <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
+    <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
       <Box
         component="form"
         sx={{

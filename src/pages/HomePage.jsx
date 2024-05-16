@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Card, CardMedia, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Card, CardMedia, Container, Grid, Pagination, Stack, Typography } from "@mui/material";
 import { blueGrey, red, cyan, teal, blue, pink } from "@mui/material/colors";
 import { styled } from '@mui/material/styles';
 import { CarCard } from '../components/CarCard.jsx';
@@ -49,7 +49,10 @@ export function HomePage() {
 
             <Grid sx={{display: 'flex', flexDirection: 'column', alignItems:'center', color: "darkblue"}}>
               {/*TODO: Aca va el componente de pagina / Cargar más */}
-              <h1>{'< 1 2 3 >'}</h1>
+              
+                <Pagination sx={{pt:2,mb:2}}count={10} color="primary" />
+              
+              {/* <h1>{'< 1 2 3 >'}</h1> */}
             </Grid>
 
           </Grid>
