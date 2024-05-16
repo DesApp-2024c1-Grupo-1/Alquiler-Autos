@@ -48,6 +48,7 @@ import Estadisticas from './pages/Estadisticas';
 import RegistrarPago from './pages/RegistrarPago';
 import Login from './pages/Login';
 
+
 import ConstructionIcon from '@mui/icons-material/Construction';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -55,6 +56,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
+
 
 
 const navArrayLinks = [
