@@ -28,25 +28,25 @@ const Filtros = () => {
         
         <Box sx={{border:2, backgroundColor:"#ffffff"}}>
           <Box sx={{display:"flex", direction:'row'}}>
-            <Box sx={{border:1, backgroundColor:"#f50057"}}>
-              <div>1ccccccccccccccccccccccc</div>
+            <Box sx={{border:1, backgroundColor:"#AFEEEE"}}>
+              <div>Ingrese fecha de retiro</div>
             </Box>
-            <Box sx={{border:1, backgroundColor:"#ed6c02"}}>
-              <div>2ccccccccccccccccccccc</div>
+            <Box sx={{border:1, backgroundColor:"#E0FFFF"}}>
+              <div>Ingrese fecha de devolución</div>
             </Box>
           </Box>
 
           <Box sx={{display:"flex"}}>
-            <Box sx={{border:1, backgroundColor:"#ff9800"}}>
-              <div>3cccccccccccccccccc</div>
+            <Box sx={{border:1, backgroundColor:"#AFEEEE"}}>
+              <div>Ingrese Hora de retiro</div>
             </Box>
-            <Box sx={{border:1, backgroundColor:"#ffffff"}}>
-              <div>4ccccccccccccccccc</div>
+            <Box sx={{border:1, backgroundColor:"#E0FFFF"}}>
+              <div>Ingrese Hora de devolución</div>
             </Box>
           </Box>
-
         </Box>
-          <Box sx={{ p: 3, display:"flex", placeContent:"center"}}>
+        
+        <Box sx={{ p: 3, display:"flex", placeContent:"center"}}>
           <FormControl sx={{mr:2}}>
               <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
               <RadioGroup
