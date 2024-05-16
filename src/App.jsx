@@ -1,23 +1,9 @@
 import React from 'react';
-import { Container } from '@mui/material';
 import NavBar from "./components/navBar/NavBar"
-import { Route, Routes } from 'react-router-dom';
-import Taller from './pages/Taller';
-import Agenda from './pages/Agenda';
-import CancelarAlquiler from './pages/CancelarAlquiler';
-import Estadisticas from './pages/Estadisticas';
-import RegistrarPago from './pages/RegistrarPago';
-import Login from './pages/Login';
-import { BrowserRouter } from 'react-router-dom';
 import { Stack, Grid, Box } from '@mui/material';
-import {  TopMenu } from './components/TopMenu';
-import { WeatherIndicator } from './components/WeatherIndicator';
 import { AppRouter } from './AppRouter';
-
-
 import ConstructionIcon from '@mui/icons-material/Construction';
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import HomeIcon from '@mui/icons-material/Home';
@@ -54,7 +40,6 @@ const navArrayLinks = [
 function App() {
   return (
     <>
-      {/* <BrowserRouter> */}
         <Stack direction='column'>
           <Grid container direction='row'>
             <Grid item xs={12}>
