@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button } from '@mui/material';
 
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
@@ -35,28 +35,7 @@ const Filtros = () => {
   const [value, setValue] = useState(new Date());
 
   return (
-    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, border: 2 }}>
-
-      {/* <Box sx={{ border: 2, backgroundColor: "#ffffff" }}>
-        <Box sx={{ display: "flex", direction: 'row' }}>
-          <Box sx={{ border: 1, backgroundColor: "#AFEEEE" }}>
-            <div>Ingrese fecha de retiro</div>
-          </Box>
-          <Box sx={{ border: 1, backgroundColor: "#E0FFFF" }}>
-            <div>Ingrese fecha de devolución</div>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: "flex" }}>
-          <Box sx={{ border: 1, backgroundColor: "#AFEEEE" }}>
-            <div>Ingrese Hora de retiro</div>
-          </Box>
-          <Box sx={{ border: 1, backgroundColor: "#E0FFFF" }}>
-            <div>Ingrese Hora de devolución</div>
-          </Box>
-        </Box>
-      </Box> */}
-
+    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius:5}}>
       <Box>
         <Grid direction="column" container spacing={2} my={2.5}>
           <Grid
@@ -64,14 +43,12 @@ const Filtros = () => {
             item xs={12} sm={12} xl={12} lg={12}
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around"}}
             >
-            
-
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 label="Retiro"
                 value={value}
                 onChange={(newValue) => setValue(newValue)}
-                sx={{ backgroundColor: "#f5f7fa"}}
+                sx={{ backgroundColor: "#B3D0FB", pr:1}}
               />
             </LocalizationProvider>
 
@@ -80,7 +57,7 @@ const Filtros = () => {
                 label="Devolucion"
                 value={value}
                 onChange={(newValue) => setValue(newValue)}
-                sx={{ backgroundColor: "#f5f7fa"}}
+                sx={{ backgroundColor: "#B3D0FB", pl:1}}
               />
             </LocalizationProvider>
 
@@ -89,7 +66,7 @@ const Filtros = () => {
       </Box>
 
       <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
-        <FormControl sx={{ mr: 2 }}>
+        <FormControl sx={{ mr: 6 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
@@ -130,7 +107,7 @@ const Filtros = () => {
           </RadioGroup>
         </FormControl>
 
-        <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
+        <FormControl sx={{ ml:5, minWidth: 140}} size="small">
           <InputLabel id="demo-select-small-label">Capacidad</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -138,7 +115,7 @@ const Filtros = () => {
             value={capacitiy}
             label="capacidad"
             onChange={CapacityTypeChange}
-            sx={{ backgroundColor: "#f5f7fa"}}
+            sx={{ backgroundColor: "#B3D0FB"}}
           >
             <MenuItem value="">
               <em>2</em>
@@ -148,6 +125,15 @@ const Filtros = () => {
             <MenuItem value={30}>5</MenuItem>
           </Select>
         </FormControl>
+      </Box>
+
+      <Box sx={{ p: 3, display: "flex", placeContent: "center", }}>
+        <Button variant="outlined" color="success" sx={{mr: 3}}>
+            Buscar
+        </Button>
+        <Button variant="outlined" color="error">
+            Borrar
+        </Button>
       </Box>
     </Box>
   );
