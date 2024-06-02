@@ -3,10 +3,8 @@ import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
   InputLabel, InputAdornment, FormControl, Button
 } from "@mui/material";
-import { getAllActors } from "../services/ActorsService";
-import { getAllCars } from "../services/CarsService";
+import { getAllCars } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
-import { CarCard } from '../components/CarCard.jsx';
 import { useParams } from 'react-router-dom';
 
 
@@ -112,18 +110,7 @@ function FormAlquiler() {
 }
 
 
-export function ActorsPage() {
-  const [allActors, setAllActors] = useState();
-
-  const fetchAllActors = useCallback(async () => {
-    const obtainedActors = await getAllActors();
-    setAllActors(obtainedActors);
-  }, []);
-
-  useEffect(() => {
-    fetchAllActors();
-  }, [fetchAllActors]);
-
+export function PageAlquiler() {
   const [allCars, setAllCars] = useState();
 
   const fetchAllCars = useCallback(async () => {
@@ -142,7 +129,7 @@ export function ActorsPage() {
 
 
 
-  return allActors && <Stack direction='column'>
+  return allCars && <Stack direction='column'>
     <Typography variant='h4' sx={{ mb: 2 }}>Registrar Alquiler</Typography>
     <Grid sx={{ display: 'flex', placeContent: "center" }}>
       <Grid item key={1} xs={12} md={6} sx={{ px: 2, py: 2, mr: 10 }}>
