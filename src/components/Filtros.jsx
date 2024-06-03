@@ -5,6 +5,10 @@ import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { TextField } from '@mui/material';
+import { useDispatch, useSelector } from "react-redux";
+import { editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion } from "../store/alquilerFormSlice.js";
+
 
 const Filtros = () => {
   const [selectedAireAcondicionado, setAireAcondicionado] = useState('');
@@ -14,6 +18,7 @@ const Filtros = () => {
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
+    console.log("AC: ", event.target.value)
   };
 
   const CombustibleTypeChange = (event) => {
@@ -28,8 +33,9 @@ const Filtros = () => {
     setCapacity(event.target.value);
   };
 
-  const [fechaRetiro, setFechaRetiro] = useState('');
-  const [fechaDevolucion, setFechaDevolucion] = useState('');
+
+  const dispatch = useDispatch();
+  const formAlquiler = useSelector(state => state.alquiler);
 
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, border: 2 }}>
@@ -39,25 +45,47 @@ const Filtros = () => {
           <Grid
             pr={1}
             item xs={12} sm={12} xl={12} lg={12}
-            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around"}}
-            >
-            
+            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
+          >
+            <TextField
+              required
+              id="outlined-required"
+              label="Lugar de Retiro"
+              sx={{ backgroundColor: "#f5f7fa" }}
+              defaultValue={formAlquiler.lugarRetiro}
+              onChange={(e) => dispatch(editLugarRetiro(e.target.value))}
+            />
+            <TextField
+              required
+              id="outlined-required"
+              label="Lugar de devolución"
+              sx={{ backgroundColor: "#f5f7fa" }}
+              defaultValue={formAlquiler.lugarDevolucion}
+              onChange={(e) => dispatch(editLugarDevolucion(e.target.value))}
+
+            />
+          </Grid>
+          <Grid
+            pr={1}
+            item xs={12} sm={12} xl={12} lg={12}
+            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
+          >
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 label="Retiro"
-                value={fechaRetiro}
-                onChange={(newValue) => setFechaRetiro(newValue)}
-                sx={{ backgroundColor: "#f5f7fa"}}
+                value={new Date(formAlquiler.fechaRetiro)}
+                onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
+                sx={{ backgroundColor: "#f5f7fa" }}
               />
             </LocalizationProvider>
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 label="Devolucion"
-                value={fechaDevolucion}
-                onChange={(newValue) => setFechaDevolucion(newValue)}
-                sx={{ backgroundColor: "#f5f7fa"}}
+                value={new Date(formAlquiler.fechaDevolucion)}
+                onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
+                sx={{ backgroundColor: "#f5f7fa" }}
               />
             </LocalizationProvider>
 
@@ -74,8 +102,8 @@ const Filtros = () => {
             value={selectedAireAcondicionado}
             onChange={AireAcondicionadoTypeChange}
           >
-            <FormControlLabel value="Si" control={<Radio />} label="Si" />
-            <FormControlLabel value="No" control={<Radio />} label="No" />
+            <FormControlLabel value={true} control={<Radio />} label="Si" />
+            <FormControlLabel value={false} control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -115,7 +143,7 @@ const Filtros = () => {
             value={capacitiy}
             label="capacidad"
             onChange={CapacityTypeChange}
-            sx={{ backgroundColor: "#f5f7fa"}}
+            sx={{ backgroundColor: "#f5f7fa" }}
           >
             <MenuItem value="">
               <em>2</em>
