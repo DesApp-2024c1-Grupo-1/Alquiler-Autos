@@ -5,12 +5,6 @@ import { getAllCars } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
 import  Filtros  from '../components/Filtros.jsx';
 
-
-// const Item = styled(Card)({
-//   textAlign: 'center',
-//   border: '1px solid red',
-// });
-
 export function HomePage() {
   const [allCars, setAllCars] = useState();
 

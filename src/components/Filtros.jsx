@@ -34,26 +34,6 @@ const Filtros = () => {
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, border: 2 }}>
 
-      {/* <Box sx={{ border: 2, backgroundColor: "#ffffff" }}>
-        <Box sx={{ display: "flex", direction: 'row' }}>
-          <Box sx={{ border: 1, backgroundColor: "#AFEEEE" }}>
-            <div>Ingrese fecha de retiro</div>
-          </Box>
-          <Box sx={{ border: 1, backgroundColor: "#E0FFFF" }}>
-            <div>Ingrese fecha de devolución</div>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: "flex" }}>
-          <Box sx={{ border: 1, backgroundColor: "#AFEEEE" }}>
-            <div>Ingrese Hora de retiro</div>
-          </Box>
-          <Box sx={{ border: 1, backgroundColor: "#E0FFFF" }}>
-            <div>Ingrese Hora de devolución</div>
-          </Box>
-        </Box>
-      </Box> */}
-
       <Box>
         <Grid direction="column" container spacing={2} my={2.5}>
           <Grid

@@ -11,7 +11,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
-import { FormAlquilerModel } from "../models/FormAlquilerModel.js";
 import { useDispatch, useSelector } from "react-redux";
 import { calculateCantDias,calculatePrecioFinal ,newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
 
@@ -45,19 +44,7 @@ function FormAlquiler({ car }) {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
-    // dispatch(editPrecioFinal(car.price * cantidadDeDias()));
   }, []);
-
-
-  function cambiarFechaRetiro(fecha) {
-
-    // dispatch(editPrecioFinal(car.price * cantidadDeDias())); 
-  }
-
-  function cambiarFechaDevolucion(fecha) {
-    dispatch(editFechaDevolucion(fecha.toString()));
-    // dispatch(editPrecioFinal(car.price * cantidadDeDias()));
-  }
 
   return (
     <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
