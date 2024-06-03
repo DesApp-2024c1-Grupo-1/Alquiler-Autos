@@ -7,8 +7,15 @@ import { getAllCars } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
 import { useParams } from 'react-router-dom';
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
-function CardAlquiler({car}) {
+import { FormAlquilerModel } from "../models/FormAlquilerModel.js";
+import { useDispatch, useSelector } from "react-redux";
+import { calculateCantDias,calculatePrecioFinal ,newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
+
+function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
     <CardMedia
       // image={"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Orange_Enzo_Ferrari_%287191948164%29.jpg/800px-Orange_Enzo_Ferrari_%287191948164%29.jpg"}
@@ -23,13 +30,35 @@ function CardAlquiler({car}) {
       <Box sx={{ typography: 'h6', mb: 1 }}>{car.color[0].toUpperCase() + car.color.slice(1)}</Box>
       <Box sx={{ typography: 'h6', mb: 1 }}>{car.combustible[0].toUpperCase() + car.combustible.slice(1)}</Box>
       <Box sx={{ typography: 'h6', mb: 1 }}>Patente: {car.patente}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>${car.price}</Box>
+      <Box sx={{ typography: 'h6', mb: 1 }}>${car.price} / dia</Box>
     </Stack>
   </Card>;
 }
 
 
-function FormAlquiler() {
+function FormAlquiler({ car }) {
+
+  const dispatch = useDispatch();
+  const formAlquiler = useSelector(state => state.alquiler);
+
+  useEffect(() => {
+    dispatch(editAuto(car));
+    dispatch(calculateCantDias())
+    dispatch(calculatePrecioFinal(car.price));
+    // dispatch(editPrecioFinal(car.price * cantidadDeDias()));
+  }, []);
+
+
+  function cambiarFechaRetiro(fecha) {
+
+    // dispatch(editPrecioFinal(car.price * cantidadDeDias())); 
+  }
+
+  function cambiarFechaDevolucion(fecha) {
+    dispatch(editFechaDevolucion(fecha.toString()));
+    // dispatch(editPrecioFinal(car.price * cantidadDeDias()));
+  }
+
   return (
     <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
       <Box
@@ -44,42 +73,55 @@ function FormAlquiler() {
           <TextField
             required
             id="outlined-required"
-            label="Lugar de entrega"
-            defaultValue=""
+            label="Lugar de Retiro"
+            defaultValue={formAlquiler.lugarRetiro}
+            onChange={(e) => dispatch(editLugarRetiro(e.target.value))}
           />
           <TextField
             required
             id="outlined-required"
             label="Lugar de devolución"
-            defaultValue=""
+            defaultValue={formAlquiler.lugarDevolucion}
+            onChange={(e) => dispatch(editLugarDevolucion(e.target.value))}
           />
-          <TextField
-            required
-            id="outlined-required"
-            label="Fecha de entrega"
-            defaultValue=""
-          />
-          <TextField
-            required
-            id="outlined-required"
-            label="Hora de entrega"
-            defaultValue=""
-          />
-          <TextField
-            required
-            id="outlined-required"
-            label="Fecha de devolución"
-            defaultValue=""
-          />
-          <TextField
-            required
-            id="outlined-required"
-            label="Hora de devolución"
-            defaultValue=""
-          />
+          <Box>
+            <Grid direction="column" container spacing={2} my={2.5}>
+              <Grid
+                pr={1}
+                item xs={12} sm={12} xl={12} lg={12}
+                sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
+              >
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DesktopDateTimePicker
+                    label="Retiro"
+                    value={new Date(formAlquiler.fechaRetiro)}
+                    onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
+                    sx={{ backgroundColor: "#f5f7fa" }}
+                  />
+                </LocalizationProvider>
+
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DesktopDateTimePicker
+                    label="Devolucion"
+                    value={new Date(formAlquiler.fechaDevolucion)}
+                    onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
+                    sx={{ backgroundColor: "#f5f7fa" }}
+                  />
+                </LocalizationProvider>
+
+              </Grid>
+            </Grid>
+          </Box>
         </div>
         <div>
-          <FormControl sx={{ m: 1, display: 'flex', justifyContent: 'center' }} variant="outlined">
+          <FormControl sx={{ m: 1, display: 'flex', justifyContent: 'center', flexDirection: 'row' }} variant="outlined">
+            <TextField
+              required
+              id="outlined-required"
+              label="Cantidad de dias"
+              value={formAlquiler.cantDias}
+              disabled
+            />
           </FormControl>
           <FormControl fullWidth sx={{ m: 1, width: '52ch' }}>
             <InputLabel htmlFor="outlined-adornment-amount">Precio final</InputLabel>
@@ -87,22 +129,25 @@ function FormAlquiler() {
               id="outlined-adornment-amount"
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
               label="Precio final"
+              value={formAlquiler.precioFinal}
+              onChange={(e) => dispatch(editPrecioFinal(e.target.value))}
             />
           </FormControl>
         </div>
         <div>
           <FormControl sx={{ m: 2, display: 'flex', justifyContent: 'center' }} variant="outlined">
+
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+              <Stack direction="row" spacing={5}>
+                <Button variant="contained" color="success" onClick={() => console.log(formAlquiler)}>
+                  Reservar
+                </Button>
+                <Button variant="contained" color="error" onClick={() => {console.log("Cancelao")}}>
+                  Cancelar
+                </Button>
+              </Stack>
+            </Box>
           </FormControl>
-          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-            <Stack direction="row" spacing={5}>
-              <Button variant="contained" color="success">
-                Reservar
-              </Button>
-              <Button variant="contained" color="error">
-                Cancelar
-              </Button>
-            </Stack>
-          </Box>
         </div>
       </Box>
     </Card>
@@ -125,22 +170,18 @@ export function PageAlquiler() {
   const params = useParams();
   const carID = params['*'];
 
-  console.log(carID)
-
-
-
   return allCars && <Stack direction='column'>
     <Typography variant='h4' sx={{ mb: 2 }}>Registrar Alquiler</Typography>
     <Grid sx={{ display: 'flex', placeContent: "center" }}>
-      <Grid item key={1} xs={12} md={6} sx={{ px: 2, py: 2, mr: 10 }}>
-        {
-          allCars && allCars.filter((carData) => carData.id == carID).map((carData) => (
+      {
+        allCars && allCars.filter((carData) => carData.id == carID).map((carData) => (
+          <><Grid item key={1} xs={12} md={6} sx={{ px: 2, py: 2, mr: 10 }}>
             <CardAlquiler car={carData} key={carData.id} />
-          ))
-        }
-
-      </Grid>
-      <Grid item key={2} xs={12} md={6} sx={{ px: 2, py: 2 }}><FormAlquiler /></Grid>
+          </Grid><Grid item key={2} xs={12} md={6} sx={{ px: 2, py: 2 }}>
+              <FormAlquiler car={carData} />
+            </Grid></>
+        ))
+      }
 
     </Grid>
   </Stack>;

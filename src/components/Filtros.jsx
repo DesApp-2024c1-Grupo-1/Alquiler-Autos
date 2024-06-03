@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem } from '@mui/material';
 
-import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { DatePicker } from '@mui/x-date-pickers';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -32,7 +28,8 @@ const Filtros = () => {
     setCapacity(event.target.value);
   };
 
-  const [value, setValue] = useState(new Date());
+  const [fechaRetiro, setFechaRetiro] = useState('');
+  const [fechaDevolucion, setFechaDevolucion] = useState('');
 
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, border: 2 }}>
@@ -69,8 +66,8 @@ const Filtros = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 label="Retiro"
-                value={value}
-                onChange={(newValue) => setValue(newValue)}
+                value={fechaRetiro}
+                onChange={(newValue) => setFechaRetiro(newValue)}
                 sx={{ backgroundColor: "#f5f7fa"}}
               />
             </LocalizationProvider>
@@ -78,8 +75,8 @@ const Filtros = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 label="Devolucion"
-                value={value}
-                onChange={(newValue) => setValue(newValue)}
+                value={fechaDevolucion}
+                onChange={(newValue) => setFechaDevolucion(newValue)}
                 sx={{ backgroundColor: "#f5f7fa"}}
               />
             </LocalizationProvider>

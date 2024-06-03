@@ -32,7 +32,7 @@ export function CarCard({ car }) {
           <Box sx={{ typography: 'h6', mb: 1 }}>AC: {car.ac ? "Si" : "No"}</Box>
           <Box sx={{ typography: 'h6', mb: 1 }}>Capacidad: {car.capacidad}</Box>
           <Box sx={{ typography: 'h6', mb: 1 }}>Patente: {car.patente}</Box>
-          <Box sx={{ typography: 'h6', mb: 1 }}>${car.price}</Box>
+          <Box sx={{ typography: 'h6', mb: 1 }}>${car.price} / dia</Box>
         </Stack>          
       </Card>
     </NavLink>

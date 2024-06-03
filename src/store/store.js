@@ -1,12 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { filmsSlice } from './filmSlice';
-
-export const storeActions = {
-  films: filmsSlice.actions,
-};
+import { alquilerFormSlice } from './alquilerFormSlice.js';
 
 export const store = configureStore({
   reducer: {
-    films: filmsSlice.reducer,
+    alquiler: alquilerFormSlice.reducer,
   },
 });
