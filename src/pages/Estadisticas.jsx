@@ -35,11 +35,16 @@ export function Estadisticas() {
         return (prev.vecesAlquilado < current.vecesAlquilado) ? prev : current;
     }, {});
 
+    // Filtrar el auto que menos veces alquilaron
+    const alquilerMasCaro = allVentas.reduce((prev, current) => {
+        return (prev.precio * prev.dias > current.precio * current.dias) ? prev : current;
+    }, {});
+
     return (
         <Container maxWidth="100%">
             <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 <Grid item xs={12} sm={6} md={4} lg={4}>
-                    <h2>Alquiler más caro</h2>
+                    <h2>Auto más caro</h2>
                     {ventaMasCara && (
                         <div>
                         <p>ID: {ventaMasCara.id}</p>
@@ -78,6 +83,18 @@ export function Estadisticas() {
                         <p>Auto: {autoMenosAlquilado.auto}</p>
                         <p>Veces Alquilado: {autoMenosAlquilado.vecesAlquilado}</p>
                         <p>Precio: ${autoMenosAlquilado.precio}</p>
+                        </div>
+                    )}
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                    <h2>Alquiler más caro</h2>
+                    {alquilerMasCaro && (
+                        <div>
+                        <p>ID: {alquilerMasCaro.id}</p>
+                        <p>Auto: {alquilerMasCaro.auto}</p>
+                        <p>Dias alquilado: {alquilerMasCaro.dias}</p>
+                        <p>Precio: ${alquilerMasCaro.precio}</p>
+                        <p>Total: ${alquilerMasCaro.precio * alquilerMasCaro.dias}</p>
                         </div>
                     )}
                 </Grid>
