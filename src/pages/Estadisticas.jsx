@@ -1,42 +1,42 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Grid} from "@mui/material";
-import { getAllVentas } from "../services/Estadisticas";
+import { getAllAlquileres } from "../services/Estadisticas";
 
 export function Estadisticas() {
 
-    const [allVentas, setAllVentas] = useState([]);
+    const [allAlquileres, setAllAlquileres] = useState([]);
 
-    const fetchAllVentas = useCallback(async () => {
-    const obtainedVentas = await getAllVentas();
-    setAllVentas(obtainedVentas);
+    const fetchAllAlquileres = useCallback(async () => {
+    const obtainedAlquileres = await getAllAlquileres();
+    setAllAlquileres(obtainedAlquileres);
     }, []);
 
     useEffect(() => {
-    fetchAllVentas();
-    }, [fetchAllVentas]);
+    fetchAllAlquileres();
+    }, [fetchAllAlquileres]);
 
-    // Filtrar el alquiler mas caro
-    const ventaMasCara = allVentas.reduce((prev, current) => {
+    // Filtrar el auto mas caro
+    const autoMasCaro = allAlquileres.reduce((prev, current) => {
         return (prev.precio > current.precio) ? prev : current;
     }, {});
 
     // Filtrar el alquiler de mas días
-    const alquilerMasLargo = allVentas.reduce((prev, current) => {
+    const alquilerMasLargo = allAlquileres.reduce((prev, current) => {
         return (prev.dias > current.dias) ? prev : current;
     }, {});
 
     // Filtrar el auto que mas veces alquilaron
-    const autoMasAlquilado = allVentas.reduce((prev, current) => {
+    const autoMasAlquilado = allAlquileres.reduce((prev, current) => {
         return (prev.vecesAlquilado > current.vecesAlquilado) ? prev : current;
     }, {});
 
     // Filtrar el auto que menos veces alquilaron
-    const autoMenosAlquilado = allVentas.reduce((prev, current) => {
+    const autoMenosAlquilado = allAlquileres.reduce((prev, current) => {
         return (prev.vecesAlquilado < current.vecesAlquilado) ? prev : current;
     }, {});
 
     // Filtrar el auto que menos veces alquilaron
-    const alquilerMasCaro = allVentas.reduce((prev, current) => {
+    const alquilerMasCaro = allAlquileres.reduce((prev, current) => {
         return (prev.precio * prev.dias > current.precio * current.dias) ? prev : current;
     }, {});
 
@@ -45,11 +45,11 @@ export function Estadisticas() {
             <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                     <h2>Auto más caro</h2>
-                    {ventaMasCara && (
+                    {autoMasCaro && (
                         <div>
-                        <p>ID: {ventaMasCara.id}</p>
-                        <p>Auto: {ventaMasCara.auto}</p>
-                        <p>Precio: ${ventaMasCara.precio}</p>
+                        <p>ID: {autoMasCaro.id}</p>
+                        <p>Auto: {autoMasCaro.auto}</p>
+                        <p>Precio: ${autoMasCaro.precio}</p>
                         </div>
                     )}
                 </Grid>

@@ -1,8 +1,9 @@
-export async function getAllVentas() {
-    return getAllVentasFake();
+export async function getAllAlquileres() {
+    return getAllAlquileresFake();
   }
-  
-  async function getAllVentasFake() {
+//la idea es simular que estos son registros de alquileres de nuestra agencia, no los autos, 
+//sino una especie de comprobante de la operación  
+  async function getAllAlquileresFake() {
     const promise = new Promise((resolve, reject) =>{
       setTimeout(() => {
         resolve([
