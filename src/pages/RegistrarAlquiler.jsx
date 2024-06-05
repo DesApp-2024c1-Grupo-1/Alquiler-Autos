@@ -129,7 +129,7 @@ function FormAlquiler({ car }) {
                 <Button variant="contained" color="success" onClick={() => console.log(formAlquiler)}>
                   Reservar
                 </Button>
-                <Button variant="contained" color="error" onClick={() => {console.log("Cancelao")}}>
+                <Button variant="contained" color="error" onClick={cancelar}>
                   Cancelar
                 </Button>
               </Stack>
@@ -141,6 +141,9 @@ function FormAlquiler({ car }) {
   );
 }
 
+function cancelar() {
+  history.back();
+}
 
 export function PageAlquiler() {
   const [allCars, setAllCars] = useState();
