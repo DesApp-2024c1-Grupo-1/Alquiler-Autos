@@ -13,6 +13,8 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker
 
 import { useDispatch, useSelector } from "react-redux";
 import { calculateCantDias,calculatePrecioFinal ,newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
+import { enGB } from 'date-fns/locale';
+
 
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
@@ -78,7 +80,7 @@ function FormAlquiler({ car }) {
                 item xs={12} sm={12} xl={12} lg={12}
                 sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
               >
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                   <DesktopDateTimePicker
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
@@ -87,7 +89,7 @@ function FormAlquiler({ car }) {
                   />
                 </LocalizationProvider>
 
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                   <DesktopDateTimePicker
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
