@@ -9,6 +9,8 @@ import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion } from "../store/alquilerFormSlice.js";
 import { useLocalStorage } from "../config/useLocalStorage.js";
+import { enGB } from 'date-fns/locale';
+
 
 const Filtros = () => {
   const [selectedAireAcondicionado, setAireAcondicionado] = useState('');
@@ -78,7 +80,7 @@ const Filtros = () => {
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
           >
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
@@ -87,7 +89,7 @@ const Filtros = () => {
               />
             </LocalizationProvider>
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
