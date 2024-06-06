@@ -8,13 +8,15 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker
 import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion } from "../store/alquilerFormSlice.js";
-
+import { useLocalStorage } from "../config/useLocalStorage.js";
 
 const Filtros = () => {
   const [selectedAireAcondicionado, setAireAcondicionado] = useState('');
   const [selectedCombustibleType, setCombustibleType] = useState('');
   const [selectedTransmisionType, setTransmisionType] = useState('');
   const [capacitiy, setCapacity] = useState('');
+  const [retiro, setRetiro] = useLocalStorage('retiro', '')
+  const [devolucion, setDevolucion] = useLocalStorage('devolucion', '')
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
@@ -53,7 +55,10 @@ const Filtros = () => {
               label="Lugar de Retiro"
               sx={{ backgroundColor: "#f5f7fa" }}
               defaultValue={formAlquiler.lugarRetiro}
-              onChange={(e) => dispatch(editLugarRetiro(e.target.value))}
+              onChange={(e) => {dispatch(editLugarRetiro(e.target.value));
+                setRetiro(e.target.value);
+              }}
+              
             />
             <TextField
               required
@@ -61,7 +66,9 @@ const Filtros = () => {
               label="Lugar de devolución"
               sx={{ backgroundColor: "#f5f7fa" }}
               defaultValue={formAlquiler.lugarDevolucion}
-              onChange={(e) => dispatch(editLugarDevolucion(e.target.value))}
+              onChange={(e) => {dispatch(editLugarDevolucion(e.target.value));
+                setDevolucion(e.target.value);
+              }}
 
             />
           </Grid>
