@@ -16,7 +16,7 @@ export const alquilerFormSlice = createSlice({
   initialState,
   reducers: {
     newAlquiler: (state, action) => {
-      const {fechaRetiro,lugarRetiro, fechaDevolucion,lugarDevolucion, precioFinal, auto} = action.payload;
+      const { fechaRetiro, lugarRetiro, fechaDevolucion, lugarDevolucion, precioFinal, auto } = action.payload;
       state.fechaRetiro = fechaRetiro;
       state.lugarRetiro = lugarRetiro;
       state.fechaDevolucion = fechaDevolucion;
@@ -59,18 +59,18 @@ export const alquilerFormSlice = createSlice({
   },
 });
 
-  function diffDeDias(fecha1,fecha2){
-    const milisegundosFecha1 = fecha1.getTime();
-    const milisegundosFecha2 = fecha2.getTime();
-  
-    const diferenciaMilisegundos = milisegundosFecha2 - milisegundosFecha1;
-    let dias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
-    dias = Math.max(1,Math.round(dias));
-    console.log("Cantidad de dias: ",dias)
-  
-    return Math.max(1,dias);
-  
-  }
+function diffDeDias(fecha1, fecha2) {
+  const milisegundosFecha1 = fecha1.getTime();
+  const milisegundosFecha2 = fecha2.getTime();
 
- export const { calculateCantDias,calculatePrecioFinal, editCliente,newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } = alquilerFormSlice.actions;
+  const diferenciaMilisegundos = milisegundosFecha2 - milisegundosFecha1;
+  let dias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
+  dias = Math.max(1, Math.round(dias));
+  console.log("Cantidad de dias: ", dias)
+
+  return Math.max(1, dias);
+
+}
+
+export const { calculateCantDias, calculatePrecioFinal, editCliente, newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } = alquilerFormSlice.actions;
 export default alquilerFormSlice.reducer;

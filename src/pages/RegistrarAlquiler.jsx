@@ -12,9 +12,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
 import { useDispatch, useSelector } from "react-redux";
-import { calculateCantDias,calculatePrecioFinal ,newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
+import { calculateCantDias, calculatePrecioFinal, newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
 import { enGB } from 'date-fns/locale';
 
+import AddClientDialog from '../components/AddClientDialog.jsx';
 
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
@@ -116,6 +117,7 @@ function FormAlquiler({ car }) {
             <InputLabel htmlFor="outlined-adornment-amount">Precio final</InputLabel>
             <OutlinedInput
               id="outlined-adornment-amount"
+              type="number"
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
               label="Precio final"
               value={formAlquiler.precioFinal}
@@ -128,10 +130,8 @@ function FormAlquiler({ car }) {
 
             <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
               <Stack direction="row" spacing={5}>
-                <Button variant="contained" color="success" onClick={() => console.log(formAlquiler)}>
-                  Reservar
-                </Button>
-                <Button variant="contained" color="error" onClick={() => {console.log("Cancelao")}}>
+                <AddClientDialog></AddClientDialog>
+                <Button variant="contained" color="error" onClick={() => { console.log("Cancelao") }}>
                   Cancelar
                 </Button>
               </Stack>
