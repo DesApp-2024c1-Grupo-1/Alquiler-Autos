@@ -15,25 +15,27 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Container, Grid, Stack } from '@mui/material';
 import { Buscador } from '../components/Buscador';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-function createData(name, calories, fat, carbs, protein, price) {
+function createData(patente, color, modelo, combustible, eliminar) {
     return {
-      name,
-      calories,
-      fat,
-      carbs,
-      protein,
-      price,
+      patente,
+      color,
+      modelo,
+      combustible,
+      eliminar,
       history: [
         {
           date: '2020-01-05',
-          customerId: '11091700',
-          amount: 3,
+          lugarRetiro: 'Av. Libertador 2345',
+          lugarDevolucion: '----------',
+          horario:'9:00'
         },
         {
           date: '2020-01-02',
-          customerId: 'Anonymous',
-          amount: 1,
+          lugarRetiro: '----------',
+          lugarDevolucion: 'General Belgrano 3456',
+          horario:'10:00'
         },
       ],
     };
@@ -57,16 +59,16 @@ function Agenda() {
                             <TableHead>
                             <TableRow>
                                 <TableCell />
-                                <TableCell>Dessert (100g serving)</TableCell>
-                                <TableCell align="right">Calories</TableCell>
-                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                <TableCell>Patente</TableCell>
+                                <TableCell align="right">Color</TableCell>
+                                <TableCell align="right">Modelo</TableCell>
+                                <TableCell align="right">Combustible</TableCell>
+                                <TableCell align="right">Eliminar Reserva</TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
                             {rows.map((row) => (
-                                <Row key={row.name} row={row} />
+                                <Row key={row.patente} row={row} />
                             ))}
                             </TableBody>
                         </Table>
@@ -101,12 +103,16 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          {row.patente}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell align="right">{row.color}</TableCell>
+        <TableCell align="right">{row.modelo}</TableCell>
+        <TableCell align="right">{row.combustible}</TableCell>
+        <TableCell align="right">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>      
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -119,9 +125,9 @@ function Row(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell>Lugar Retiro</TableCell>
+                    <TableCell align="right">Lugar Devolución</TableCell>
+                    <TableCell align="right">Horario</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -130,11 +136,9 @@ function Row(props) {
                       <TableCell component="th" scope="row">
                         {historyRow.date}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
+                      <TableCell>{historyRow.lugarRetiro}</TableCell>
+                      <TableCell align="right">{historyRow.lugarDevolucion}</TableCell>
+                      <TableCell align="right">{historyRow.horario}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -149,27 +153,25 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
+    combustible: PropTypes.string.isRequired,
+    modelo: PropTypes.string.isRequired,
     history: PropTypes.arrayOf(
       PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        customerId: PropTypes.string.isRequired,
         date: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
+    patente: PropTypes.string.isRequired,
   }).isRequired,
 };
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+  createData('ABC123', 'Rojo', 'Fiat 147', 'Nafta', 5.0, 3.99),
+  createData('ABC123', 'Azul', 'Chevrolet Corsa', 'Electrico', 4.3, 4.99),
+  createData('ABC123', 'Verde', 'Ford Falcon', 'Nafta', 6.0, 3.79),
+  createData('ABC123', 'Blanco', 'Peugeot 206', 'Nafta', 4.3, 2.5),
+  createData('ABC123', 'Gris', 'Renault Clio', 'Nafta', 3.9, 1.5),
 ];
+
+//createData('ABC123', 'Rojo', 'Fiat 147', 'Manual', 'Nafta', capacidad),
 

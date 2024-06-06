@@ -26,9 +26,9 @@ export function HomePage() {
   }, [fetchAllCars]);
 
   return (
-    <Container maxWidth="100%" sx={{backgroundColor:"#000000"}}>
+    <Container maxWidth="100%" >
       <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap'}} >
-        <Grid container spacing={2} sx={{ flexGrow: 1, height: ''}}>
+        <Grid container spacing={2} sx={{ flexGrow: 1, height: '', }}>
 
           <Grid item xs={12} md={5} lg={4} xl={4} sx={{mb:3}}>
             <Filtros/>
