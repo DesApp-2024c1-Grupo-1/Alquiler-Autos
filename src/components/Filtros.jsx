@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button } from '@mui/material';
 
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -42,8 +42,7 @@ const Filtros = () => {
   const formAlquiler = useSelector(state => state.alquiler);
 
   return (
-    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, border: 2 }}>
-
+    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius:5}}>
       <Box>
         <Grid direction="column" container spacing={2} my={2.5}>
           <Grid
@@ -85,7 +84,7 @@ const Filtros = () => {
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
-                sx={{ backgroundColor: "#f5f7fa" }}
+                sx={{ backgroundColor: "#B3D0FB", pr:1}}
               />
             </LocalizationProvider>
 
@@ -94,7 +93,7 @@ const Filtros = () => {
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
-                sx={{ backgroundColor: "#f5f7fa" }}
+                sx={{ backgroundColor: "#B3D0FB", pl:1}}
               />
             </LocalizationProvider>
 
@@ -103,7 +102,7 @@ const Filtros = () => {
       </Box>
 
       <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
-        <FormControl sx={{ mr: 2 }}>
+        <FormControl sx={{ mr: 6 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
@@ -144,7 +143,7 @@ const Filtros = () => {
           </RadioGroup>
         </FormControl>
 
-        <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
+        <FormControl sx={{ ml:5, minWidth: 140}} size="small">
           <InputLabel id="demo-select-small-label">Capacidad</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -152,7 +151,7 @@ const Filtros = () => {
             value={capacitiy}
             label="capacidad"
             onChange={CapacityTypeChange}
-            sx={{ backgroundColor: "#f5f7fa" }}
+            sx={{ backgroundColor: "#B3D0FB"}}
           >
             <MenuItem value="">
               <em>2</em>
@@ -162,6 +161,15 @@ const Filtros = () => {
             <MenuItem value={30}>5</MenuItem>
           </Select>
         </FormControl>
+      </Box>
+
+      <Box sx={{ p: 3, display: "flex", placeContent: "center", }}>
+        <Button variant="outlined" color="success" sx={{mr: 3}}>
+            Buscar
+        </Button>
+        <Button variant="outlined" color="error">
+            Borrar
+        </Button>
       </Box>
     </Box>
   );
