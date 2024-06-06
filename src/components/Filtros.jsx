@@ -54,7 +54,7 @@ const Filtros = () => {
               required
               id="outlined-required"
               label="Lugar de Retiro"
-              sx={{ backgroundColor: "#f5f7fa" }}
+              sx={{ backgroundColor: "#B3D0FB", pl:1}}
               defaultValue={formAlquiler.lugarRetiro}
               onChange={(e) => {dispatch(editLugarRetiro(e.target.value));
                 setRetiro(e.target.value);
@@ -65,7 +65,7 @@ const Filtros = () => {
               required
               id="outlined-required"
               label="Lugar de devolución"
-              sx={{ backgroundColor: "#f5f7fa" }}
+              sx={{ backgroundColor: "#B3D0FB", pl:1}}
               defaultValue={formAlquiler.lugarDevolucion}
               onChange={(e) => {dispatch(editLugarDevolucion(e.target.value));
                 setDevolucion(e.target.value);
