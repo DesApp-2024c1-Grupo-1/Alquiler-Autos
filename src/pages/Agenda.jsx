@@ -166,11 +166,11 @@ Row.propTypes = {
 };
 
 const rows = [
-  createData('ABC123', 'Rojo', 'Fiat 147', 'Nafta', 5.0, 3.99),
-  createData('ABC123', 'Azul', 'Chevrolet Corsa', 'Electrico', 4.3, 4.99),
-  createData('ABC123', 'Verde', 'Ford Falcon', 'Nafta', 6.0, 3.79),
-  createData('ABC123', 'Blanco', 'Peugeot 206', 'Nafta', 4.3, 2.5),
-  createData('ABC123', 'Gris', 'Renault Clio', 'Nafta', 3.9, 1.5),
+  createData('ABC123', 'Rojo', 'Fiat 147', 'Nafta'),
+  createData('ABC123', 'Azul', 'Chevrolet Corsa', 'Electrico'),
+  createData('ABC123', 'Verde', 'Ford Falcon', 'Nafta'),
+  createData('ABC123', 'Blanco', 'Peugeot 206', 'Nafta'),
+  createData('ABC123', 'Gris', 'Renault Clio', 'Nafta'),
 ];
 
 //createData('ABC123', 'Rojo', 'Fiat 147', 'Manual', 'Nafta', capacidad),
