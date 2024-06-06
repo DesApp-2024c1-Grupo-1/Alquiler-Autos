@@ -42,16 +42,17 @@ function createData(patente, color, modelo, combustible, eliminar) {
   }
 
 function Agenda() {
-    return (
-            <Container sx={{backgroundColor:"#B3D0FB", pb:10, borderRadius:3}}>
-            <Grid  
+  return (
+    <Stack sx={{width:"100%", height:"100%", backgroundColor:"#B3D0FB"}} >
+             <Container sx={{pb:10, borderRadius:3}}>
+             <Grid  
                     sx={{ display: 'flex',
                     flexDirection: 'column', 
-                    alignItems: '',
+                    alignItems: 'center',
                     pt:10
                     }}>
 
-                <Buscador sx={{ mx: 20, my: 20}} />
+                <Buscador sx={{}} />
 
                 <Grid sx={{mt:10}}>
                     <TableContainer component={Paper}>
@@ -76,7 +77,10 @@ function Agenda() {
                 </Grid>
             </Grid>
             </Container>
-    );
+        </Stack>
+      
+    
+  );
 }
 
 export default Agenda;
@@ -173,5 +177,4 @@ const rows = [
   createData('ABC123', 'Gris', 'Renault Clio', 'Nafta'),
 ];
 
-//createData('ABC123', 'Rojo', 'Fiat 147', 'Manual', 'Nafta', capacidad),
 
