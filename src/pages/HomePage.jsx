@@ -40,9 +40,8 @@ export function HomePage() {
               {allCars && allCars.map((carData) => (
                 <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                   {/* TODO: A mejorar diseño de la card */}
-                  <CardActionArea>
                     <CarCard car={carData} />
-                  </CardActionArea>
+
                 </Grid>
               ))}
             </Grid>
