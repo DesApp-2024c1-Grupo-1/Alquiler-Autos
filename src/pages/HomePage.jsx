@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Container, Grid, Pagination } from "@mui/material";
+import { Box, CardActionArea, Container, Grid, Pagination } from "@mui/material";
 import { CarCard } from '../components/CarCard.jsx';
 import { getAllCars } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
@@ -40,7 +40,9 @@ export function HomePage() {
               {allCars && allCars.map((carData) => (
                 <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                   {/* TODO: A mejorar diseño de la card */}
-                  <CarCard car={carData} />
+                  <CardActionArea>
+                    <CarCard car={carData} />
+                  </CardActionArea>
                 </Grid>
               ))}
             </Grid>
