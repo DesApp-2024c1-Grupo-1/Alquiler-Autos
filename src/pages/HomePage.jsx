@@ -1,16 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Container, Grid, Pagination } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { CarCard } from '../components/CarCard.jsx';
 import { getAllCars } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
 import  Filtros  from '../components/Filtros.jsx';
 
 export function HomePage() {
-  const [allCars, setAllCars] = useState();
+  const [allCars, setAllCars] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchAllCars = useCallback(async () => {
     const obtainedCars = await getAllCars();
-    setAllCars(obtainedCars);
+    if (obtainedCars.length === 0) {
+      setHasMore(false);
+    } else {
+      setAllCars(prevCars => [...prevCars, ...obtainedCars]);
+    }
   }, []);
 
   useEffect(() => {
@@ -36,14 +42,25 @@ export function HomePage() {
 
             <Buscador sx={{ mx: 20, my: 20 }} />
 
-            <Grid container spacing={2} sx={{ mt: '1rem'}}>
-              {allCars && allCars.map((carData) => (
-                <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
-                  {/* TODO: A mejorar diseño de la card */}
-                  <CarCard car={carData} />
-                </Grid>
-              ))}
-            </Grid>
+            <InfiniteScroll
+              dataLength={allCars.length}
+              next={fetchAllCars}
+              hasMore={hasMore}
+              loader={<h4>Cargando...</h4>}
+              endMessage={
+                <p style={{ textAlign: 'center' }}>
+                  <b>Ya no hay mas autos</b>
+                </p>
+              }
+            >
+              <Grid container spacing={2} sx={{ mt: '1rem'}}>
+                {allCars.map((carData) => (
+                  <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
+                    <CarCard car={carData} />
+                  </Grid>
+                ))}
+              </Grid>
+            </InfiniteScroll>
 
           </Grid>
 
@@ -52,5 +69,3 @@ export function HomePage() {
     </Container>
   )
 }
-
-
