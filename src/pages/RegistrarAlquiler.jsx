@@ -38,7 +38,7 @@ function CardAlquiler({ car }) {
 }
 
 
-function FormAlquiler({ car }) {
+export function FormAlquiler({ car }) {
 
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
