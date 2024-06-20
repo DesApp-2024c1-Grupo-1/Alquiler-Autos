@@ -11,18 +11,26 @@ setOptions({
 function App() {
   const [myEvents, setEvents] = useState([]);
   const [isToastOpen, setToastOpen] = useState(false);
-  const [toastText, setToastText] = useState();
+  const [toastMessage, setToastMessage] = useState('');
 
-  const handleToastClose = useCallback(() => {
+  const handleCloseToast = useCallback(() => {
     setToastOpen(false);
   }, []);
 
   const handleEventClick = useCallback((args) => {
-    setToastText(args.event.title);
+    setToastMessage(args.event.title);
     setToastOpen(true);
   }, []);
 
-  const myView = useMemo(() => ({ calendar: { labels: true } }), []);
+  const myView = useMemo(
+    () => ({
+      calendar: { type: 'week' },
+      agenda: { type: 'day' },
+    }),
+    [],
+  );
+
+  
 
   useEffect(() => {
     getJson(
@@ -36,17 +44,16 @@ function App() {
 
   return (
     <>
-      <Eventcalendar
-        clickToCreate={false}
-        dragToCreate={false}
-        dragToMove={false}
-        dragToResize={false}
-        eventDelete={false}
-        data={myEvents}
-        view={myView}
-        onEventClick={handleEventClick}
-      />
-      <Toast message={toastText} isOpen={isToastOpen} onClose={handleToastClose} />
+     <Eventcalendar
+  data={myEvents}
+  view={myView}
+  onEventClick={handleEventClick}
+  theme="ios" // Personaliza el tema (opcional)
+  themeVariant="light" // Personaliza la variante del tema (opcional)
+/>
+
+
+      <Toast message={toastMessage} isOpen={isToastOpen} onClose={handleCloseToast} />
     </>
   );
 }
