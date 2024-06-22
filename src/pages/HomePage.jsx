@@ -10,7 +10,7 @@ export function HomePage() {
   const [allCars, setAllCars] = useState();
 
   const fetchAllCars = useCallback(async () => {
-    const obtainedCars = await getAllCars()//getAllCarsAxios();
+    const obtainedCars = await getAllCarsAxios(); //getAllCars();
     setAllCars(obtainedCars);
   }, []);
 
@@ -19,18 +19,20 @@ export function HomePage() {
   }, [fetchAllCars]);
 
   // ============================================================================
-  //const url = 'URLnahuel';
+  const url = 'http://localhost:3000/car';
 //==================================   GET   ==========================================
   // Realizar la petición GET usando Axios
-  // const getAllCarsAxios = async() =>{
-  //   try {
-  //     const url2 = url
-  //     const response = await axios.get(url2);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+  const getAllCarsAxios = async() =>{
+    try {
+      const url2 = url
+      const response = await axios.get(url2);
+      console.log(response.data);
+      console.log(allCars)
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   //====================================   GET BY ID   ======================================
   // const [selectedCar, setSelectedCar] = useState(null);//null para que no haya ningun auto inicialmente
 
@@ -50,7 +52,7 @@ export function HomePage() {
   //     const url3 = await axios.get("url/post")
   //     const data =
   //    {
-  //
+  
   //    }
   //     const response = await axios.post(url3, data)    
   //     console.log(response)
@@ -83,9 +85,7 @@ export function HomePage() {
               {allCars && allCars.map((carData) => (
                 <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                   {/* TODO: A mejorar diseño de la card */}
-                  <CardActionArea>
                     <CarCard car={carData} />
-                  </CardActionArea>
                 </Grid>
               ))}
             </Grid>
