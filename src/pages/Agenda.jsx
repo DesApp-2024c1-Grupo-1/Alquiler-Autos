@@ -9,6 +9,23 @@ setOptions({
 });
 
 function App() {
+
+ 
+let eventosDePrueba = [
+  {
+    "start": "2024-06-22T06:00:00.000Z",
+    "end": "2024-06-22T07:00:00.000Z",
+    "text": "PATENTE JMD 870",
+    "color": "#f67944"
+  },
+  {
+    "start": "2024-06-23T06:00:00.000Z",
+    "end": "2024-06-23T06:15:00.000Z",
+    "text": "Green box to post office",
+    "color": "#6e7f29"
+  },
+];
+
   const [myEvents, setEvents] = useState([]);
   const [isToastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -33,14 +50,9 @@ function App() {
   
 
   useEffect(() => {
-    getJson(
-      'https://trial.mobiscroll.com/events/?vers=5',
-      (events) => {
-        setEvents(events);
-      },
-      'jsonp',
-    );
-  }, []);
+    getJson
+        setEvents(eventosDePrueba);
+  },[]);
 
   return (
     <>
