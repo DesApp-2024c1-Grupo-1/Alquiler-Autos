@@ -85,7 +85,7 @@ let eventosDePrueba = [
   Ver si prefieren que vuelva a aparecer cuando se devuelve, o solo que aparezca una vez.
 */
 
-const eventosDePrueba = [
+let eventosDePrueba = [
   {
     title: 'JUD-123',
     nombreYApellido: 'Jesus Albornoz',
@@ -166,6 +166,17 @@ const eventosDePrueba = [
   },
 ];
 
+// Sobreescribir los eventos de prueba con los eventos de la base de datos
+// eventosDePrueba = await getEventos()
+// console.log(eventosDePrueba)
+
+// function getEventos() {
+//   return fetch('http://localhost:3000/evento')
+//     .then(response => response.json())
+//     .then(data => data)
+//     .catch(error => console.error(error));
+
+// }
 
 function App() {
   const [appointments, setAppointments] = useState(eventosDePrueba);
