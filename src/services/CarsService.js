@@ -1,11 +1,32 @@
-export async function getAllCars() {
-  return getAllCarsFake();
-}
+import axios from 'axios'
 
-const image = "https://car-images.bauersecure.com/wp-images/4738/should_i_buy_an_electric_car.jpg"
+const url = 'http://localhost:3000/car/';
 
 
-async function getAllCarsFake() {
+
+export async function getCarById(id){
+  try {
+    const response = await axios.get(url+id);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getAllCarsAxios = async() =>{
+    try {
+      const url2 = url
+      const response = await axios.get(url2);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+export async function getAllCarsFake() {
   const promise = new Promise((resolve, reject) =>{
     setTimeout(() => {
       resolve([
@@ -23,3 +44,7 @@ async function getAllCarsFake() {
   return Promise.resolve(promise);
 }
 
+export async function getCarByIdFake(id){
+
+  return { id: 1, name: 'Fiat 147', brand: 'Fiat', year: 1990, km: 100000, color: 'rojo', price: 100000, image: 'https://fotos.perfil.com/2021/10/07/fiat-vivace-1241845.jpg',transmision: 'manual', combustible: 'nafta', ac: false, capacidad: 5, patente: 'ABC123'}
+}

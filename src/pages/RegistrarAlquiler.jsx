@@ -3,7 +3,7 @@ import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
   InputLabel, InputAdornment, FormControl, Button
 } from "@mui/material";
-import { getAllCars } from "../services/CarsService.js";
+import {  getCarById,getCarByIdFake  } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
 import { useParams } from 'react-router-dom';
 
@@ -148,33 +148,32 @@ function cancelar() {
 }
 
 export function PageAlquiler() {
-  const [allCars, setAllCars] = useState();
-
-  const fetchAllCars = useCallback(async () => {
-    const obtainedCars = await getAllCars();
-    setAllCars(obtainedCars);
-  }, []);
-
-  useEffect(() => {
-    fetchAllCars()
-  }, [fetchAllCars]);
-
   const params = useParams();
   const carID = params['*'];
+  const [car, setCar] = useState();
 
-  return allCars && <Stack direction='column'>
+  const axiosCarById = useCallback(async () => {
+    //Descomentar para usar la Base de Datos
+    //const obtainedCar = await getCarById(carID);
+    const obtainedCar = await getCarByIdFake(carID);
+    setCar(obtainedCar);
+    console.log(car)
+  }, []);
+  
+
+  useEffect(() => {
+    axiosCarById()
+  }, []);
+
+
+  return car && <Stack direction='column'>
     <Typography variant='h4' sx={{ mb: 2 }}>Registrar Alquiler</Typography>
     <Grid sx={{ display: 'flex', placeContent: "center" }}>
-      {
-        allCars && allCars.filter((carData) => carData.id == carID).map((carData) => (
           <><Grid item key={1} xs={12} md={6} sx={{ px: 2, py: 2, mr: 10 }}>
-            <CardAlquiler car={carData} key={carData.id} />
+            <CardAlquiler car={car} key={car.id} />
           </Grid><Grid item key={2} xs={12} md={6} sx={{ px: 2, py: 2 }}>
-              <FormAlquiler car={carData} />
+              <FormAlquiler car={car} />
             </Grid></>
-        ))
-      }
-
     </Grid>
   </Stack>;
 }
