@@ -21,22 +21,7 @@ export function HomePage() {
   }, [fetchAllCars]);
 
   
-  //====================================   POST   =====================================================
-  
-  // const registrarAlquiler = async () => {
-  //   try {
-  //     const url3 = await axios.get("url/post")
-  //     const data =
-  //    {
-  
-  //    }
-  //     const response = await axios.post(url3, data)    
-  //     console.log(response)
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
-  //===================================================================================================
+
 
   return (
     <Container maxWidth="100%" >

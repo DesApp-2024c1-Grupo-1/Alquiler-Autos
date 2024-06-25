@@ -109,7 +109,7 @@ export function FormAlquiler({ car }) {
               required
               id="outlined-required"
               label="Cantidad de dias"
-              value={formAlquiler.cantDias}
+              value={formAlquiler.cantidadDias}
               disabled
             />
           </FormControl>
@@ -146,6 +146,9 @@ export function FormAlquiler({ car }) {
 function cancelar() {
   history.back();
 }
+
+
+
 
 export function PageAlquiler() {
   const params = useParams();

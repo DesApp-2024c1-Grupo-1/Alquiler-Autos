@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { editCliente } from "../store/alquilerFormSlice.js";
 import Alert from '@mui/material/Alert';
@@ -14,6 +14,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import Snackbar from '@mui/material/Snackbar';
 import { useNavigate } from 'react-router-dom';
 import { set } from 'lodash';
+import {registrarAlquiler} from '../services/AlquilerService.js'
 
 
 function AddClientDialog() {
@@ -31,7 +32,8 @@ function AddClientDialog() {
     const [errorTelefono, setErrorTelefono] = useState({ error: false, message: "", });
 
     const dispatch = useDispatch();
-    const cliente = useSelector(state => state.alquiler.cliente);
+    
+    const alquiler = useSelector(state => state.alquiler);
 
     function validarCampos() {
         return validarNombre() && validarDocumento() & validarTelefono()
@@ -79,33 +81,46 @@ function AddClientDialog() {
         setTelefono("");
         setSuccess(false);
         setOpen(false);
-        console.log("Cerrado solo")
-        // useNavigate("/home")
+        
 
     };
 
-    const sumbit = (e) => {
+
+    const sumbit = async (e) => {
         e.preventDefault();
         if (validarCampos()) {
-            const nuevoCliente = {
-                nombre: nombre,
-                documento: documento,
-                telefono: telefono,
-                email: email
-            }
-            dispatch(editCliente(nuevoCliente));
+            await editarCliente();
             setSuccess(true);
             setTimeout(() => {
                 setOpen(false);
-                setSuccess(false);
-                navigate("/agenda")
-            }, 2000);
-
-            
+                navigate("/agenda") 
+             }, 2000);
+           
         } else {
             console.log("No validado")
         }
-
+    };
+    
+    const editarCliente = async () => {
+        const nuevoCliente = {
+            nombre: nombre,
+            documento: documento,
+            telefono: telefono,
+            email: email
+        }
+        await dispatch(editCliente(nuevoCliente));
+       
+    };
+    
+    useEffect(() => {
+        if (success) {
+            botonRegistrar();
+        }
+    }, [success]); 
+    
+    const botonRegistrar = () => {
+        console.log(alquiler)
+        registrarAlquiler(alquiler)
     };
 
     return (

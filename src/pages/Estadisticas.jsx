@@ -57,7 +57,7 @@ export function Estadisticas() {
                     {autoMasCaro && (
                         <div>
                         <p>ID: {autoMasCaro.id}</p>
-                        <p>Auto: {autoMasCaro.auto}</p>
+                        <p>Auto: {autoMasCaro.car}</p>
                         <p>Precio: ${autoMasCaro.precio}</p>
                         </div>
                     )}
@@ -68,7 +68,7 @@ export function Estadisticas() {
                     {autoMasBarato && (
                         <div>
                         <p>ID: {autoMasBarato.id}</p>
-                        <p>Auto: {autoMasBarato.auto}</p>
+                        <p>Auto: {autoMasBarato.car}</p>
                         <p>Precio: ${autoMasBarato.precio}</p>
                         </div>
                     )}
@@ -79,7 +79,7 @@ export function Estadisticas() {
                     {alquilerMasLargo && (
                         <div>
                         <p>ID: {alquilerMasLargo.id}</p>
-                        <p>Auto: {alquilerMasLargo.auto}</p>
+                        <p>Auto: {alquilerMasLargo.car}</p>
                         <p>Precio: ${alquilerMasLargo.precio}</p>
                         <p>Días: {alquilerMasLargo.dias}</p>
                         </div>
@@ -91,7 +91,7 @@ export function Estadisticas() {
                     {autoMasAlquilado && (
                         <div>
                         <p>ID: {autoMasAlquilado.id}</p>
-                        <p>Auto: {autoMasAlquilado.auto}</p>
+                        <p>Auto: {autoMasAlquilado.car}</p>
                         <p>Precio: ${autoMasAlquilado.precio}</p>
                         <p>Veces Alquilado: {autoMasAlquilado.vecesAlquilado}</p>
                         </div>
@@ -103,7 +103,7 @@ export function Estadisticas() {
                     {autoMenosAlquilado && (
                         <div>
                         <p>ID: {autoMenosAlquilado.id}</p>
-                        <p>Auto: {autoMenosAlquilado.auto}</p>
+                        <p>Auto: {autoMenosAlquilado.car}</p>
                         <p>Precio: ${autoMenosAlquilado.precio}</p>
                         <p>Veces Alquilado: {autoMenosAlquilado.vecesAlquilado}</p>
                         </div>
@@ -115,7 +115,7 @@ export function Estadisticas() {
                     {alquilerMasCaro && (
                         <div>
                         <p>ID: {alquilerMasCaro.id}</p>
-                        <p>Auto: {alquilerMasCaro.auto}</p>
+                        <p>Auto: {alquilerMasCaro.car}</p>
                         <p>Precio: ${alquilerMasCaro.precio}</p>
                         <p>Dias alquilado: {alquilerMasCaro.dias}</p>
                         <p>Total: ${alquilerMasCaro.precio * alquilerMasCaro.dias}</p>

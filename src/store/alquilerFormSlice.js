@@ -6,9 +6,9 @@ const initialState = {
   fechaDevolucion: new Date().toString(),
   lugarDevolucion: "",
   precioFinal: "",
-  auto: "",
+  car: "",
   cliente: "",
-  cantDias: 1
+  cantidadDias: 1
 }
 
 export const alquilerFormSlice = createSlice({
@@ -16,45 +16,45 @@ export const alquilerFormSlice = createSlice({
   initialState,
   reducers: {
     newAlquiler: (state, action) => {
-      const { fechaRetiro, lugarRetiro, fechaDevolucion, lugarDevolucion, precioFinal, auto } = action.payload;
+      const { fechaRetiro, lugarRetiro, fechaDevolucion, lugarDevolucion, precioFinal, car } = action.payload;
       state.fechaRetiro = fechaRetiro;
       state.lugarRetiro = lugarRetiro;
       state.fechaDevolucion = fechaDevolucion;
       state.lugarDevolucion = lugarDevolucion;
       state.precioFinal = precioFinal;
-      state.auto = auto;
-      state.cantDias = diffDeDias(new Date(state.fechaRetiro), new Date(state.fechaDevolucion));;
+      state.car = car;
+      state.cantidadDias = diffDeDias(new Date(state.fechaRetiro), new Date(state.fechaDevolucion));;
     },
     editFechaRetiro: (state, action) => {
       state.fechaRetiro = action.payload;
-      state.cantDias = diffDeDias(new Date(action.payload), new Date(state.fechaDevolucion));
-      state.precioFinal = state.auto.price * state.cantDias
+      state.cantidadDias = diffDeDias(new Date(action.payload), new Date(state.fechaDevolucion));
+      state.precioFinal = state.car.price * state.cantidadDias
     },
     editLugarRetiro: (state, action) => {
       state.lugarRetiro = action.payload;
     },
     editFechaDevolucion: (state, action) => {
       state.fechaDevolucion = action.payload;
-      state.cantDias = diffDeDias(new Date(state.fechaRetiro), new Date(action.payload));
-      state.precioFinal = state.auto.price * state.cantDias
+      state.cantidadDias = diffDeDias(new Date(state.fechaRetiro), new Date(action.payload));
+      state.precioFinal = state.car.price * state.cantidadDias
     },
     editLugarDevolucion: (state, action) => {
       state.lugarDevolucion = action.payload;
     },
     calculatePrecioFinal: (state, action) => {
-      state.precioFinal = state.auto.price * state.cantDias
+      state.precioFinal = state.car.price * state.cantidadDias
     },
     editPrecioFinal: (state, action) => {
       state.precioFinal = action.payload;
     },
     editAuto: (state, action) => {
-      state.auto = action.payload;
+      state.car = action.payload;
     },
     editCliente: (state, action) => {
       state.cliente = action.payload;
     },
     calculateCantDias: (state, action) => {
-      state.cantDias = diffDeDias(new Date(state.fechaRetiro), new Date(state.fechaDevolucion));
+      state.cantidadDias = diffDeDias(new Date(state.fechaRetiro), new Date(state.fechaDevolucion));
     }
   },
 });
