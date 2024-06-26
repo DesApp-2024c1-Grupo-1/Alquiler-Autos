@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, CardActionArea, Container, Grid, Pagination } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { CarCard } from '../components/CarCard.jsx';
 import { getAllCarsAxios, getAllCarsFake } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
@@ -7,7 +8,7 @@ import  Filtros  from '../components/Filtros.jsx';
 
 
 export function HomePage() {
-  const [allCars, setAllCars] = useState();
+  const [allCars, setAllCars] = useState([]);
 
   const fetchAllCars = useCallback(async () => {
     //Descomentar para usar la Base de Datos
@@ -58,5 +59,3 @@ export function HomePage() {
     </Container>
   )
 }
-
-
