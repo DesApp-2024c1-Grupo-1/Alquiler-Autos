@@ -3,6 +3,8 @@ import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs }
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { momentTimezone } from '@mobiscroll/react';
 import moment from 'moment-timezone';
+import { getEventos } from '../services/EventosService';
+import { set } from 'lodash';
 
 setOptions({
   locale: localeEs,
@@ -11,83 +13,11 @@ setOptions({
 });
 
 
-/*
-let eventosDePrueba = [
-  {
-    "start": "2024-06-25T10:00:00.000Z",
-    "end": "2024-06-25T10:15:00.000Z",
-    "text": "Alquiler: entrega AHC143",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-06-25T14:00:00.000Z",
-    "end": "2024-06-25T14:15:00.000Z",
-    "text": "Alquiler: entrega DEF456",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-06-26T12:00:00.000Z",
-    "end": "2024-06-26T12:15:00.000Z",
-    "text": "Alquiler: devolución DEF456",
-    "color": "#00ff00"
-  },
-  {
-    "start": "2024-06-27T10:00:00.000Z",
-    "end": "2024-06-27T10:15:00.000Z",
-    "text": "Alquiler: entrega JKL012",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-06-27T14:00:00.000Z",
-    "end": "2024-06-27T14:15:00.000Z",
-    "text": "Alquiler: devolución AHC143",
-    "color": "#00ff00"
-  },
-  {
-    "start": "2024-06-28T16:00:00.000Z",
-    "end": "2024-06-28T16:15:00.000Z",
-    "text": "Alquiler: entrega MNO345",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-06-29T10:00:00.000Z",
-    "end": "2024-06-29T10:15:00.000Z",
-    "text": "Alquiler: devolución JKL012",
-    "color": "#00ff00"
-  },
-  {
-    "start": "2024-06-29T18:00:00.000Z",
-    "end": "2024-06-29T18:15:00.000Z",
-    "text": "Alquiler: entrega STU901",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-06-30T14:00:00.000Z",
-    "end": "2024-06-30T14:15:00.000Z",
-    "text": "Alquiler: devolución MNO345",
-    "color": "#00ff00"
-  },
-  {
-    "start": "2024-06-30T20:00:00.000Z",
-    "end": "2024-06-30T20:15:00.000Z",
-    "text": "Alquiler: entrega PQR678",
-    "color": "#ff0000"
-  },
-  {
-    "start": "2024-07-01T10:00:00.000Z",
-    "end": "2024-07-01T10:15:00.000Z",
-    "text": "Alquiler: devolución STU901",
-    "color": "#00ff00"
-  }
-]
-
-*/
-
 /*Ver si eliminar boton confirm/cancel, que cambia el estado.
   Ver si prefieren que vuelva a aparecer cuando se devuelve, o solo que aparezca una vez.
 */
 
-let eventosDePrueba = [
+let eventosFake = [
   {
     title: 'PRUEBA',
     nombreYApellido: 'Jesus Albornoz',
@@ -167,23 +97,23 @@ let eventosDePrueba = [
     color: '#309346',
   },
 ];
-
-//Sobreescribir los eventos de prueba con los eventos de la base de datos
-eventosDePrueba = await getEventos()
-console.log(eventosDePrueba)
-
 momentTimezone.moment = moment;
 
-function getEventos() {
-  console.log("Haciendo fetch")
-  return fetch('http://localhost:3000/evento')
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => console.error(error));
-}
+function AgendaPage() {
 
-function App() {
-  const [appointments, setAppointments] = useState(eventosDePrueba);
+  const [appointments, setAppointments] = useState([])
+
+  const fetchAllEvents = useCallback(async () => {
+    //Descomentar para usar la Base de Datos
+    const obtainedEvents = await getEventos();
+    //const obtainedEvents = eventosFake;
+    setAppointments(obtainedEvents); 
+  }, []);
+
+  useEffect(() => {
+    fetchAllEvents()
+  }, [appointments]);
+
   const [appointment, setAppointment] = useState();
   const [appointmentInfo, setAppointmentInfo] = useState('');
   const [appointmentLocation, setAppointmentLocation] = useState('');
@@ -198,22 +128,8 @@ function App() {
   const [tooltipAnchor, setTooltipAnchor] = useState(null);
   const [tooltipColor, setTooltipColor] = useState('');
 
-  // useEffect(() => {
-  //   eventosDePrueba = getEventos()
-  // }, [eventosDePrueba]);
 
-  // const [allEvents, setAllEvents] = useState([]);
 
-  // const fetchAllEvents = useCallback(async () => {
-  //   //Descomentar para usar la Base de Datos
-  //   const obtainedCars = await getEventos(); 
-  //   //const obtainedCars = await getAllCarsFake();
-  //   setAllCars(obtainedCars);
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchAllCars();
-  // }, [fetchAllCars]);
 
   const timer = useRef(null);
 
@@ -367,4 +283,4 @@ function App() {
   );
 }
 
-export default App;
+export default AgendaPage;
