@@ -112,7 +112,7 @@ function AgendaPage() {
 
   useEffect(() => {
     fetchAllEvents()
-  }, [appointments]);
+  }, [fetchAllEvents]);
 
   const [appointment, setAppointment] = useState();
   const [appointmentInfo, setAppointmentInfo] = useState('');
@@ -155,10 +155,10 @@ function AgendaPage() {
     }
 
     setAppointment(event);
-    setAppointmentInfo(event.nombreYApellido);
-    setAppointmentLocation(event.lugarDevolucion);
+    setAppointmentInfo(event.data.car.brand + " " + event.data.car.name);
+    setAppointmentLocation(event.data.lugarDevolucion);
     setAppointmentTime(time);
-    setAppointmentReason(event.lugarRetiro);
+    setAppointmentReason(event.data.lugarRetiro);
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);

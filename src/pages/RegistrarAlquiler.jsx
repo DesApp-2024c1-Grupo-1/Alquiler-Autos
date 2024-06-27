@@ -43,8 +43,8 @@ export function FormAlquiler({ car }) {
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
 
-  const [retiroValido,setRetiroValido] = useState(false)
-  const [devolucionValido,setDevolucionValido] = useState(false)
+  const [retiroValido,setRetiroValido] = useState(true)
+  const [devolucionValido,setDevolucionValido] = useState(true)
   const [activeButton,setButton] = useState(true)
   
 
@@ -145,7 +145,9 @@ export function FormAlquiler({ car }) {
                   <DesktopDateTimePicker
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
-                    onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
+                    onChange={(newValue) => {
+                      dispatch(editFechaRetiro(newValue.toString()))
+                    }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
                     onError={(newError) => {
@@ -167,7 +169,9 @@ export function FormAlquiler({ car }) {
                   <DesktopDateTimePicker
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
-                    onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
+                    onChange={(newValue) => {
+                      dispatch(editFechaDevolucion(newValue.toString()))
+                    }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
                     minDate={new Date(formAlquiler.fechaRetiro)}
