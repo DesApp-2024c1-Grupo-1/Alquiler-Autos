@@ -42,7 +42,7 @@ const Filtros = () => {
   const formAlquiler = useSelector(state => state.alquiler);
 
   return (
-    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius:5}}>
+    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius: 5 }}>
       <Box>
         <Grid direction="column" container spacing={2} my={2.5}>
           <Grid
@@ -54,23 +54,23 @@ const Filtros = () => {
               required
               id="outlined-required"
               label="Lugar de Retiro"
-              sx={{ backgroundColor: "#B3D0FB", pl:1}}
+              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mr: 1 }}
               defaultValue={formAlquiler.lugarRetiro}
-              onChange={(e) => {dispatch(editLugarRetiro(e.target.value));
+              onChange={(e) => {
+                dispatch(editLugarRetiro(e.target.value));
                 setRetiro(e.target.value);
               }}
-              
             />
             <TextField
               required
               id="outlined-required"
               label="Lugar de devolución"
-              sx={{ backgroundColor: "#B3D0FB", pl:1}}
+              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mx: 1 }}
               defaultValue={formAlquiler.lugarDevolucion}
-              onChange={(e) => {dispatch(editLugarDevolucion(e.target.value));
+              onChange={(e) => {
+                dispatch(editLugarDevolucion(e.target.value));
                 setDevolucion(e.target.value);
               }}
-
             />
           </Grid>
           <Grid
@@ -78,29 +78,27 @@ const Filtros = () => {
             item xs={12} sm={12} xl={12} lg={12}
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
           >
-
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
-                sx={{ backgroundColor: "#B3D0FB", pr:1}}
+                sx={{ backgroundColor: "#B3D0FB", flex: 1, pr: 0, mx: 1 }}
               />
             </LocalizationProvider>
-
+  
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
-                sx={{ backgroundColor: "#B3D0FB", pl:1}}
+                sx={{ backgroundColor: "#B3D0FB", flex: 1, pl: 1, mx: 1 }}
               />
             </LocalizationProvider>
-
           </Grid>
         </Grid>
       </Box>
-
+  
       <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
         <FormControl sx={{ mr: 6 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
@@ -114,7 +112,7 @@ const Filtros = () => {
             <FormControlLabel value={false} control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
-
+  
         <FormControl>
           <FormLabel id="demo-controlled-radio-buttons-group">Combustible</FormLabel>
           <RadioGroup
@@ -128,7 +126,7 @@ const Filtros = () => {
           </RadioGroup>
         </FormControl>
       </Box>
-
+  
       <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
         <FormControl sx={{ mr: 2 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Transmisión</FormLabel>
@@ -142,8 +140,8 @@ const Filtros = () => {
             <FormControlLabel value="Manual" control={<Radio />} label="Manual" />
           </RadioGroup>
         </FormControl>
-
-        <FormControl sx={{ ml:5, minWidth: 140}} size="small">
+  
+        <FormControl sx={{ ml: 5, minWidth: 140 }} size="small">
           <InputLabel id="demo-select-small-label">Capacidad</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -151,7 +149,7 @@ const Filtros = () => {
             value={capacitiy}
             label="capacidad"
             onChange={CapacityTypeChange}
-            sx={{ backgroundColor: "#B3D0FB"}}
+            sx={{ backgroundColor: "#B3D0FB" }}
           >
             <MenuItem value="">
               <em>2</em>
@@ -162,17 +160,18 @@ const Filtros = () => {
           </Select>
         </FormControl>
       </Box>
-
-      <Box sx={{ p: 3, display: "flex", placeContent: "center", }}>
-        <Button variant="outlined" color="success" sx={{mr: 3}}>
-            Buscar
+  
+      <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
+        <Button variant="outlined" color="success" sx={{ mr: 3 }}>
+          Buscar
         </Button>
         <Button variant="outlined" color="error">
-            Borrar
+          Borrar
         </Button>
       </Box>
     </Box>
   );
+  
 };
 
 export default Filtros;
