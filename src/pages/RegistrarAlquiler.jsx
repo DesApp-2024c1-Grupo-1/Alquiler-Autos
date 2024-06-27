@@ -157,8 +157,8 @@ export function PageAlquiler() {
 
   const axiosCarById = useCallback(async () => {
     //Descomentar para usar la Base de Datos
-    //const obtainedCar = await getCarById(carID);
-    const obtainedCar = await getCarByIdFake(carID);
+    const obtainedCar = await getCarById(carID);
+    //const obtainedCar = await getCarByIdFake(carID);
     setCar(obtainedCar);
     console.log(car)
   }, []);

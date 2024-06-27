@@ -1,6 +1,8 @@
 import '@mobiscroll/react/dist/css/mobiscroll.min.css';
 import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs } from '@mobiscroll/react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { momentTimezone } from '@mobiscroll/react';
+import moment from 'moment-timezone';
 
 setOptions({
   locale: localeEs,
@@ -87,7 +89,7 @@ let eventosDePrueba = [
 
 let eventosDePrueba = [
   {
-    title: 'JUD-123',
+    title: 'PRUEBA',
     nombreYApellido: 'Jesus Albornoz',
     age: 68,
     start: '2024-06-25T08:00',
@@ -98,7 +100,7 @@ let eventosDePrueba = [
     color: '#00ff00',
   },
   {
-    title: 'LEO-789',
+    title: 'PRUEBA',
     nombreYApellido: 'Pedro Saborido',
     age: 44,
     start: '2024-06-26T09:00',
@@ -109,7 +111,7 @@ let eventosDePrueba = [
     color: '#ff0000',
   },
   {
-    title: 'MER-456',
+    title: 'PRUEBA',
     nombreYApellido: 'Juan Cruz Mendoza',
     age: 29,
     start: '2024-06-28T10:00',
@@ -121,7 +123,7 @@ let eventosDePrueba = [
   },
 
   {
-    title: 'DER-987',
+    title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 72,
     start: '2024-06-27T13:00',
@@ -132,7 +134,7 @@ let eventosDePrueba = [
     color: '#b33d3d',
   },
   {
-    title: 'JEN-654',
+    title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 65,
     start: '2024-06-30T10:00',
@@ -143,7 +145,7 @@ let eventosDePrueba = [
     color: '#b33d3d',
   },
   {
-    title: 'LIL-321',
+    title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 54,
     start: '2024-06-30T10:00',
@@ -154,7 +156,7 @@ let eventosDePrueba = [
     color: '#309346',
   },
   {
-    title: 'HCK-780',
+    title: 'PRUEBA',
     nombreYApellido: 'Pedro Rosemblant',
     age: 59,
     start: '2024-06-25T11:00',
@@ -166,17 +168,19 @@ let eventosDePrueba = [
   },
 ];
 
-// Sobreescribir los eventos de prueba con los eventos de la base de datos
-// eventosDePrueba = await getEventos()
-// console.log(eventosDePrueba)
+//Sobreescribir los eventos de prueba con los eventos de la base de datos
+eventosDePrueba = await getEventos()
+console.log(eventosDePrueba)
 
-// function getEventos() {
-//   return fetch('http://localhost:3000/evento')
-//     .then(response => response.json())
-//     .then(data => data)
-//     .catch(error => console.error(error));
+momentTimezone.moment = moment;
 
-// }
+function getEventos() {
+  console.log("Haciendo fetch")
+  return fetch('http://localhost:3000/evento')
+    .then(response => response.json())
+    .then(data => data)
+    .catch(error => console.error(error));
+}
 
 function App() {
   const [appointments, setAppointments] = useState(eventosDePrueba);
@@ -194,34 +198,47 @@ function App() {
   const [tooltipAnchor, setTooltipAnchor] = useState(null);
   const [tooltipColor, setTooltipColor] = useState('');
 
+  // useEffect(() => {
+  //   eventosDePrueba = getEventos()
+  // }, [eventosDePrueba]);
+
+  // const [allEvents, setAllEvents] = useState([]);
+
+  // const fetchAllEvents = useCallback(async () => {
+  //   //Descomentar para usar la Base de Datos
+  //   const obtainedCars = await getEventos(); 
+  //   //const obtainedCars = await getAllCarsFake();
+  //   setAllCars(obtainedCars);
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchAllCars();
+  // }, [fetchAllCars]);
+
   const timer = useRef(null);
 
-  const myView = useMemo(() => ({ agenda: { type: 'week' } }), []);
+  const myView = useMemo(() => ({ agenda: { type: 'day' } }), []);
+
 
   const openTooltip = useCallback((args) => {
     const event = args.event;
-    /* Muestra el tiempo cuando te apoyas sobre alguna patente*/
-    const time = formatDate('DD MMM YYYY', new Date(event.start)) + ' - ' + formatDate('DD MMM YYYY', new Date(event.end));
+    const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
 
     if (timer.current) {
       clearTimeout(timer.current);
     }
 
-    /*Este sirve para modificar lo que sale cuando me posicion con el mouse*/
     if (event.confirmed) {
       setAppointmentStatus('Reservado');
-      setButtonText('Cancel appointment');
+      setButtonText('Cancelar cita');
       setButtonType('warning');
     } else {
       setAppointmentStatus('Devuelto');
-      setButtonText('Confirm appointment');
+      setButtonText('Confirmar cita');
       setButtonType('success');
     }
 
-    /* Este es cuando hago el hover*/
     setAppointment(event);
-    /*Borro el age despues me fijo si ponerlo otra vez o no, lo quito porque el formatDate no queda sino
-    setAppointmentInfo(event.nombreYApellido + ', Age: ' + event.age);*/
     setAppointmentInfo(event.nombreYApellido);
     setAppointmentLocation(event.lugarDevolucion);
     setAppointmentTime(time);
@@ -301,6 +318,10 @@ function App() {
         onEventHoverIn={handleEventHoverIn}
         onEventHoverOut={handleEventHoverOut}
         onEventClick={handleEventClick}
+        timezonePlugin={momentTimezone}
+        dataTimezone='utc'
+        displayTimezone='America/Buenos_Aires'
+        
       />
       <Popup
         anchor={tooltipAnchor}
