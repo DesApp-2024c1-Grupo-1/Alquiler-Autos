@@ -41,12 +41,36 @@ const Filtros = () => {
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
 
+  const [error, setError] = React.useState(null);
+
+  const errorMessage = React.useMemo(() => {
+    switch (error) {
+      case 'minDate': {
+        return 'La fecha de devolución no puede ser menor a la de retiro';
+      }
+
+      case 'invalidDate': {
+        return 'La fecha es invalida';
+      }
+
+      case 'disablePast': {
+        return 'La fecha no puede ser en el pasado';
+      }
+
+      default: {
+        return '';
+      }
+    }
+  }, [error]);
+
+
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius: 5 }}>
       <Box>
-        <Grid direction="column" container spacing={2} my={2.5}>
+        <Grid direction="column" container spacing={2}>
           <Grid
             pr={1}
+            my={2}
             item xs={12} sm={12} xl={12} lg={12}
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
           >
@@ -74,6 +98,7 @@ const Filtros = () => {
             />
           </Grid>
           <Grid
+            my={2}
             pr={1}
             item xs={12} sm={12} xl={12} lg={12}
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
@@ -82,8 +107,19 @@ const Filtros = () => {
               <DesktopDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
-                onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
+                onChange={(newValue) => {
+                  dispatch(editFechaRetiro(newValue.toString()))
+                }}
                 sx={{ backgroundColor: "#B3D0FB", flex: 1, pr: 0, mx: 1 }}
+                disablePast
+                onError={(newError) => {
+                  setError(newError)
+                }}
+                slotProps={{
+                  textField: {
+                    helperText: errorMessage,
+                  },
+                }}
               />
             </LocalizationProvider>
   
@@ -93,13 +129,23 @@ const Filtros = () => {
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
                 sx={{ backgroundColor: "#B3D0FB", flex: 1, pl: 1, mx: 1 }}
+                disablePast
+                minDate={new Date(formAlquiler.fechaRetiro)}
+                onError={(newError) => {
+                  setError(newError)
+                }}
+                slotProps={{
+                  textField: {
+                    helperText: errorMessage,
+                  },
+                }}
               />
             </LocalizationProvider>
           </Grid>
         </Grid>
       </Box>
   
-      <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
+      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around" }}>
         <FormControl sx={{ mr: 6 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
           <RadioGroup
@@ -127,7 +173,7 @@ const Filtros = () => {
         </FormControl>
       </Box>
   
-      <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
+      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around"  }}>
         <FormControl sx={{ mr: 2 }}>
           <FormLabel id="demo-controlled-radio-buttons-group">Transmisión</FormLabel>
           <RadioGroup
@@ -141,7 +187,7 @@ const Filtros = () => {
           </RadioGroup>
         </FormControl>
   
-        <FormControl sx={{ ml: 5, minWidth: 140 }} size="small">
+        <FormControl sx={{ ml: 10, width: 140 }} size="small">
           <InputLabel id="demo-select-small-label">Capacidad</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -151,17 +197,15 @@ const Filtros = () => {
             onChange={CapacityTypeChange}
             sx={{ backgroundColor: "#B3D0FB" }}
           >
-            <MenuItem value="">
-              <em>2</em>
-            </MenuItem>
-            <MenuItem value={10}>3</MenuItem>
-            <MenuItem value={20}>4</MenuItem>
-            <MenuItem value={30}>5</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
           </Select>
         </FormControl>
       </Box>
   
-      <Box sx={{ p: 3, display: "flex", placeContent: "center" }}>
+      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around"  }}>
         <Button variant="outlined" color="success" sx={{ mr: 3 }}>
           Buscar
         </Button>

@@ -46,7 +46,7 @@ function App() {
             <NavBar navArrayLinks={navArrayLinks}/>
             </Grid>
           </Grid>
-          <Box sx={{mx: { xs: 1, md: 4 }, my: 4}}>
+          <Box sx={{mx: { xs: 0, md: 4 }, my: 4}}>
             <AppRouter />
           </Box>
         </Stack>

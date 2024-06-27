@@ -1,17 +1,21 @@
 import { Box, Card, CardMedia, Grid, Stack, Typography } from "@mui/material";
 import { blueGrey } from "@mui/material/colors";
+import { is } from "date-fns/locale";
 import { NavLink } from "react-router-dom";
 
 export function CarCard({ car }) {
+
   return (
-    <NavLink to={`/reserve/${car.id}`} style={{ textDecoration: 'none' }}>
+    <NavLink to={`/reserve/${car.id}`} style={{ textDecoration: 'none'}}>
       <Card sx={{ 
         backgroundColor: "#e4e9f0", 
         display: 'flex', 
         flexDirection: 'column', 
         justifyContent: 'space-between', // Asegura que el contenido se distribuya de manera uniforme
         height: '100%', // Hace que la tarjeta ocupe todo el espacio disponible
-        }} elevation={2}
+        }} 
+        elevation={2}
+        disabled={true}
       >
         <CardMedia
   component="img"

@@ -17,7 +17,7 @@ import { set } from 'lodash';
 import {registrarAlquiler} from '../services/AlquilerService.js'
 
 
-function AddClientDialog() {
+function AddClientDialog({validated}) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -72,7 +72,11 @@ function AddClientDialog() {
     }
 
     const handleClickOpen = () => {
-        setOpen(true);
+        console.log("Validated: " + validated)
+        if(validated){
+            setOpen(true);
+        }
+        
     };
 
     const handleClose = () => {
@@ -125,7 +129,7 @@ function AddClientDialog() {
 
     return (
         <React.Fragment>
-            <Button variant="contained" color="success" onClick={handleClickOpen}>
+            <Button variant="contained" color="success" disabled={!validated} onClick={handleClickOpen}>
                 Reservar
             </Button>
             <Dialog

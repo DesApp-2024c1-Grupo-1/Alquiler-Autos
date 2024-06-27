@@ -16,6 +16,7 @@ import { calculateCantDias, calculatePrecioFinal, newAlquiler, editFechaRetiro, 
 import { enGB } from 'date-fns/locale';
 
 import AddClientDialog from '../components/AddClientDialog.jsx';
+import { set } from "lodash";
 
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
@@ -37,17 +38,76 @@ function CardAlquiler({ car }) {
   </Card>;
 }
 
-
 export function FormAlquiler({ car }) {
 
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
+
+  const [retiroValido,setRetiroValido] = useState(false)
+  const [devolucionValido,setDevolucionValido] = useState(false)
+  const [activeButton,setButton] = useState(true)
+  
 
   useEffect(() => {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
   }, []);
+
+  useEffect(() => {
+    if(retiroValido && devolucionValido){
+      setButton(true)
+    }else{
+      setButton(false)
+    }
+  },[retiroValido,devolucionValido])
+
+  const [errorRetiro, setErrorRetiro] = React.useState(null);
+  const [errorDevolucion, setErrorDevolucion] = React.useState(null);
+
+  const errorMessageRetiro = React.useMemo(() => {
+    switch (errorRetiro) {
+      case 'minDate': {
+        return 'La fecha de devolución no puede ser menor a la de retiro';
+      }
+
+      case 'invalidDate': {
+        return 'La fecha es invalida';
+      }
+
+      case 'disablePast': {
+        return 'La fecha no puede ser en el pasado';
+      }
+
+      default: {
+        return '';
+      }
+    }
+  }, [errorRetiro]);
+
+  const errorMessageDevolucion = React.useMemo(() => {
+    switch (errorDevolucion) {
+      case 'minDate': {
+        return 'La fecha de devolución no puede ser menor a la de retiro';
+      }
+
+      case 'invalidDate': {
+        return 'La fecha es invalida';
+      }
+
+      case 'disablePast': {
+        return 'La fecha no puede ser en el pasado';
+      }
+
+      default: {
+        return '';
+      }
+    }
+  }, [errorDevolucion]);
+
+
+
+
 
   return (
     <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
@@ -87,6 +147,19 @@ export function FormAlquiler({ car }) {
                     value={new Date(formAlquiler.fechaRetiro)}
                     onChange={(newValue) => dispatch(editFechaRetiro(newValue.toString()))}
                     sx={{ backgroundColor: "#f5f7fa" }}
+                    disablePast
+                    onError={(newError) => {
+                      setErrorRetiro(newError)
+                      setRetiroValido(false)
+                    }}
+                    onAccept={() => {
+                      setRetiroValido(true)
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: errorMessageRetiro,
+                      },
+                    }}
                   />
                 </LocalizationProvider>
 
@@ -96,6 +169,20 @@ export function FormAlquiler({ car }) {
                     value={new Date(formAlquiler.fechaDevolucion)}
                     onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
                     sx={{ backgroundColor: "#f5f7fa" }}
+                    disablePast
+                    minDate={new Date(formAlquiler.fechaRetiro)}
+                    onError={(newError) => {
+                      setErrorDevolucion(newError)
+                      setDevolucionValido(false)
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: errorMessageDevolucion,
+                      },
+                    }}
+                    onAccept={() => {
+                      setDevolucionValido(true)
+                    }}
                   />
                 </LocalizationProvider>
 
@@ -130,7 +217,7 @@ export function FormAlquiler({ car }) {
 
             <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
               <Stack direction="row" spacing={5}>
-                <AddClientDialog></AddClientDialog>
+                <AddClientDialog validated={activeButton}></AddClientDialog>
                 <Button variant="contained" color="error" onClick={() => {cancelar}}>
                   Cancelar
                 </Button>
@@ -160,7 +247,6 @@ export function PageAlquiler() {
     const obtainedCar = await getCarById(carID);
     //const obtainedCar = await getCarByIdFake(carID);
     setCar(obtainedCar);
-    console.log(car)
   }, []);
   
 
