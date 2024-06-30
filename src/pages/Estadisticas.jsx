@@ -26,23 +26,26 @@ export function Estadisticas() {
         padding: 2,
     };
 
-    // Función para obtener el auto más alquilado en el mes actual
-    const obtenerAutoMasAlquiladoEnMes = () => {
-        const mesActual = new Date().getMonth() + 1; // Mes actual (1-12)
-        const anioActual = new Date().getFullYear();
+    const mesActual = new Date().getMonth() + 1; // Mes actual (1-12)
+    const anioActual = new Date().getFullYear();
 
         // Filtrar alquileres del mes actual
         const alquileresMesActual = allAlquileres.filter((alquiler) => {
-            const fechaAlquiler = new Date(alquiler.fecha);
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
             return (
                 fechaAlquiler.getMonth() + 1 === mesActual &&
                 fechaAlquiler.getFullYear() === anioActual
             );
         });
 
+
+
+    // Función para obtener el auto más alquilado en el mes actual
+    const obtenerAutoMasAlquiladoEnMes = () => {
+
         // Contar la cantidad de veces que se alquiló cada auto en el mes actual
         const autosAlquilados = alquileresMesActual.reduce((acc, alquiler) => {
-            const carId = alquiler.carid;
+            const carId = alquiler.carId;
             if (acc[carId]) {
                 acc[carId]++;
             } else {
@@ -74,7 +77,7 @@ export function Estadisticas() {
                     <h2>Alquileres Del Mes</h2>
                     <hr style={{ border: "1px solid" }} />
                     <div>
-                        <p>Cantidad de Alquileres: {allAlquileres.length}</p>
+                        <p>Cantidad de Alquileres: {alquileresMesActual.length}</p>
                         {/* Calcular días totales de alquiler */}
                         <p>Días totales de alquiler: Pendiente implementación</p>
                         {/* Calcular ganancia total */}
