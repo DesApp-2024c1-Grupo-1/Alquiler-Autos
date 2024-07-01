@@ -38,6 +38,20 @@ export function Estadisticas() {
             );
         });
 
+        // Calcular los días totales de alquiler en el mes actual
+        const diasTotalesMesActual = alquileresMesActual.reduce((total, alquiler) => {
+            return total + alquiler.cantidadDias;
+        }, 0);
+
+        // Calcular los días totales de alquiler en el año
+        const diasTotalesAnio = allAlquileres.reduce((total, alquiler) => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            if (fechaAlquiler.getFullYear() === anioActual) {
+                return total + alquiler.cantidadDias;
+            }
+            return total;
+        }, 0);
+
 
 
     // Función para obtener el auto más alquilado en el mes actual
@@ -79,7 +93,7 @@ export function Estadisticas() {
                     <div>
                         <p>Cantidad de Alquileres: {alquileresMesActual.length}</p>
                         {/* Calcular días totales de alquiler */}
-                        <p>Días totales de alquiler: Pendiente implementación</p>
+                        <p>Días totales de alquiler: {diasTotalesMesActual} </p>
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: Pendiente implementación</p>
                         {/* Mostrar auto más alquilado */}
@@ -92,7 +106,7 @@ export function Estadisticas() {
                     <div>
                         <p>Cantidad de Alquileres: {allAlquileres.length}</p>
                         {/* Calcular días totales de alquiler */}
-                        <p>Días totales de alquiler: Pendiente implementación</p>
+                        <p>Días totales de alquiler: {diasTotalesAnio}</p>
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: Pendiente implementación</p>
                     </div>
