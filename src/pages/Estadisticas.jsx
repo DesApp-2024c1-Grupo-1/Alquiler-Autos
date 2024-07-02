@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
-import axios from "axios";
+import axios, { all } from "axios";
 import { registrarAlquiler } from "../services/AlquilerService"; // Asumiendo que aquí está definida la función registrarAlquiler
 
 export function Estadisticas() {
@@ -38,6 +38,14 @@ export function Estadisticas() {
             );
         });
 
+        // Filtrar alquileres del año actual
+        const alquileresAnioActual = allAlquileres.filter((alquiler) => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            return (
+                fechaAlquiler.getFullYear() === anioActual
+            );
+        });
+
         // Calcular los días totales de alquiler en el mes actual
         const diasTotalesMesActual = alquileresMesActual.reduce((total, alquiler) => {
             return total + alquiler.cantidadDias;
@@ -52,9 +60,20 @@ export function Estadisticas() {
             return total;
         }, 0);
 
+        // Calcular los días totales de alquiler 
+        const diasTotales = allAlquileres.reduce((total, alquiler) => {
+            return total + alquiler.cantidadDias;
+        }, 0);
+
+
 
         // Calcular el precio total de alquileres en el mes actual
         const gananciaMesActual = alquileresMesActual.reduce((total, alquiler) => {
+            return total + alquiler.precioFinal;
+        }, 0);
+
+        // Calcular el precio total de alquileres
+        const ganancia = allAlquileres.reduce((total, alquiler) => {
             return total + alquiler.precioFinal;
         }, 0);
 
@@ -67,6 +86,7 @@ export function Estadisticas() {
             return total;
         }, 0);
 
+/*
 
     // Función para obtener el auto más alquilado en el mes actual
     const obtenerAutoMasAlquiladoEnMes = () => {
@@ -98,9 +118,36 @@ export function Estadisticas() {
     // Calcular el auto más alquilado en el mes actual
     const autoMasAlquiladoEnMes = obtenerAutoMasAlquiladoEnMes();
 
+*/
     return (
         <Container maxWidth="100%">
-            <Grid container spacing={2} sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Grid container spacing={2} sx={{ display: "flex", flexWrap: "wrap" }}>      
+                <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
+                    <h2>Alquileres Totales</h2>
+                    <hr style={{ border: "1px solid" }} />
+                    <div>
+                        <p>Cantidad de Alquileres: {allAlquileres.length}</p>
+                        {/* Calcular días totales de alquiler */}
+                        <p>Días totales de alquiler: {diasTotales}</p>
+                        {/* Calcular ganancia total */}
+                        <p>Ganancia total: {ganancia}</p>
+                        {/* Mostrar auto más alquilado */}
+                        <p>Auto más alquilado en el mes: autoMasAlquilado3</p>
+                    </div>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
+                    <h2>Alquileres del año</h2>
+                    <hr style={{ border: "1px solid" }} />
+                    <div>
+                        <p>Cantidad de Alquileres: {alquileresAnioActual.length}</p>
+                        {/* Calcular días totales de alquiler */}
+                        <p>Días totales de alquiler: {diasTotalesAnio}</p>
+                        {/* Calcular ganancia total */}
+                        <p>Ganancia total: {gananciaAnio}</p>
+                        {/* Mostrar auto más alquilado */}
+                        <p>Auto más alquilado en el mes: autoMasAlquilado2</p>
+                    </div>
+                </Grid> 
                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
                     <h2>Alquileres Del Mes</h2>
                     <hr style={{ border: "1px solid" }} />
@@ -111,20 +158,9 @@ export function Estadisticas() {
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: {gananciaMesActual}</p>
                         {/* Mostrar auto más alquilado */}
-                        <p>Auto más alquilado en el mes: {autoMasAlquiladoEnMes}</p>
+                        <p>Auto más alquilado en el mes: autoMasAlquiladoEnMes</p>
                     </div>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
-                    <h2>Alquileres del año</h2>
-                    <hr style={{ border: "1px solid" }} />
-                    <div>
-                        <p>Cantidad de Alquileres: {allAlquileres.length}</p>
-                        {/* Calcular días totales de alquiler */}
-                        <p>Días totales de alquiler: {diasTotalesAnio}</p>
-                        {/* Calcular ganancia total */}
-                        <p>Ganancia total: {gananciaAnio}</p>
-                    </div>
-                </Grid>
+                </Grid>  
             </Grid>
         </Container>
     );
