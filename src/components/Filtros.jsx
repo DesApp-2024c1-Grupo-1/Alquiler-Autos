@@ -12,13 +12,13 @@ import { useLocalStorage } from "../config/useLocalStorage.js";
 import { enGB } from 'date-fns/locale';
 
 
-const Filtros = () => {
-  const [selectedAireAcondicionado, setAireAcondicionado] = useState('');
-  const [selectedCombustibleType, setCombustibleType] = useState('');
-  const [selectedTransmisionType, setTransmisionType] = useState('');
-  const [capacitiy, setCapacity] = useState('');
-  const [retiro, setRetiro] = useLocalStorage('retiro', '')
-  const [devolucion, setDevolucion] = useLocalStorage('devolucion', '')
+const Filtros = ({handleFiltros}) => {
+  const [selectedAireAcondicionado, setAireAcondicionado] = useState(null);
+  const [selectedCombustibleType, setCombustibleType] = useState(null);
+  const [selectedTransmisionType, setTransmisionType] = useState(null);
+  const [capacitiy, setCapacity] = useState("");
+  const [retiro, setRetiro] = useState(null)
+  const [devolucion, setDevolucion] = useState(null)
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
@@ -27,15 +27,33 @@ const Filtros = () => {
 
   const CombustibleTypeChange = (event) => {
     setCombustibleType(event.target.value);
+    console.log("Combustible: ", event.target.value)
   };
 
   const TransmisionTypeChange = (event) => {
     setTransmisionType(event.target.value);
+    console.log("Transmision: ", event.target.value)
   };
 
   const CapacityTypeChange = (event) => {
     setCapacity(event.target.value);
+    console.log("Capacity: ", event.target.value)
   };
+
+  const BuscarButton = (event) => {
+    console.log("BuscarButton: ", selectedAireAcondicionado, selectedCombustibleType, selectedTransmisionType, capacitiy, retiro, devolucion)
+    const filtros = {ac: selectedAireAcondicionado, combustible: selectedCombustibleType, transmision: selectedTransmisionType, capacidad: capacitiy || null, retiro: retiro, devolucion: devolucion}
+    handleFiltros(filtros)
+  }
+
+  const BorrarButton = (event) => {
+    const filtros = {ac: null, combustible: null, transmision: null, capacidad: null, retiro: null, devolucion: null}
+    setCapacity('')
+    setCombustibleType(null)
+    setTransmisionType(null)
+    setAireAcondicionado(null)
+    handleFiltros(filtros)
+  }
 
 
   const dispatch = useDispatch();
@@ -182,7 +200,7 @@ const Filtros = () => {
             value={selectedTransmisionType}
             onChange={TransmisionTypeChange}
           >
-            <FormControlLabel value="Automático" control={<Radio />} label="Automático" />
+            <FormControlLabel value="Automatica" control={<Radio />} label="Automática" />
             <FormControlLabel value="Manual" control={<Radio />} label="Manual" />
           </RadioGroup>
         </FormControl>
@@ -206,10 +224,19 @@ const Filtros = () => {
       </Box>
   
       <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around"  }}>
-        <Button variant="outlined" color="success" sx={{ mr: 3 }}>
+        <Button 
+        variant="outlined" 
+        color="success" 
+        sx={{ mr: 3 }}
+        onClick={() => BuscarButton()}
+        >
           Buscar
         </Button>
-        <Button variant="outlined" color="error">
+        <Button 
+        variant="outlined" 
+        color="error"
+        onClick={() => BorrarButton()}
+        >
           Borrar
         </Button>
       </Box>

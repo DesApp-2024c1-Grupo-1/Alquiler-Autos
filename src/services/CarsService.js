@@ -14,10 +14,9 @@ export async function getCarById(id){
   }
 };
 
-export const getAllCarsAxios = async() =>{
+export const getAllCarsAxios = async(filtros) =>{
     try {
-      const url2 = url
-      const response = await axios.get(url2);
+      const response = await axios.get(url, {params: filtros});
       console.log(response.data);
       return response.data;
     } catch (error) {
