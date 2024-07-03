@@ -9,18 +9,21 @@ import  Filtros  from '../components/Filtros.jsx';
 export function HomePage() {
   const [allCars, setAllCars] = useState([]);
 
-  const fetchAllCars = useCallback(async () => {
+  const fetchAllCars = useCallback(async (filtros) => {
     //Descomentar para usar la Base de Datos
-    const obtainedCars = await getAllCarsAxios(); 
+    const obtainedCars = await getAllCarsAxios(filtros); 
     //const obtainedCars = await getAllCarsFake();
     setAllCars(obtainedCars);
   }, []);
 
+  const handleFiltros = (filtros) => {
+    console.log("Filtros en handleFiltros: ", filtros)
+    fetchAllCars(filtros)
+  }
+
   useEffect(() => {
     fetchAllCars();
   }, [fetchAllCars]);
-
-  
 
 
   return (
@@ -29,7 +32,7 @@ export function HomePage() {
         <Grid container spacing={2} sx={{ flexGrow: 1, height: '', }}>
 
           <Grid item xs={12} md={5} lg={4} xl={4} sx={{mb:3}}>
-            <Filtros/>
+            <Filtros handleFiltros={handleFiltros}/>
           </Grid>
 
           <Grid item xs={12} md={7} lg={8} xl={8} 
