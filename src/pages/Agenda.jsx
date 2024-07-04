@@ -22,8 +22,8 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Jesus Albornoz',
     age: 68,
-    start: '2024-06-25T08:00',
-    end: '2024-06-26T08:45',
+    start: '2024-07-04T08:00',
+    end: '2024-07-05T08:45',
     confirmed: false,
     lugarRetiro: 'Calle Falsa 123, Hurlingham',
     lugarDevolucion: 'Calle Verdadera 456, Hurlingham',
@@ -33,8 +33,8 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Pedro Saborido',
     age: 44,
-    start: '2024-06-26T09:00',
-    end: '2024-06-28T09:45',
+    start: '2024-07-06T09:00',
+    end: '2024-07-08T09:45',
     confirmed: false,
     lugarRetiro: 'Mazza 1780, Moron',
     lugarDevolucion: 'Pola 2600, Moron',
@@ -44,20 +44,19 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Juan Cruz Mendoza',
     age: 29,
-    start: '2024-06-28T10:00',
-    end: '2024-06-29T10:45',
+    start: '2024-07-09T10:00',
+    end: '2024-07-10T10:45',
     confirmed: true,
     lugarRetiro: 'Libertad 3100, Moron',
     lugarDevolucion: 'Paz 1800, Hurlingham',
     color: '#b33d3d',
   },
-
   {
     title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 72,
-    start: '2024-06-27T13:00',
-    end: '2024-06-30T13:45',
+    start: '2024-07-11T13:00',
+    end: '2024-07-14T13:45',
     confirmed: false,
     lugarRetiro: 'Avenida Siempre Viva 600, Haedo',
     lugarDevolucion: 'Avenida de los libertadores 300, Haedo',
@@ -67,8 +66,8 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 65,
-    start: '2024-06-30T10:00',
-    end: '2024-06-30T14:45',
+    start: '2024-07-15T10:00',
+    end: '2024-07-15T14:45',
     confirmed: true,
     lugarRetiro: 'Avenida Pierrastegui 4100, Moron',
     lugarDevolucion: 'Juana Azurduy 1680, Hurlingham',
@@ -78,8 +77,8 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Juan Maldonado',
     age: 54,
-    start: '2024-06-30T10:00',
-    end: '2024-07-1T10:45',
+    start: '2024-07-16T10:00',
+    end: '2024-07-17T10:45',
     confirmed: true,
     lugarRetiro: '25 de Mayo 1470, Moron',
     lugarDevolucion: 'Procare 2500, Hurlingham ',
@@ -89,14 +88,15 @@ let eventosFake = [
     title: 'PRUEBA',
     nombreYApellido: 'Pedro Rosemblant',
     age: 59,
-    start: '2024-06-25T11:00',
-    end: '2024-06-30T11:45',
+    start: '2024-07-18T11:00',
+    end: '2024-07-23T11:45',
     confirmed: true,
     lugarRetiro: 'Avenida Eva Peron 1790, Moron',
     lugarDevolucion: 'Avenida Independencia, Hurlingham',
     color: '#309346',
   },
 ];
+
 momentTimezone.moment = moment;
 
 function AgendaPage() {
@@ -105,8 +105,8 @@ function AgendaPage() {
 
   const fetchAllEvents = useCallback(async () => {
     //Descomentar para usar la Base de Datos
-    const obtainedEvents = await getEventos();
-    //const obtainedEvents = eventosFake;
+    //const obtainedEvents = await getEventos();
+    const obtainedEvents = eventosFake;
     setAppointments(obtainedEvents); 
   }, []);
 
@@ -118,7 +118,7 @@ function AgendaPage() {
   const [appointmentInfo, setAppointmentInfo] = useState('');
   const [appointmentLocation, setAppointmentLocation] = useState('');
   const [appointmentReason, setAppointmentReason] = useState('');
-  const [appointmentStatus, setAppointmentStatus] = useState('');
+  const [appointmentStatus, setAppointmentStatus] = useState('Reservado');
   const [appointmentTime, setAppointmentTime] = useState('');
   const [buttonText, setButtonText] = useState('');
   const [buttonType, setButtonType] = useState('');
@@ -139,11 +139,12 @@ function AgendaPage() {
   const openTooltip = useCallback((args) => {
     const event = args.event;
     const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
+    console.log('Event Data:', event); // Verifica los datos del evento
 
     if (timer.current) {
       clearTimeout(timer.current);
     }
-
+/*
     if (event.confirmed) {
       setAppointmentStatus('Reservado');
       setButtonText('Cancelar cita');
@@ -153,16 +154,37 @@ function AgendaPage() {
       setButtonText('Confirmar cita');
       setButtonType('success');
     }
+      
+    
+        // Forzamos el estado a "Reservado"
+        setAppointmentStatus('Reservado');
+      }, []);
+    */
 
     setAppointment(event);
-    setAppointmentInfo(event.data.car.brand + " " + event.data.car.name);
-    setAppointmentLocation(event.data.lugarDevolucion);
+    setAppointmentInfo(event.nombreYApellido);
+    setAppointmentLocation(event.lugarDevolucion);
     setAppointmentTime(time);
-    setAppointmentReason(event.data.lugarRetiro);
+    setAppointmentReason(event.lugarRetiro);
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
   }, []);
+
+  const handleEventClick = useCallback(
+    (args) => {
+      openTooltip(args);
+    },
+    [openTooltip],
+  );
+
+  const viewAppointmentFile = useCallback(() => {
+    // Aquí puedes agregar la lógica para mostrar más datos del cliente.
+    setTooltipOpen(false);
+    setToastMessage(`Datos del cliente: ${appointment.nombreYApellido}, Edad: ${appointment.age}`);
+    setToastOpen(true);
+  }, [appointment]);
+
 
   const handleEventHoverIn = useCallback(
     (args) => {
@@ -179,12 +201,6 @@ function AgendaPage() {
     }
   }, []);
 
-  const handleEventClick = useCallback(
-    (args) => {
-      openTooltip(args);
-    },
-    [openTooltip],
-  );
 
   const handleMouseEnter = useCallback(() => {
     if (timer.current) {
@@ -211,11 +227,7 @@ function AgendaPage() {
     setToastOpen(true);
   }, [appointment]);
 
-  const viewAppointmentFile = useCallback(() => {
-    setTooltipOpen(false);
-    setToastMessage('View file');
-    setToastOpen(true);
-  }, []);
+
 
   /* Este const sirve para cuando yo hago click sobre eliminar*/
   const deleteAppointment = useCallback(() => {
@@ -239,7 +251,7 @@ function AgendaPage() {
         displayTimezone='America/Buenos_Aires'
         
       />
-      <Popup
+<Popup
         anchor={tooltipAnchor}
         closeOnOverlayClick={false}
         contentPadding={false}
@@ -249,7 +261,7 @@ function AgendaPage() {
         touchUi={false}
         width={350}
       >
-        <div className="mds-tooltip" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <div className="mds-tooltip" onMouseEnter={() => {}} onMouseLeave={() => {}}>
           <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor }}>
             <span>{appointmentInfo}</span>
             <span className="mbsc-pull-right">{appointmentTime}</span>
@@ -257,28 +269,28 @@ function AgendaPage() {
           <div className="mbsc-padding">
             <div className="mds-tooltip-label mbsc-margin">
               Estado: <span className="mbsc-light">{appointmentStatus}</span>
-              <Button color={buttonType} variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={updateAppointmentStatus}>
-                {buttonText}
-              </Button>
             </div>
-            
             <div className="mds-tooltip-label mbsc-margin">
               Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
             </div>
-            
             <div className="mds-tooltip-label mbsc-margin">
               Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
             </div>
             <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
               Datos de Cliente
             </Button>
-            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
+            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={() => {}}>
               Eliminar
             </Button>
           </div>
         </div>
       </Popup>
-      <Toast isOpen={isToastOpen} message={toastMessage} onClose={handleToastClose} />
+      <Toast
+        message={toastMessage}
+        isOpen={isToastOpen}
+        onClose={() => setToastOpen(false)}
+        duration={5000} // La duración en milisegundos que quieres que el toast esté visible
+      />
     </>
   );
 }
