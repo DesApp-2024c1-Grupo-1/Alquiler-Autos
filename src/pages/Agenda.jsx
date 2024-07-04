@@ -16,7 +16,7 @@ setOptions({
 /*Ver si eliminar boton confirm/cancel, que cambia el estado.
   Ver si prefieren que vuelva a aparecer cuando se devuelve, o solo que aparezca una vez.
 */
-
+/*
 let eventosFake = [
   {
     title: 'PRUEBA',
@@ -96,6 +96,7 @@ let eventosFake = [
     color: '#309346',
   },
 ];
+*/
 
 momentTimezone.moment = moment;
 
@@ -105,8 +106,11 @@ function AgendaPage() {
 
   const fetchAllEvents = useCallback(async () => {
     //Descomentar para usar la Base de Datos
-    //const obtainedEvents = await getEventos();
-    const obtainedEvents = eventosFake;
+    const obtainedEvents = await getEventos();
+    //const obtainedEvents = eventosFake;
+ 
+  console.log('Eventos obtenidos:', obtainedEvents); // Verificar los datos aquí
+
     setAppointments(obtainedEvents); 
   }, []);
 
@@ -144,7 +148,7 @@ function AgendaPage() {
     if (timer.current) {
       clearTimeout(timer.current);
     }
-/*
+    /*
     if (event.confirmed) {
       setAppointmentStatus('Reservado');
       setButtonText('Cancelar cita');
@@ -155,17 +159,17 @@ function AgendaPage() {
       setButtonType('success');
     }
       
-    
+
         // Forzamos el estado a "Reservado"
         setAppointmentStatus('Reservado');
       }, []);
     */
 
     setAppointment(event);
-    setAppointmentInfo(event.nombreYApellido);
-    setAppointmentLocation(event.lugarDevolucion);
+    setAppointmentInfo(event.data?.cliente?.nombre);
+    setAppointmentLocation(event.data?.lugarDevolucion);
     setAppointmentTime(time);
-    setAppointmentReason(event.lugarRetiro);
+    setAppointmentReason(  event.data?.lugarRetiro );
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
@@ -181,7 +185,7 @@ function AgendaPage() {
   const viewAppointmentFile = useCallback(() => {
     // Aquí puedes agregar la lógica para mostrar más datos del cliente.
     setTooltipOpen(false);
-    setToastMessage(`Datos del cliente: ${appointment.nombreYApellido}, Edad: ${appointment.age}`);
+    setToastMessage(`Datos del cliente: ${appointment.data?.cliente?.nombre}, DNI: ${appointment.data?.cliente?.documento}`);
     setToastOpen(true);
   }, [appointment]);
 
