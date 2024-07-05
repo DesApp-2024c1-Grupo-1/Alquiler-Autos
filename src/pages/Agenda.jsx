@@ -131,7 +131,8 @@ function AgendaPage() {
   const [toastMessage, setToastMessage] = useState('');
   const [tooltipAnchor, setTooltipAnchor] = useState(null);
   const [tooltipColor, setTooltipColor] = useState('');
-
+  const [isCustomerPopupOpen, setCustomerPopupOpen] = useState(false);
+  const [customerData, setCustomerData] = useState({});
 
 
 
@@ -183,10 +184,9 @@ function AgendaPage() {
   );
 
   const viewAppointmentFile = useCallback(() => {
-    // Aquí puedes agregar la lógica para mostrar más datos del cliente.
     setTooltipOpen(false);
-    setToastMessage(`Datos del cliente: ${appointment.data?.cliente?.nombre}, DNI: ${appointment.data?.cliente?.documento}`);
-    setToastOpen(true);
+    setCustomerData(appointment.data?.cliente);
+    setCustomerPopupOpen(true);
   }, [appointment]);
 
 
@@ -255,48 +255,231 @@ function AgendaPage() {
         displayTimezone='America/Buenos_Aires'
         
       />
-<Popup
-        anchor={tooltipAnchor}
-        closeOnOverlayClick={false}
-        contentPadding={false}
-        display="anchored"
-        isOpen={isTooltipOpen}
-        showOverlay={false}
-        touchUi={false}
-        width={350}
-      >
-        <div className="mds-tooltip" onMouseEnter={() => {}} onMouseLeave={() => {}}>
-          <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor }}>
-            <span>{appointmentInfo}</span>
-            <span className="mbsc-pull-right">{appointmentTime}</span>
+    <Popup
+      anchor={tooltipAnchor}
+      closeOnOverlayClick={false}
+      contentPadding={false}
+      display="anchored"
+      isOpen={isTooltipOpen}
+      showOverlay={false}
+      touchUi={false}
+      width={350}
+    >
+      <div className="mds-tooltip" onMouseEnter={() => {}} onMouseLeave={() => {}}>
+        <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor }}>
+          <span>{appointmentInfo}</span>
+          <span className="mbsc-pull-right">{appointmentTime}</span>
+        </div>
+        <div className="mbsc-padding">
+          <div className="mds-tooltip-label mbsc-margin">
+            Estado: <span className="mbsc-light">{appointmentStatus}</span>
           </div>
-          <div className="mbsc-padding">
-            <div className="mds-tooltip-label mbsc-margin">
-              Estado: <span className="mbsc-light">{appointmentStatus}</span>
-            </div>
-            <div className="mds-tooltip-label mbsc-margin">
-              Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
-            </div>
-            <div className="mds-tooltip-label mbsc-margin">
-              Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
-            </div>
-            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
-              Datos de Cliente
-            </Button>
-            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={() => {}}>
-              Eliminar
-            </Button>
+          <div className="mds-tooltip-label mbsc-margin">
+            Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
+          </div>
+          <div className="mds-tooltip-label mbsc-margin">
+            Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
+          </div>
+          <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
+            Datos de Cliente
+          </Button>
+          <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
+            Eliminar
+          </Button>
+        </div>
+      </div>
+    </Popup>
+    <Popup
+      isOpen={isCustomerPopupOpen}
+      onClose={() => setCustomerPopupOpen(false)}
+      display="center"
+      contentPadding={false}
+      closeOnOverlayClick={true}
+      style={{
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <div className="customer-popup">
+        <div
+          className="customer-popup-header"
+          style={{
+            backgroundColor: '#f7f7f7',
+            padding: '16px',
+            borderBottom: '1px solid #e0e0e0',
+          }}
+        >
+          <h2
+            style={{
+              margin: '0',
+              fontSize: '1.25rem',
+              color: '#333',
+            }}
+          >
+            Datos del Cliente
+          </h2>
+        </div>
+        <div
+          className="customer-popup-body"
+          style={{
+            padding: '16px',
+          }}
+        >
+          <div
+            className="customer-popup-item"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}
+          >
+            <span
+              className="customer-popup-label"
+              style={{
+                fontWeight: 'bold',
+                color: '#555',
+              }}
+            >
+              Nombre:
+            </span>
+            <span
+              className="customer-popup-value"
+              style={{
+                color: '#777',
+              }}
+            >
+              {customerData.nombre}
+            </span>
+          </div>
+          <div
+            className="customer-popup-item"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}
+          >
+            <span
+              className="customer-popup-label"
+              style={{
+                fontWeight: 'bold',
+                color: '#555',
+              }}
+            >
+              Documento:
+            </span>
+            <span
+              className="customer-popup-value"
+              style={{
+                color: '#777',
+              }}
+            >
+              {customerData.documento}
+            </span>
+          </div>
+          <div
+            className="customer-popup-item"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}
+          >
+            <span
+              className="customer-popup-label"
+              style={{
+                fontWeight: 'bold',
+                color: '#555',
+              }}
+            >
+              Teléfono:
+            </span>
+            <span
+              className="customer-popup-value"
+              style={{
+                color: '#777',
+              }}
+            >
+              {customerData.telefono}
+            </span>
+          </div>
+          <div
+            className="customer-popup-item"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}
+          >
+            <span
+              className="customer-popup-label"
+              style={{
+                fontWeight: 'bold',
+                color: '#555',
+              }}
+            >
+              Email:
+            </span>
+            <span
+              className="customer-popup-value"
+              style={{
+                color: '#777',
+              }}
+            >
+              {customerData.email}
+            </span>
+          </div>
+          <div
+            className="customer-popup-item"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}
+          >
+            <span
+              className="customer-popup-label"
+              style={{
+                fontWeight: 'bold',
+                color: '#555',
+              }}
+            >
+              Dirección:
+            </span>
+            <span
+              className="customer-popup-value"
+              style={{
+                color: '#777',
+              }}
+            >
+              {customerData.direccion}
+            </span>
           </div>
         </div>
-      </Popup>
-      <Toast
-        message={toastMessage}
-        isOpen={isToastOpen}
-        onClose={() => setToastOpen(false)}
-        duration={5000} // La duración en milisegundos que quieres que el toast esté visible
-      />
-    </>
-  );
+        <div
+          className="customer-popup-footer"
+          style={{
+            padding: '16px',
+            borderTop: '1px solid #e0e0e0',
+            textAlign: 'right',
+          }}
+        >
+          <Button color="secondary" onClick={() => setCustomerPopupOpen(false)}>
+            Cerrar
+          </Button>
+        </div>
+      </div>
+    </Popup>
+    <Toast
+      message={toastMessage}
+      isOpen={isToastOpen}
+      onClose={handleToastClose}
+      duration={5000}
+    />
+  </>
+);
+
 }
 
 export default AgendaPage;
