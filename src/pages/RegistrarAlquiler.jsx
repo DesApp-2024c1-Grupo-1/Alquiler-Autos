@@ -46,13 +46,22 @@ export function FormAlquiler({ car }) {
   const [retiroValido,setRetiroValido] = useState(true)
   const [devolucionValido,setDevolucionValido] = useState(true)
   const [activeButton,setButton] = useState(true)
-  
+  const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
+  const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
+
 
   useEffect(() => {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
   }, []);
+
+
+  useEffect(() => {
+    // Actualiza el estado del botón considerando los campos de lugar
+    setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido);
+  }, [retiroValido, devolucionValido, lugarRetiroValido, lugarDevolucionValido]);
+
 
   useEffect(() => {
     if(retiroValido && devolucionValido){
@@ -106,7 +115,17 @@ export function FormAlquiler({ car }) {
   }, [errorDevolucion]);
 
 
+  const handleLugarRetiroChange = (e) => {
+    const value = e.target.value;
+    dispatch(editLugarRetiro(value));
+    setLugarRetiroValido(!!value); // Verifica si el campo no está vacío
+  };
 
+  const handleLugarDevolucionChange = (e) => {
+    const value = e.target.value;
+    dispatch(editLugarDevolucion(value));
+    setLugarDevolucionValido(!!value); // Verifica si el campo no está vacío
+  };
 
 
   return (
@@ -125,14 +144,18 @@ export function FormAlquiler({ car }) {
             id="outlined-required"
             label="Lugar de Retiro"
             defaultValue={formAlquiler.lugarRetiro}
-            onChange={(e) => dispatch(editLugarRetiro(e.target.value))}
+            onChange={handleLugarRetiroChange}
+            error={!lugarRetiroValido}
+            helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
           />
           <TextField
             required
             id="outlined-required"
             label="Lugar de devolución"
             defaultValue={formAlquiler.lugarDevolucion}
-            onChange={(e) => dispatch(editLugarDevolucion(e.target.value))}
+            onChange={handleLugarDevolucionChange}
+            error={!lugarDevolucionValido}
+            helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
           />
           <Box>
             <Grid direction="column" container spacing={2} my={2.5}>
