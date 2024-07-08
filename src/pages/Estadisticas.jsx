@@ -7,6 +7,7 @@ import { getCarById} from "../services/CarsService";
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
     const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible");
+    const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible");
 
     const fetchAllAlquileres = useCallback(async () => {
         try {
@@ -15,6 +16,7 @@ export function Estadisticas() {
             console.log("Alquileres obtenidos:", alquileres); // Depuración
             setAllAlquileres(alquileres);
             await obtenerAutoMasAlquilado(alquileres); // Asegurarse de que la llamada se espera
+            await obtenerAutoMasAlquiladoEnMes(alquileres); // Llamar a la función para obtener el auto más alquilado del mes
         } catch (error) {
             console.error("Error fetching alquileres:", error);
         }
@@ -66,6 +68,50 @@ export function Estadisticas() {
         }
     };
 
+    const obtenerAutoMasAlquiladoEnMes = async (alquileres) => {
+        const mesActual = new Date().getMonth() + 1;
+        const anioActual = new Date().getFullYear();
+
+        const alquileresMesActual = alquileres.filter((alquiler) => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            return (
+                fechaAlquiler.getMonth() + 1 === mesActual &&
+                fechaAlquiler.getFullYear() === anioActual
+            );
+        });
+
+        const autosAlquiladosMes = alquileresMesActual.reduce((acc, alquiler) => {
+            const carId = alquiler.car?.id;
+            if (carId) {
+                if (acc[carId]) {
+                    acc[carId]++;
+                } else {
+                    acc[carId] = 1;
+                }
+            }
+            return acc;
+        }, {});
+
+        let autoMasAlquiladoMesId = null;
+        let maxVecesAlquiladoMes = 0;
+        Object.keys(autosAlquiladosMes).forEach((carId) => {
+            if (autosAlquiladosMes[carId] > maxVecesAlquiladoMes) {
+                maxVecesAlquiladoMes = autosAlquiladosMes[carId];
+                autoMasAlquiladoMesId = carId;
+            }
+        });
+
+        if (autoMasAlquiladoMesId) {
+            try {
+                const autoDetails = await getCarById(autoMasAlquiladoMesId);
+                setNombreAutoMasAlquiladoMes(autoDetails.name);
+            } catch (error) {
+                console.error("Error fetching car details:", error);
+            }
+        } else {
+            console.warn("No se encontró un auto más alquilado en el mes actual");
+        }
+    };
 
     const estilo = {
         backgroundColor: "#e4e9f0",
@@ -173,7 +219,7 @@ export function Estadisticas() {
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: {gananciaMesActual}</p>
                         {/* Mostrar auto más alquilado */}
-                        <p>Auto más alquilado en el mes: autoMasAlquilado3</p>
+                        <p>Auto más alquilado en el mes: {nombreAutoMasAlquiladoMes}</p>
                     </div>
                 </Grid>  
             </Grid>
