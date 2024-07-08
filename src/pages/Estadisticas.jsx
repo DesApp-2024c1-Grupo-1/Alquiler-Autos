@@ -2,14 +2,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
 import axios, { all } from "axios";
 import { registrarAlquiler } from "../services/AlquilerService"; // Asumiendo que aquí está definida la función registrarAlquiler
+import { getCarById} from "../services/CarsService";
 
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
+    const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible");
 
     const fetchAllAlquileres = useCallback(async () => {
         try {
             const response = await axios.get("http://localhost:3000/alquiler");
-            setAllAlquileres(response.data);
+            const alquileres = response.data;
+            
+            setAllAlquileres(alquileres);
+            await obtenerAutoMasAlquilado(alquileres); // Asegurarse de que la llamada se espera
         } catch (error) {
             console.error("Error fetching alquileres:", error);
         }
@@ -18,6 +23,48 @@ export function Estadisticas() {
     useEffect(() => {
         fetchAllAlquileres();
     }, [fetchAllAlquileres]);
+
+    const obtenerAutoMasAlquilado = async (alquileres) => {
+        
+        const autosAlquilados = alquileres.reduce((acc, alquiler) => {
+            const carId = alquiler.car?.id; 
+            
+            if (carId) { // Verificar que carId existe
+                if (acc[carId]) {
+                    acc[carId]++;
+                } else {
+                    acc[carId] = 1;
+                }
+            }
+            return acc;
+        }, {});
+
+        
+
+        let autoMasAlquiladoId = null;
+        let maxVecesAlquilado = 0;
+        Object.keys(autosAlquilados).forEach((carId) => {
+            if (autosAlquilados[carId] > maxVecesAlquilado) {
+                maxVecesAlquilado = autosAlquilados[carId];
+                autoMasAlquiladoId = carId;
+            }
+        });
+
+        
+
+        if (autoMasAlquiladoId) {
+            try {
+                const autoDetails = await getCarById(autoMasAlquiladoId);
+                
+                setNombreAutoMasAlquilado(autoDetails.name); 
+            } catch (error) {
+                console.error("Error fetching car details:", error);
+            }
+        } else {
+            console.warn("No se encontró un auto más alquilado");
+        }
+    };
+
 
     const estilo = {
         backgroundColor: "#e4e9f0",
@@ -85,40 +132,7 @@ export function Estadisticas() {
             return total + alquiler.precioFinal;
         }, 0);
 
-/*
 
-    // Función para obtener el auto más alquilado en el mes actual
-    const obtenerAutoMasAlquiladoEnMes = () => {
-
-        // Contar la cantidad de veces que se alquiló cada auto en el mes actual
-        const autosAlquilados = alquileresMesActual.reduce((acc, alquiler) => {
-            const carId = alquiler.carId;
-            if (acc[carId]) {
-                acc[carId]++;
-            } else {
-                acc[carId] = 1;
-            }
-            return acc;
-        }, {});
-
-        // Encontrar el auto más alquilado
-        let autoMasAlquilado = null;
-        let maxVecesAlquilado = 0;
-        Object.keys(autosAlquilados).forEach((carId) => {
-            if (autosAlquilados[carId] > maxVecesAlquilado) {
-                maxVecesAlquilado = autosAlquilados[carId];
-                autoMasAlquilado = carId; // Suponiendo que carId es el identificador único del auto
-            }
-        });
-
-        return autoMasAlquilado;
-    };
-
-    // Calcular el auto más alquilado en el mes actual
-    const autoMasAlquiladoEnMes = obtenerAutoMasAlquiladoEnMes();
-    
-
-*/
     return (
         <Container maxWidth="100%">
             <Grid container spacing={2} sx={{ display: "flex", flexWrap: "wrap" }}>      
@@ -132,7 +146,7 @@ export function Estadisticas() {
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: {ganancia}</p>
                         {/* Mostrar auto más alquilado */}
-                        <p>Auto más alquilado: autoMasAlquilado</p>
+                        <p>Auto más alquilado: {nombreAutoMasAlquilado}</p>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
