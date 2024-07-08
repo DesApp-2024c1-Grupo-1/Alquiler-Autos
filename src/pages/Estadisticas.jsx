@@ -26,8 +26,11 @@ export function Estadisticas() {
         fetchAllAlquileres();
     }, [fetchAllAlquileres]);
 
+    // Funcion para obtener el auto más alquilado en el total de alquileres.
     const obtenerAutoMasAlquilado = async (alquileres) => {
         console.log("Alquileres para procesamiento:", alquileres); // Depuración
+        // Almacena la cantidad de veces que se alquiló cada auto.
+        // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
         const autosAlquilados = alquileres.reduce((acc, alquiler) => {
             const carId = alquiler.car?.id; 
             console.log("Procesando alquiler:", alquiler); // Depuración
@@ -61,13 +64,14 @@ export function Estadisticas() {
                 console.log("Detalles del auto más alquilado:", autoDetails); // Depuración
                 setNombreAutoMasAlquilado(autoDetails.name); 
             } catch (error) {
-                console.error("Error fetching car details:", error);
+                console.error("Error al obtener los detalles del auto:", error);
             }
         } else {
             console.warn("No se encontró un auto más alquilado");
         }
     };
 
+    // Funcion para obtener el auto más alquilado en el mes actual.
     const obtenerAutoMasAlquiladoEnMes = async (alquileres) => {
         const mesActual = new Date().getMonth() + 1;
         const anioActual = new Date().getFullYear();
@@ -80,6 +84,8 @@ export function Estadisticas() {
             );
         });
 
+        // Almacena la cantidad de veces que se alquiló cada auto en el mes actual.
+        // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
         const autosAlquiladosMes = alquileresMesActual.reduce((acc, alquiler) => {
             const carId = alquiler.car?.id;
             if (carId) {
@@ -106,7 +112,7 @@ export function Estadisticas() {
                 const autoDetails = await getCarById(autoMasAlquiladoMesId);
                 setNombreAutoMasAlquiladoMes(autoDetails.name);
             } catch (error) {
-                console.error("Error fetching car details:", error);
+                console.error("Error al obtener los detalles del auto:", error);
             }
         } else {
             console.warn("No se encontró un auto más alquilado en el mes actual");
