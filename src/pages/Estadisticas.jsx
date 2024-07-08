@@ -12,7 +12,7 @@ export function Estadisticas() {
         try {
             const response = await axios.get("http://localhost:3000/alquiler");
             const alquileres = response.data;
-            
+            console.log("Alquileres obtenidos:", alquileres); // Depuración
             setAllAlquileres(alquileres);
             await obtenerAutoMasAlquilado(alquileres); // Asegurarse de que la llamada se espera
         } catch (error) {
@@ -25,10 +25,11 @@ export function Estadisticas() {
     }, [fetchAllAlquileres]);
 
     const obtenerAutoMasAlquilado = async (alquileres) => {
-        
+        console.log("Alquileres para procesamiento:", alquileres); // Depuración
         const autosAlquilados = alquileres.reduce((acc, alquiler) => {
             const carId = alquiler.car?.id; 
-            
+            console.log("Procesando alquiler:", alquiler); // Depuración
+            console.log("carId:", carId); // Depuración
             if (carId) { // Verificar que carId existe
                 if (acc[carId]) {
                     acc[carId]++;
@@ -39,7 +40,7 @@ export function Estadisticas() {
             return acc;
         }, {});
 
-        
+        console.log("Autos alquilados:", autosAlquilados); // Depuración
 
         let autoMasAlquiladoId = null;
         let maxVecesAlquilado = 0;
@@ -50,12 +51,12 @@ export function Estadisticas() {
             }
         });
 
-        
+        console.log("Auto más alquilado ID:", autoMasAlquiladoId); // Depuración
 
         if (autoMasAlquiladoId) {
             try {
                 const autoDetails = await getCarById(autoMasAlquiladoId);
-                
+                console.log("Detalles del auto más alquilado:", autoDetails); // Depuración
                 setNombreAutoMasAlquilado(autoDetails.name); 
             } catch (error) {
                 console.error("Error fetching car details:", error);
