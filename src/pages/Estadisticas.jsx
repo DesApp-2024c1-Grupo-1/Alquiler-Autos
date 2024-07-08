@@ -8,6 +8,7 @@ export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
     const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible");
     const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible");
+    const [nombreAutoMasAlquiladoAnio, setNombreAutoMasAlquiladoAnio] = useState("No disponible");
 
     const fetchAllAlquileres = useCallback(async () => {
         try {
@@ -17,6 +18,7 @@ export function Estadisticas() {
             setAllAlquileres(alquileres);
             await obtenerAutoMasAlquilado(alquileres); // Asegurarse de que la llamada se espera
             await obtenerAutoMasAlquiladoEnMes(alquileres); // Llamar a la función para obtener el auto más alquilado del mes
+            await obtenerAutoMasAlquiladoEnAnio(alquileres); // Llamar a la función para obtener el auto más alquilado del año
         } catch (error) {
             console.error("Error fetching alquileres:", error);
         }
@@ -119,6 +121,51 @@ export function Estadisticas() {
         }
     };
 
+    // Funcion para obtener el auto más alquilado en el año actual.
+    const obtenerAutoMasAlquiladoEnAnio = async (alquileres) => {
+        const anioActual = new Date().getFullYear();
+
+        const alquileresAnioActual = alquileres.filter((alquiler) => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            return fechaAlquiler.getFullYear() === anioActual;
+        });
+
+    
+         // Almacena la cantidad de veces que se alquiló cada auto en el año actual.
+         // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
+        const autosAlquiladosAnio = alquileresAnioActual.reduce((acc, alquiler) => {
+            const carId = alquiler.car?.id;
+            if (carId) {
+                if (acc[carId]) {
+                    acc[carId]++;
+                } else {
+                    acc[carId] = 1;
+                }
+            }
+            return acc;
+        }, {});
+
+        let autoMasAlquiladoAnioId = null;
+        let maxVecesAlquiladoAnio = 0;
+        Object.keys(autosAlquiladosAnio).forEach((carId) => {
+            if (autosAlquiladosAnio[carId] > maxVecesAlquiladoAnio) {
+                maxVecesAlquiladoAnio = autosAlquiladosAnio[carId];
+                autoMasAlquiladoAnioId = carId;
+            }
+        });
+
+        if (autoMasAlquiladoAnioId) {
+            try {
+                const autoDetails = await getCarById(autoMasAlquiladoAnioId);
+                setNombreAutoMasAlquiladoAnio(autoDetails.name);
+            } catch (error) {
+                console.error("Error al obtener los detalles del auto:", error);
+            }
+        } else {
+            console.warn("No se encontró un auto más alquilado en el año actual");
+        }
+    };
+
     const estilo = {
         backgroundColor: "#e4e9f0",
         borderRadius: "5px",
@@ -212,7 +259,7 @@ export function Estadisticas() {
                         {/* Calcular ganancia total */}
                         <p>Ganancia total: {gananciaAnioActual}</p>
                         {/* Mostrar auto más alquilado */}
-                        <p>Auto más alquilado en el año: autoMasAlquilado2</p>
+                        <p>Auto más alquilado en el año: {nombreAutoMasAlquiladoAnio}</p>
                     </div>
                 </Grid> 
                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
