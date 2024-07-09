@@ -2,16 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
 import axios, { all } from "axios";
 import { registrarAlquiler } from "../services/AlquilerService"; // Asumiendo que aquí está definida la función registrarAlquiler
-import { getCarById} from "../services/CarsService";
+import { getCarById } from "../services/CarsService";
 
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
-    const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible");
-    const [imagenAutoMasAlquilado, setImagenAutoMasAlquilado] = useState(null);
-    const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible");
-    const [imagenAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes] = useState(null);
-    const [nombreAutoMasAlquiladoAnio, setNombreAutoMasAlquiladoAnio] = useState("No disponible");
-    const [imagenAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio] = useState(null);
+    const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en toda la historia.
+    const [imagenAutoMasAlquilado, setImagenAutoMasAlquilado] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en toda la historia.
+    const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en el mes actual.
+    const [imagenAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en el mes actual.
+    const [nombreAutoMasAlquiladoAnio, setNombreAutoMasAlquiladoAnio] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en el año actual.
+    const [imagenAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en el año actual.
 
     const fetchAllAlquileres = useCallback(async () => {
         try {
@@ -19,9 +19,9 @@ export function Estadisticas() {
             const alquileres = response.data;
             console.log("Alquileres obtenidos:", alquileres); // Depuración
             setAllAlquileres(alquileres);
-            await obtenerAutoMasAlquilado(alquileres); // Asegurarse de que la llamada se espera
-            await obtenerAutoMasAlquiladoEnMes(alquileres); // Llamar a la función para obtener el auto más alquilado del mes
-            await obtenerAutoMasAlquiladoEnAnio(alquileres); // Llamar a la función para obtener el auto más alquilado del año
+            await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquilado, setImagenAutoMasAlquilado); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en toda la historia.
+            await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes, 'month'); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en el mes actual.
+            await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio, 'year'); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en el año actual.
         } catch (error) {
             console.error("Error fetching alquileres:", error);
         }
@@ -31,16 +31,31 @@ export function Estadisticas() {
         fetchAllAlquileres();
     }, [fetchAllAlquileres]);
 
-    // Funcion para obtener el auto más alquilado en el total de alquileres.
-    const obtenerAutoMasAlquilado = async (alquileres) => {
-        console.log("Alquileres para procesamiento:", alquileres); // Depuración
-        // Almacena la cantidad de veces que se alquiló cada auto.
+    // Función para obtener el auto más alquilado en el periodo especificado.
+    // "alquileres" lista de todos los alquileres.
+    const obtenerAutoMasAlquilado = async (alquileres, setNombre, setImagen, periodo) => {
+        const filteredAlquileres = alquileres.filter((alquiler) => { // Función que filtra los alquileres por 'periodo': mes actual ('month'), año actual ('year') o toda la historia (undefined).
+            const fechaAlquiler = new Date(alquiler.fechaRetiro); // Convierte la fecha de retiro del alquiler en un objeto 'Date', para facilitar la comparación.
+            if (periodo === 'month') {
+                const mesActual = new Date().getMonth() + 1;
+                const anioActual = new Date().getFullYear();
+                return (
+                    fechaAlquiler.getMonth() + 1 === mesActual &&
+                    fechaAlquiler.getFullYear() === anioActual
+                );
+            } else if (periodo === 'year') {
+                const anioActual = new Date().getFullYear();
+                return fechaAlquiler.getFullYear() === anioActual;
+            } else {
+                return true; // No filtrar, obtener datos de toda la historia
+            }
+        });
+
+        // Almacena la cantidad de veces que se alquiló cada auto en un periodo especificado.
         // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
-        const autosAlquilados = alquileres.reduce((acc, alquiler) => {
-            const carId = alquiler.car?.id; 
-            console.log("Procesando alquiler:", alquiler); // Depuración
-            console.log("carId:", carId); // Depuración
-            if (carId) { // Verificar que carId existe
+        const autosAlquilados = filteredAlquileres.reduce((acc, alquiler) => {
+            const carId = alquiler.car?.id;
+            if (carId) {
                 if (acc[carId]) {
                     acc[carId]++;
                 } else {
@@ -49,8 +64,6 @@ export function Estadisticas() {
             }
             return acc;
         }, {});
-
-        console.log("Autos alquilados:", autosAlquilados); // Depuración
 
         let autoMasAlquiladoId = null;
         let maxVecesAlquilado = 0;
@@ -61,114 +74,16 @@ export function Estadisticas() {
             }
         });
 
-        console.log("Auto más alquilado ID:", autoMasAlquiladoId); // Depuración
-
         if (autoMasAlquiladoId) {
             try {
                 const autoDetails = await getCarById(autoMasAlquiladoId);
-                console.log("Detalles del auto más alquilado:", autoDetails); // Depuración
-                setNombreAutoMasAlquilado(autoDetails.name);
-                setImagenAutoMasAlquilado(autoDetails.image); 
+                setNombre(autoDetails.name); // Función para establecer el nombre del auto más alquilado.
+                setImagen(autoDetails.image); // Función para establecer la imagen del auto más alquilado.
             } catch (error) {
                 console.error("Error al obtener los detalles del auto:", error);
             }
         } else {
             console.warn("No se encontró un auto más alquilado");
-        }
-    };
-
-    // Funcion para obtener el auto más alquilado en el mes actual.
-    const obtenerAutoMasAlquiladoEnMes = async (alquileres) => {
-        const mesActual = new Date().getMonth() + 1;
-        const anioActual = new Date().getFullYear();
-
-        const alquileresMesActual = alquileres.filter((alquiler) => {
-            const fechaAlquiler = new Date(alquiler.fechaRetiro);
-            return (
-                fechaAlquiler.getMonth() + 1 === mesActual &&
-                fechaAlquiler.getFullYear() === anioActual
-            );
-        });
-
-        // Almacena la cantidad de veces que se alquiló cada auto en el mes actual.
-        // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
-        const autosAlquiladosMes = alquileresMesActual.reduce((acc, alquiler) => {
-            const carId = alquiler.car?.id;
-            if (carId) {
-                if (acc[carId]) {
-                    acc[carId]++;
-                } else {
-                    acc[carId] = 1;
-                }
-            }
-            return acc;
-        }, {});
-
-        let autoMasAlquiladoMesId = null;
-        let maxVecesAlquiladoMes = 0;
-        Object.keys(autosAlquiladosMes).forEach((carId) => {
-            if (autosAlquiladosMes[carId] > maxVecesAlquiladoMes) {
-                maxVecesAlquiladoMes = autosAlquiladosMes[carId];
-                autoMasAlquiladoMesId = carId;
-            }
-        });
-
-        if (autoMasAlquiladoMesId) {
-            try {
-                const autoDetails = await getCarById(autoMasAlquiladoMesId);
-                setNombreAutoMasAlquiladoMes(autoDetails.name);
-                setImagenAutoMasAlquiladoMes(autoDetails.image);
-            } catch (error) {
-                console.error("Error al obtener los detalles del auto:", error);
-            }
-        } else {
-            console.warn("No se encontró un auto más alquilado en el mes actual");
-        }
-    };
-
-    // Funcion para obtener el auto más alquilado en el año actual.
-    const obtenerAutoMasAlquiladoEnAnio = async (alquileres) => {
-        const anioActual = new Date().getFullYear();
-
-        const alquileresAnioActual = alquileres.filter((alquiler) => {
-            const fechaAlquiler = new Date(alquiler.fechaRetiro);
-            return fechaAlquiler.getFullYear() === anioActual;
-        });
-
-    
-         // Almacena la cantidad de veces que se alquiló cada auto en el año actual.
-         // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
-        const autosAlquiladosAnio = alquileresAnioActual.reduce((acc, alquiler) => {
-            const carId = alquiler.car?.id;
-            if (carId) {
-                if (acc[carId]) {
-                    acc[carId]++;
-                } else {
-                    acc[carId] = 1;
-                }
-            }
-            return acc;
-        }, {});
-
-        let autoMasAlquiladoAnioId = null;
-        let maxVecesAlquiladoAnio = 0;
-        Object.keys(autosAlquiladosAnio).forEach((carId) => {
-            if (autosAlquiladosAnio[carId] > maxVecesAlquiladoAnio) {
-                maxVecesAlquiladoAnio = autosAlquiladosAnio[carId];
-                autoMasAlquiladoAnioId = carId;
-            }
-        });
-
-        if (autoMasAlquiladoAnioId) {
-            try {
-                const autoDetails = await getCarById(autoMasAlquiladoAnioId);
-                setNombreAutoMasAlquiladoAnio(autoDetails.name);
-                setImagenAutoMasAlquiladoAnio(autoDetails.image);
-            } catch (error) {
-                console.error("Error al obtener los detalles del auto:", error);
-            }
-        } else {
-            console.warn("No se encontró un auto más alquilado en el año actual");
         }
     };
 
