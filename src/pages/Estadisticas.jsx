@@ -7,8 +7,11 @@ import { getCarById} from "../services/CarsService";
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
     const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible");
+    const [imagenAutoMasAlquilado, setImagenAutoMasAlquilado] = useState(null);
     const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible");
+    const [imagenAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes] = useState(null);
     const [nombreAutoMasAlquiladoAnio, setNombreAutoMasAlquiladoAnio] = useState("No disponible");
+    const [imagenAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio] = useState(null);
 
     const fetchAllAlquileres = useCallback(async () => {
         try {
@@ -64,7 +67,8 @@ export function Estadisticas() {
             try {
                 const autoDetails = await getCarById(autoMasAlquiladoId);
                 console.log("Detalles del auto más alquilado:", autoDetails); // Depuración
-                setNombreAutoMasAlquilado(autoDetails.name); 
+                setNombreAutoMasAlquilado(autoDetails.name);
+                setImagenAutoMasAlquilado(autoDetails.image); 
             } catch (error) {
                 console.error("Error al obtener los detalles del auto:", error);
             }
@@ -113,6 +117,7 @@ export function Estadisticas() {
             try {
                 const autoDetails = await getCarById(autoMasAlquiladoMesId);
                 setNombreAutoMasAlquiladoMes(autoDetails.name);
+                setImagenAutoMasAlquiladoMes(autoDetails.image);
             } catch (error) {
                 console.error("Error al obtener los detalles del auto:", error);
             }
@@ -158,6 +163,7 @@ export function Estadisticas() {
             try {
                 const autoDetails = await getCarById(autoMasAlquiladoAnioId);
                 setNombreAutoMasAlquiladoAnio(autoDetails.name);
+                setImagenAutoMasAlquiladoAnio(autoDetails.image);
             } catch (error) {
                 console.error("Error al obtener los detalles del auto:", error);
             }
@@ -247,6 +253,7 @@ export function Estadisticas() {
                         <p>Ganancia total: {ganancia}</p>
                         {/* Mostrar auto más alquilado */}
                         <p>Auto más alquilado: {nombreAutoMasAlquilado}</p>
+                        {imagenAutoMasAlquilado && <img src={imagenAutoMasAlquilado} alt="Auto más alquilado" style={{ width: "100%" }} />}
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
@@ -260,6 +267,7 @@ export function Estadisticas() {
                         <p>Ganancia total: {gananciaAnioActual}</p>
                         {/* Mostrar auto más alquilado */}
                         <p>Auto más alquilado en el año: {nombreAutoMasAlquiladoAnio}</p>
+                        {imagenAutoMasAlquiladoAnio && <img src={imagenAutoMasAlquiladoAnio} alt="Auto más alquilado en el año" style={{ width: "100%" }} />}
                     </div>
                 </Grid> 
                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
@@ -273,6 +281,7 @@ export function Estadisticas() {
                         <p>Ganancia total: {gananciaMesActual}</p>
                         {/* Mostrar auto más alquilado */}
                         <p>Auto más alquilado en el mes: {nombreAutoMasAlquiladoMes}</p>
+                        {imagenAutoMasAlquiladoMes && <img src={imagenAutoMasAlquiladoMes} alt="Auto más alquilado en el mes" style={{ width: "100%" }} />}
                     </div>
                 </Grid>  
             </Grid>
