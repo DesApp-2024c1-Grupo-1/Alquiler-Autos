@@ -13,91 +13,6 @@ setOptions({
 });
 
 
-/*Ver si eliminar boton confirm/cancel, que cambia el estado.
-  Ver si prefieren que vuelva a aparecer cuando se devuelve, o solo que aparezca una vez.
-*/
-/*
-let eventosFake = [
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Jesus Albornoz',
-    age: 68,
-    start: '2024-07-04T08:00',
-    end: '2024-07-05T08:45',
-    confirmed: false,
-    lugarRetiro: 'Calle Falsa 123, Hurlingham',
-    lugarDevolucion: 'Calle Verdadera 456, Hurlingham',
-    color: '#00ff00',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Pedro Saborido',
-    age: 44,
-    start: '2024-07-06T09:00',
-    end: '2024-07-08T09:45',
-    confirmed: false,
-    lugarRetiro: 'Mazza 1780, Moron',
-    lugarDevolucion: 'Pola 2600, Moron',
-    color: '#ff0000',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Juan Cruz Mendoza',
-    age: 29,
-    start: '2024-07-09T10:00',
-    end: '2024-07-10T10:45',
-    confirmed: true,
-    lugarRetiro: 'Libertad 3100, Moron',
-    lugarDevolucion: 'Paz 1800, Hurlingham',
-    color: '#b33d3d',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Juan Maldonado',
-    age: 72,
-    start: '2024-07-11T13:00',
-    end: '2024-07-14T13:45',
-    confirmed: false,
-    lugarRetiro: 'Avenida Siempre Viva 600, Haedo',
-    lugarDevolucion: 'Avenida de los libertadores 300, Haedo',
-    color: '#b33d3d',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Juan Maldonado',
-    age: 65,
-    start: '2024-07-15T10:00',
-    end: '2024-07-15T14:45',
-    confirmed: true,
-    lugarRetiro: 'Avenida Pierrastegui 4100, Moron',
-    lugarDevolucion: 'Juana Azurduy 1680, Hurlingham',
-    color: '#b33d3d',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Juan Maldonado',
-    age: 54,
-    start: '2024-07-16T10:00',
-    end: '2024-07-17T10:45',
-    confirmed: true,
-    lugarRetiro: '25 de Mayo 1470, Moron',
-    lugarDevolucion: 'Procare 2500, Hurlingham ',
-    color: '#309346',
-  },
-  {
-    title: 'PRUEBA',
-    nombreYApellido: 'Pedro Rosemblant',
-    age: 59,
-    start: '2024-07-18T11:00',
-    end: '2024-07-23T11:45',
-    confirmed: true,
-    lugarRetiro: 'Avenida Eva Peron 1790, Moron',
-    lugarDevolucion: 'Avenida Independencia, Hurlingham',
-    color: '#309346',
-  },
-];
-*/
-
 momentTimezone.moment = moment;
 
 function AgendaPage() {
@@ -122,8 +37,9 @@ function AgendaPage() {
   const [appointmentInfo, setAppointmentInfo] = useState('');
   const [appointmentLocation, setAppointmentLocation] = useState('');
   const [appointmentReason, setAppointmentReason] = useState('');
-  const [appointmentStatus, setAppointmentStatus] = useState('Reservado');
   const [appointmentTime, setAppointmentTime] = useState('');
+  const [appointmentTimeR, setAppointmentTimeR] = useState('');
+  const [appointmentTimeD, setAppointmentTimeD] = useState('');
   const [buttonText, setButtonText] = useState('');
   const [buttonType, setButtonType] = useState('');
   const [isTooltipOpen, setTooltipOpen] = useState(false);
@@ -149,22 +65,6 @@ function AgendaPage() {
     if (timer.current) {
       clearTimeout(timer.current);
     }
-    /*
-    if (event.confirmed) {
-      setAppointmentStatus('Reservado');
-      setButtonText('Cancelar cita');
-      setButtonType('warning');
-    } else {
-      setAppointmentStatus('Devuelto');
-      setButtonText('Confirmar cita');
-      setButtonType('success');
-    }
-      
-
-        // Forzamos el estado a "Reservado"
-        setAppointmentStatus('Reservado');
-      }, []);
-    */
 
     setAppointment(event);
     setAppointmentInfo(event.data?.cliente?.nombre);
@@ -174,6 +74,8 @@ function AgendaPage() {
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
+    setAppointmentTimeR(event.data?.fechaRetiro)
+    setAppointmentTimeD(event.data?.fechaDevolucion)
   }, []);
 
   const handleEventClick = useCallback(
@@ -231,15 +133,17 @@ function AgendaPage() {
     setToastOpen(true);
   }, [appointment]);
 
+  const formattedAppointmentTimeR = appointmentTimeR ? moment(appointmentTimeR).format('DD MMM YYYY HH:mm') : 'N/A';
+  const formattedAppointmentTimeD = appointmentTimeD ? moment(appointmentTimeD).format('DD MMM YYYY HH:mm') : 'N/A';
+/*
 
-
-  /* Este const sirve para cuando yo hago click sobre eliminar*/
   const deleteAppointment = useCallback(() => {
     setAppointments(appointments.filter((item) => item.id !== appointment.id));
     setTooltipOpen(false);
     setToastMessage('Auto eliminado de agenda');
     setToastOpen(true);
   }, [appointments, appointment]);
+*/
 
   return (
     <>
@@ -270,22 +174,29 @@ function AgendaPage() {
           <span>{appointmentInfo}</span>
           <span className="mbsc-pull-right">{appointmentTime}</span>
         </div>
+        
         <div className="mbsc-padding">
-          <div className="mds-tooltip-label mbsc-margin">
-            Estado: <span className="mbsc-light">{appointmentStatus}</span>
-          </div>
+        <div className="mds-tooltip-label mbsc-margin">
+              Fecha retiro: <span className="mbsc-light">{formattedAppointmentTimeR}</span>
+            </div>
+            <div className="mds-tooltip-label mbsc-margin">
+              Fecha Devolucion: <span className="mbsc-light">{formattedAppointmentTimeD}</span>
+            </div>
           <div className="mds-tooltip-label mbsc-margin">
             Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
           </div>
+
           <div className="mds-tooltip-label mbsc-margin">
             Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
           </div>
           <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
             Datos de Cliente
           </Button>
-          <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
+          
+          {/*<Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
             Eliminar
-          </Button>
+          </Button>*/}
+          
         </div>
       </div>
     </Popup>
@@ -428,32 +339,6 @@ function AgendaPage() {
               }}
             >
               {customerData.email}
-            </span>
-          </div>
-          <div
-            className="customer-popup-item"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '12px',
-            }}
-          >
-            <span
-              className="customer-popup-label"
-              style={{
-                fontWeight: 'bold',
-                color: '#555',
-              }}
-            >
-              Dirección:
-            </span>
-            <span
-              className="customer-popup-value"
-              style={{
-                color: '#777',
-              }}
-            >
-              {customerData.direccion}
             </span>
           </div>
         </div>
