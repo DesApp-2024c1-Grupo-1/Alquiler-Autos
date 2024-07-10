@@ -22,7 +22,10 @@ function AgendaPage() {
   const fetchAllEvents = useCallback(async () => {
     //Descomentar para usar la Base de Datos
     const obtainedEvents = await getEventos();
+    //obtainedEvents = obtainedEvents.map(e =>{  e.end = null})
+
     //const obtainedEvents = eventosFake;
+    
  
   console.log('Eventos obtenidos:', obtainedEvents); // Verificar los datos aquí
 
@@ -76,6 +79,16 @@ function AgendaPage() {
     setTooltipOpen(true);
     setAppointmentTimeR(event.data?.fechaRetiro)
     setAppointmentTimeD(event.data?.fechaDevolucion)
+
+
+    const fechaRetiro = event.data?.fechaRetiro;
+    const fechaDevolucion = event.data?.fechaDevolucion;
+
+    console.log('Fecha Retiro:', fechaRetiro);
+    console.log('Fecha Devolucion:', fechaDevolucion);
+
+    setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
+    setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
   }, []);
 
   const handleEventClick = useCallback(
@@ -157,7 +170,7 @@ function AgendaPage() {
         timezonePlugin={momentTimezone}
         dataTimezone='utc'
         displayTimezone='America/Buenos_Aires'
-        
+  
       />
     <Popup
       anchor={tooltipAnchor}
