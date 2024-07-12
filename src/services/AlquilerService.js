@@ -9,6 +9,6 @@ export const registrarAlquiler = async (alquiler) => {
       console.log(response)
       return response.data;
     } catch (error) {
-      console.error(error)
+      console.error(error.response.data)
     }
   }
