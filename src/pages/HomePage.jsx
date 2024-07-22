@@ -43,7 +43,7 @@ export function HomePage() {
                  borderRadius:5,
                  pb:3}}>
 
-            <Buscador sx={{ mx: 20, my: 20 }} />
+            {/* <Buscador sx={{ mx: 20, my: 20 }} /> */}
 
             <Grid container spacing={2} sx={{ mt: '1rem'}}>
               {allCars && allCars.map((carData) => (
