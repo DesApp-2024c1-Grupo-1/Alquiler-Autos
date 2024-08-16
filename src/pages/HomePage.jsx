@@ -4,6 +4,7 @@ import { CarCard } from '../components/CarCard.jsx';
 import { getAllCarsAxios, getAllCarsFake } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
 import  Filtros  from '../components/Filtros.jsx';
+import ButtonAddCar from "../components/ButtonAddCar.jsx";
 
 
 export function HomePage() {
@@ -44,6 +45,7 @@ export function HomePage() {
                  pb:3}}>
 
             {/* <Buscador sx={{ mx: 20, my: 20 }} /> */}
+            <ButtonAddCar />
 
             <Grid container spacing={2} sx={{ mt: '1rem'}}>
               {allCars && allCars.map((carData) => (
