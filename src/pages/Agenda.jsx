@@ -148,15 +148,22 @@ function AgendaPage() {
 
   const formattedAppointmentTimeR = appointmentTimeR ? moment(appointmentTimeR).format('DD MMM YYYY HH:mm') : 'N/A';
   const formattedAppointmentTimeD = appointmentTimeD ? moment(appointmentTimeD).format('DD MMM YYYY HH:mm') : 'N/A';
-/*
 
-  const deleteAppointment = useCallback(() => {
-    setAppointments(appointments.filter((item) => item.id !== appointment.id));
-    setTooltipOpen(false);
-    setToastMessage('Auto eliminado de agenda');
-    setToastOpen(true);
-  }, [appointments, appointment]);
-*/
+
+const deleteAppointment = useCallback(() => {
+  setAppointments(appointments.filter((item) => item.id !== appointment.id));
+  setTooltipOpen(false);
+  setToastMessage('Cita eliminada');
+  setToastOpen(true);
+}, [appointments, appointment]);
+
+const editAppointment = useCallback(() => {
+
+  setTooltipOpen(false);
+  setToastMessage('Editando...');
+  setToastOpen(true);
+}, []);
+
 
   return (
     <>
@@ -205,10 +212,13 @@ function AgendaPage() {
           <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
             Datos de Cliente
           </Button>
-          
-          {/*<Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
+          <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>
+              Editar
+            </Button>
+
+          <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
             Eliminar
-          </Button>*/}
+          </Button>
           
         </div>
       </div>
