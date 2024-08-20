@@ -40,7 +40,7 @@ export function HomePage() {
                 sx={{ display: 'flex',
                 flexDirection: 'column', 
                 alignItems: '',
-                 backgroundColor: "whitesmoke", 
+                //  backgroundColor: "whitesmoke", 
                  borderRadius:5,
                  pb:3}}>
 
