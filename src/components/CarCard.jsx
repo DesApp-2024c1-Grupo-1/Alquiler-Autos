@@ -35,18 +35,13 @@ export function CarCard({car}) {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" >
+            {car.brand}
+          </Typography>
+
+          <Typography gutterBottom variant="h5" component="div" >
             {car.name}
           </Typography>
-
-          <Typography gutterBottom variant="h6" component="div" >
-            <Box sx={{ fontWeight: 600, color: blueGrey[840], display:"flex", alignItems:"center" }}>
-                <Icon sx={{display: "flex", alignItems: "center"}} >
-                  <LocalAtmIcon sx={{height:24, width:24, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
-                </Icon>
-                 $ {car.price} / dia
-             </Box>
-          </Typography>
-
+          
           <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
               <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
@@ -98,7 +93,15 @@ export function CarCard({car}) {
                 </Icon>
                 {car.patente}
               </Box>
-            </Grid>           
+            </Grid>
+            <Typography gutterBottom variant="h6" component="div" >
+              <Box sx={{ fontWeight: 600, color: blueGrey[840], display:"flex", alignItems:"center", pt:2 }}>
+                <Icon sx={{display: "flex", alignItems: "center",pr:4}} >
+                  <LocalAtmIcon sx={{height:24, width:24, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                 ${car.price} / dia
+             </Box>
+          </Typography>           
           </Grid>
         </CardContent>
       </CardActionArea>
