@@ -121,6 +121,7 @@ function AgendaPage() {
   }, []);
 
 
+
   const handleMouseEnter = useCallback(() => {
     if (timer.current) {
       clearTimeout(timer.current);
@@ -151,6 +152,7 @@ function AgendaPage() {
 
 
 const deleteAppointment = useCallback(() => {
+    {/*Para delete*/}
   setAppointments(appointments.filter((item) => item.id !== appointment.id));
   setTooltipOpen(false);
   setToastMessage('Cita eliminada');
@@ -158,7 +160,7 @@ const deleteAppointment = useCallback(() => {
 }, [appointments, appointment]);
 
 const editAppointment = useCallback(() => {
-
+  {/*Para edit*/}
   setTooltipOpen(false);
   setToastMessage('Editando...');
   setToastOpen(true);
