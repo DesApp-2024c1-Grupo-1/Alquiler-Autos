@@ -16,6 +16,7 @@ import ButtonEditCar from "./ButtonEditCar";
 export function CarCard({car}) {
   
   return (
+    
     <Card sx={{ 
       //     //maxWidth: 345 
       //     //backgroundColor: "#e4e9f0", 
@@ -24,88 +25,100 @@ export function CarCard({car}) {
       justifyContent: 'space-between', // Asegura que el contenido se distribuya de manera uniforme
       height: '100%', // Hace que la tarjeta ocupe todo el espacio disponible
     }}>
-      <CardActionArea>
-      <CardMedia
-        component="img"
-        height="140"
-        image={car.image}
-        alt="car image"
-        sx={{ 
-          width: '100%', 
-          height: '100%', // Asegura que la imagen ocupe todo el espacio disponible
-          objectFit: 'cover', // Hace que la imagen cubra todo el espacio disponible
-        }}
-      />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {car.brand}
-          </Typography>
+      <NavLink to={`/reserve/${car.id}`} style={{ textDecoration: 'none'}}>
+        <CardActionArea>
+        <CardMedia
+          component="img"
+          height="140"
+          image={car.image}
+          alt="car image"
+          sx={{ 
+            width: '100%', 
+            height: '100%', // Asegura que la imagen ocupe todo el espacio disponible
+            objectFit: 'cover', // Hace que la imagen cubra todo el espacio disponible
+          }}
+        />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[900] }}>
+              {car.brand}
+            </Typography>
 
-          <Typography gutterBottom variant="h6" component="div">
-            {car.name}
-          </Typography>
+            <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[600] }}>
+              {car.name}
+            </Typography>
 
-          {/* <Typography variant="body2" color="text.secondary" >          
-          </Typography> */}
+            {/* <Typography variant="body2" color="text.secondary" >          
+            </Typography> */}
 
-          <Grid container spacing={1}>
+            <Grid container spacing={1}>
 
-            <Grid item xs={6} md={6}>
-              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+              <Grid item xs={6} md={6}>
+                <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                  <Icon sx={{display: "flex", alignItems: "center"}} >
+                    <FormatColorFillIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                  </Icon>
+                    {car.color}
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center"}}>
                 <Icon sx={{display: "flex", alignItems: "center"}} >
-                  <FormatColorFillIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                  <BuildIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
                 </Icon>
-                  {car.color}
+                  {car.transmision}
               </Box>
             </Grid>
 
             <Grid item xs={6} md={6}>
-             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center"}}>
-               <Icon sx={{display: "flex", alignItems: "center"}} >
-                 <BuildIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
-               </Icon>
-                 {car.transmision}
-             </Box>
-           </Grid>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <LocalGasStationIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.combustible}
+              </Box>
+            </Grid>
 
-           <Grid item xs={6} md={6}>
-             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
-               <Icon sx={{display: "flex", alignItems: "center"}} >
-                 <LocalGasStationIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
-               </Icon>
-               {car.combustible}
-             </Box>
-           </Grid>
+            <Grid item xs={6} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <AcUnitIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+              AC: {car.ac ? "Si" : "No"}
+              </Box>
+            </Grid>
 
-           <Grid item xs={6} md={6}>
-             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
-               <Icon sx={{display: "flex", alignItems: "center"}} >
-                 <AcUnitIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
-               </Icon>
-             AC: {car.ac ? "Si" : "No"}
-             </Box>
-           </Grid>
+            <Grid item xs={6} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <GroupAddIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.capacidad}
+              </Box>
+            </Grid>
 
-           <Grid item xs={6} md={6}>
-             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
-               <Icon sx={{display: "flex", alignItems: "center"}} >
-                 <GroupAddIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
-               </Icon>
-               {car.capacidad}
-             </Box>
-           </Grid>
+            <Grid item xs={6} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <DirectionsCarIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.patente}
+              </Box>
+            </Grid>
 
-           <Grid item xs={6} md={6}>
-             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
-               <Icon sx={{display: "flex", alignItems: "center"}} >
-                 <DirectionsCarIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+           <Typography gutterBottom variant="h6" component="div" >
+             <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center", pt:2 }}>
+               <Icon sx={{display: "flex", alignItems: "center",pr:4}} >
+                 <LocalAtmIcon sx={{height:24, width:24, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
                </Icon>
-               {car.patente}
+                ${car.price} / dia
              </Box>
-           </Grid>
-          </Grid>
-        </CardContent>
-      </CardActionArea>
+           </Typography>
+
+            </Grid>
+          </CardContent>
+        </CardActionArea>
+      </NavLink>
 
       <Grid item xs={12} md={12} >
         <Box display="flex" justifyContent="center" alignItems="center" paddingBottom={2}>
