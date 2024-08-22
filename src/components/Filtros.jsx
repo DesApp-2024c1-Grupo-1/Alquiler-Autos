@@ -8,7 +8,6 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker
 import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion } from "../store/alquilerFormSlice.js";
-import { useLocalStorage } from "../config/useLocalStorage.js";
 import { enGB } from 'date-fns/locale';
 
 
@@ -42,12 +41,12 @@ const Filtros = ({handleFiltros}) => {
 
   const BuscarButton = (event) => {
     console.log("BuscarButton: ", selectedAireAcondicionado, selectedCombustibleType, selectedTransmisionType, capacitiy, retiro, devolucion)
-    const filtros = {ac: selectedAireAcondicionado, combustible: selectedCombustibleType, transmision: selectedTransmisionType, capacidad: capacitiy || null, retiro: retiro, devolucion: devolucion}
+    const filtros = {ac: selectedAireAcondicionado, combustible: selectedCombustibleType, transmision: selectedTransmisionType, capacidad: capacitiy, fechaRetiro: formAlquiler.fechaRetiro , fechaDevolucion: formAlquiler.fechaDevolucion}
     handleFiltros(filtros)
   }
 
   const BorrarButton = (event) => {
-    const filtros = {ac: null, combustible: null, transmision: null, capacidad: null, retiro: null, devolucion: null}
+    const filtros = {ac: null, combustible: null, transmision: null, capacidad: null, fechaRetiro: null, fechaDevolucion: null}
     setCapacity('')
     setCombustibleType(null)
     setTransmisionType(null)

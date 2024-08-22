@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, Container, Grid } from "@mui/material";
 import { CarCard } from '../components/CarCard.jsx';
-import { getAllCarsAxios, getAllCarsFake } from "../services/CarsService";
+import { getAllCarsAvailable, getAllCarsFake } from "../services/CarsService";
 import { Buscador } from '../components/Buscador.jsx';
 import  Filtros  from '../components/Filtros.jsx';
 import ButtonAddCar from "../components/ButtonAddCar.jsx";
@@ -12,7 +12,7 @@ export function HomePage() {
 
   const fetchAllCars = useCallback(async (filtros) => {
     //Descomentar para usar la Base de Datos
-    const obtainedCars = await getAllCarsAxios(filtros); 
+    const obtainedCars = await getAllCarsAvailable(filtros); 
     //const obtainedCars = await getAllCarsFake();
     setAllCars(obtainedCars);
   }, []);
