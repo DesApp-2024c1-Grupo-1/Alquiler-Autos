@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Button
+  InputLabel, InputAdornment, FormControl, Button,
+  CardContent,
+  Icon
 } from "@mui/material";
 import {  getCarById,getCarByIdFake  } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
@@ -18,24 +20,121 @@ import { enGB } from 'date-fns/locale';
 import AddClientDialog from '../components/AddClientDialog.jsx';
 import { set } from "lodash";
 
+import BuildIcon from '@mui/icons-material/Build';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+
 function CardAlquiler({ car }) {
-  return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
-    <CardMedia
-      // image={"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Orange_Enzo_Ferrari_%287191948164%29.jpg/800px-Orange_Enzo_Ferrari_%287191948164%29.jpg"}
-      image={car.image}
-      sx={{ width: { xs: 200, sm: 500 }, height: 300 }}
-    />
-    <Stack direction='column' sx={{ flexGrow: 1, mt: 1, ml: 2 }}>
-      <Box sx={{ typography: 'h5', mb: 2, textAlign: 'center' }}>{car.name}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.capacidad} personas</Box>
-      {car.ac && <Box sx={{ typography: 'h6', mb: 1 }}>AC</Box>}
-      <Box sx={{ typography: 'h6', mb: 1 }}>Transmision: {car.transmision[0].toUpperCase() + car.transmision.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.color[0].toUpperCase() + car.color.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.combustible[0].toUpperCase() + car.combustible.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>Patente: {car.patente}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>${car.price} / dia</Box>
-    </Stack>
-  </Card>;
+  // return <Card sx={{ color:blueGrey[700], display: 'flex', flexDirection: 'column' }} elevation={2}>
+  //   <CardMedia
+  //     // image={"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Orange_Enzo_Ferrari_%287191948164%29.jpg/800px-Orange_Enzo_Ferrari_%287191948164%29.jpg"}
+  //     image={car.image}
+  //     sx={{ width: { xs: 200, sm: 500 }, height: 300 }}
+  //   />
+  //   <Stack direction='column' sx={{ flexGrow: 1, mt: 1, ml: 2 }}>
+  //     <Box sx={{ typography: 'h5', mb: 2, textAlign: 'center' }}>{car.name}</Box>
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>{car.capacidad} personas</Box>
+  //     {car.ac && <Box sx={{ typography: 'h6', mb: 1 }}>AC</Box>}
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>Transmision: {car.transmision[0].toUpperCase() + car.transmision.slice(1)}</Box>
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>{car.color[0].toUpperCase() + car.color.slice(1)}</Box>
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>{car.combustible[0].toUpperCase() + car.combustible.slice(1)}</Box>
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>Patente: {car.patente}</Box>
+  //     <Box sx={{ typography: 'h6', mb: 1 }}>${car.price} / dia</Box>
+  //   </Stack>
+  // </Card>;
+  return (
+    <Card sx={{ 
+      //maxWidth: 345 
+      //backgroundColor: "#e4e9f0", 
+      //display: 'flex', 
+      //flexDirection: 'column', 
+      justifyContent: 'space-between', // Asegura que el contenido se distribuya de manera uniforme
+      height: '100%', // Hace que la tarjeta ocupe todo el espacio disponible
+    }}>
+        <CardMedia
+          component="img"
+          height="140"
+          image={car.image}
+          alt="car image"
+          sx={{ width: { xs: 200, sm: 500 }, height: 300 }}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div" >
+            {car.brand}
+          </Typography>
+
+          <Typography gutterBottom variant="h5" component="div" >
+            {car.name}
+          </Typography>
+          
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <FormatColorFillIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.color}
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center"}}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <BuildIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                  {car.transmision}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <LocalGasStationIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.combustible}
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <AcUnitIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+              AC: {car.ac ? "Si" : "No"}
+              </Box>
+            </Grid>
+            
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <GroupAddIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.capacidad}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Box sx={{ fontWeight: 600, color: blueGrey[700], display:"flex", alignItems:"center" }}>
+                <Icon sx={{display: "flex", alignItems: "center"}} >
+                  <DirectionsCarIcon sx={{height:18, width:18, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                {car.patente}
+              </Box>
+            </Grid>
+            <Typography gutterBottom variant="h6" component="div" >
+              <Box sx={{ fontWeight: 600, color: blueGrey[840], display:"flex", alignItems:"center", pt:2 }}>
+                <Icon sx={{display: "flex", alignItems: "center",pr:4}} >
+                  <LocalAtmIcon sx={{height:24, width:24, mr:10, strokeWidth:1, verticalAlign: "middle"}}/>
+                </Icon>
+                 ${car.price} / dia
+             </Box>
+          </Typography>           
+          </Grid>
+        </CardContent>
+    </Card>
+  );
 }
 
 export function FormAlquiler({ car }) {
