@@ -58,10 +58,10 @@ export default function ButtonEditCar(car) {
           </Button>
           <Dialog open={open} onClose={handleClose}>
             <form onSubmit={handleSubmit}>
-              <DialogTitle>Agregar Nuevo Auto</DialogTitle>
+              <DialogTitle>Editar Auto seleccionado</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Complete los campos a continuación para agregar un nuevo auto.
+                  Modifique los campos a continuación para editar el auto.
                 </DialogContentText>
                 <TextField
                   autoFocus

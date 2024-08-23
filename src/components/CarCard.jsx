@@ -10,7 +10,6 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import ButtonEditCar from "./ButtonEditCar";
 
 export function CarCard({car}) {
@@ -39,11 +38,11 @@ export function CarCard({car}) {
           }}
         />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[900] }}>
+            <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[700] }}>
               {car.brand}
             </Typography>
 
-            <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[600] }}>
+            <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[700] }}>
               {car.name}
             </Typography>
 
