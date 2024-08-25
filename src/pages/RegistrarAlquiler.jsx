@@ -49,7 +49,7 @@ export function FormAlquiler({ car }) {
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
 
-  // Lista de lugares predefinidos para el campo "Lugar de Retiro"
+  // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
   const predefinedLocations = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
   useEffect(() => {
@@ -123,10 +123,10 @@ export function FormAlquiler({ car }) {
     setLugarRetiroValido(!!value);
   };
 
-  const handleLugarDevolucionChange = (e) => {
-    const value = e.target.value;
+  // Maneja el cambio de lugar de devolución usando Autocomplete
+  const handleLugarDevolucionChange = (event, value) => {
     dispatch(editLugarDevolucion(value));
-    setLugarDevolucionValido(!!value); // Verifica si el campo no está vacío
+    setLugarDevolucionValido(!!value);
   };
 
 
@@ -157,14 +157,21 @@ export function FormAlquiler({ car }) {
               />
             )}
           />
-          <TextField
-            required
-            id="outlined-required"
-            label="Lugar de devolución"
-            defaultValue={formAlquiler.lugarDevolucion}
-            onChange={handleLugarDevolucionChange}
-            error={!lugarDevolucionValido}
-            helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+          {/* Campo de Lugar de Devolución modificado para usar Autocomplete */}
+          <Autocomplete
+            freeSolo
+            options={predefinedLocations} // Usa la misma lista de lugares predefinidos
+            value={formAlquiler.lugarDevolucion}
+            onChange={handleLugarDevolucionChange} // Usa el manejador adaptado para Autocomplete
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                label="Lugar de Devolución"
+                error={!lugarDevolucionValido}
+                helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+              />
+            )}
           />
           <Box>
             <Grid direction="column" container spacing={2} my={2.5}>
