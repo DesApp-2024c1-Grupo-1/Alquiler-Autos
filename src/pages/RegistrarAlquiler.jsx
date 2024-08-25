@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Button
+  InputLabel, InputAdornment, FormControl, Button, Autocomplete
 } from "@mui/material";
 import {  getCarById,getCarByIdFake  } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
@@ -49,6 +49,8 @@ export function FormAlquiler({ car }) {
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
 
+  // Lista de lugares predefinidos para el campo "Lugar de Retiro"
+  const predefinedLocations = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
   useEffect(() => {
     dispatch(editAuto(car));
