@@ -117,10 +117,10 @@ export function FormAlquiler({ car }) {
   }, [errorDevolucion]);
 
 
-  const handleLugarRetiroChange = (e) => {
-    const value = e.target.value;
+  // Maneja el cambio de lugar de retiro usando Autocomplete
+  const handleLugarRetiroChange = (event, value) => {
     dispatch(editLugarRetiro(value));
-    setLugarRetiroValido(!!value); // Verifica si el campo no está vacío
+    setLugarRetiroValido(!!value);
   };
 
   const handleLugarDevolucionChange = (e) => {
@@ -141,14 +141,21 @@ export function FormAlquiler({ car }) {
         autoComplete="off"
       >
         <div>
-          <TextField
-            required
-            id="outlined-required"
-            label="Lugar de Retiro"
+          {/* Campo de Lugar de Retiro modificado para usar Autocomplete */}
+          <Autocomplete
+            freeSolo
+            options={predefinedLocations} // Usa la lista de lugares predefinidos
             defaultValue={formAlquiler.lugarRetiro}
-            onChange={handleLugarRetiroChange}
-            error={!lugarRetiroValido}
-            helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+            onInputChange={handleLugarRetiroChange} // Usa el manejador adaptado para Autocomplete
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                label="Lugar de Retiro"
+                error={!lugarRetiroValido}
+                helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+              />
+            )}
           />
           <TextField
             required
