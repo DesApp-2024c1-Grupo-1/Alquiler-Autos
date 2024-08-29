@@ -18,6 +18,9 @@ import { enGB } from 'date-fns/locale';
 import AddClientDialog from '../components/AddClientDialog.jsx';
 import { set } from "lodash";
 
+// Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
+import { lugaresFijos } from "../components/Filtros.jsx";
+
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
     <CardMedia
@@ -50,7 +53,7 @@ export function FormAlquiler({ car }) {
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
 
   // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
-  const predefinedLocations = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
+  //const lugaresFijos = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
   useEffect(() => {
     dispatch(editAuto(car));
@@ -147,7 +150,7 @@ export function FormAlquiler({ car }) {
             <Grid item xs={12} sm={6}> {/* Lugar de Retiro en la primera columna */}
               <Autocomplete
                 freeSolo
-                options={predefinedLocations} // Usa la lista de lugares predefinidos
+                options={lugaresFijos} // Usa la lista de lugares predefinidos
                 value={formAlquiler.lugarRetiro}
                 onChange={handleLugarRetiroChange} // Usa el manejador adaptado para Autocomplete
                 renderInput={(params) => (
@@ -165,7 +168,7 @@ export function FormAlquiler({ car }) {
             <Grid item xs={12} sm={6}> {/* Lugar de Devolución en la segunda columna */}
               <Autocomplete
                 freeSolo
-                options={predefinedLocations} // Usa la misma lista de lugares predefinidos
+                options={lugaresFijos} // Usa la misma lista de lugares predefinidos
                 value={formAlquiler.lugarDevolucion}
                 onChange={handleLugarDevolucionChange} // Usa el manejador adaptado para Autocomplete
                 renderInput={(params) => (
