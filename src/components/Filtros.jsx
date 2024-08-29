@@ -84,19 +84,15 @@ const Filtros = ({handleFiltros}) => {
   // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
   const predefinedLocations = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
+  {/* Campo de Lugar de Retiro y Devolucion modificado para usar Autocomplete */}
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius: 5 }}>
       <Box>
-        <Grid direction="column" container spacing={2}>
-          <Grid
-            pr={1}
-            my={2}
-            item xs={12} sm={12} xl={12} lg={12}
-            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
-          >
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
-              options={predefinedLocations} //Utiliza la lista de lugares predefinidos
+              options={predefinedLocations} //Utiliza la misma lista de lugares predefinidos
               value={retiro || formAlquiler.lugarRetiro} //Aca Maneja el valor actual
               onChange={(event, newValue) => {
                 setRetiro(newValue); //Actualiza el estado local
@@ -107,10 +103,16 @@ const Filtros = ({handleFiltros}) => {
                   {...params}
                   required
                   label="Lugar de Retiro"
-                  sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mr: 1 }}
+                  sx={{
+                    backgroundColor: "#B3D0FB",
+                    width: '100%' //Asegura que ocupe todo el ancho del Grid item
+                  }}
                 />
               )}
             />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
               options={predefinedLocations} //Utiliza la misma lista de lugares predefinidos
@@ -123,30 +125,33 @@ const Filtros = ({handleFiltros}) => {
                 <TextField
                   {...params}
                   required
-                  label="Lugar de devolución"
-                  sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mx: 1 }}
+                  label="Lugar de Devolución"
+                  sx={{
+                    backgroundColor: "#B3D0FB",
+                    width: '100%' //Asegura que ocupe todo el ancho del Grid item
+                  }}
                 />
               )}
             />
           </Grid>
+        </Grid>
 
-          <Grid
-            my={2}
-            pr={1}
-            item xs={12} sm={12} xl={12} lg={12}
-            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
-          >
+        <Grid container spacing={2} my={2}>
+          <Grid item xs={12} sm={6}> 
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => {
-                  dispatch(editFechaRetiro(newValue.toString()))
+                  dispatch(editFechaRetiro(newValue.toString()));
                 }}
-                sx={{ backgroundColor: "#B3D0FB", flex: 1, pr: 0, mx: 1 }}
+                sx={{
+                  backgroundColor: "#B3D0FB",
+                  width: '100%' 
+                }}
                 disablePast
                 onError={(newError) => {
-                  setError(newError)
+                  setError(newError);
                 }}
                 slotProps={{
                   textField: {
@@ -155,17 +160,22 @@ const Filtros = ({handleFiltros}) => {
                 }}
               />
             </LocalizationProvider>
-  
+          </Grid>
+
+          <Grid item xs={12} sm={6}> 
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
               <DesktopDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
-                sx={{ backgroundColor: "#B3D0FB", flex: 1, pl: 1, mx: 1 }}
+                sx={{
+                  backgroundColor: "#B3D0FB",
+                  width: '100%'
+                }}
                 disablePast
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
-                  setError(newError)
+                  setError(newError);
                 }}
                 slotProps={{
                   textField: {
