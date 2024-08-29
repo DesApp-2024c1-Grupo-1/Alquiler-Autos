@@ -140,39 +140,47 @@ export function FormAlquiler({ car }) {
         noValidate
         autoComplete="off"
       >
+        {/* Campo de Lugar de Retiro modificado para usar Autocomplete */}
         <div>
-          {/* Campo de Lugar de Retiro modificado para usar Autocomplete */}
-          <Autocomplete
-            freeSolo
-            options={predefinedLocations} // Usa la lista de lugares predefinidos
-            defaultValue={formAlquiler.lugarRetiro}
-            onInputChange={handleLugarRetiroChange} // Usa el manejador adaptado para Autocomplete
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                required
-                label="Lugar de Retiro"
-                error={!lugarRetiroValido}
-                helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+          {/* Usamos un Grid para alinear los campos de Lugar de Retiro y Lugar de Devolución en una fila */}
+          <Grid container spacing={2}> {/* Grid container para organizar los elementos en una fila */}
+            <Grid item xs={12} sm={6}> {/* Lugar de Retiro en la primera columna */}
+              <Autocomplete
+                freeSolo
+                options={predefinedLocations} // Usa la lista de lugares predefinidos
+                value={formAlquiler.lugarRetiro}
+                onChange={handleLugarRetiroChange} // Usa el manejador adaptado para Autocomplete
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Lugar de Retiro"
+                    error={!lugarRetiroValido}
+                    helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+                  />
+                )}
               />
-            )}
-          />
-          {/* Campo de Lugar de Devolución modificado para usar Autocomplete */}
-          <Autocomplete
-            freeSolo
-            options={predefinedLocations} // Usa la misma lista de lugares predefinidos
-            value={formAlquiler.lugarDevolucion}
-            onChange={handleLugarDevolucionChange} // Usa el manejador adaptado para Autocomplete
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                required
-                label="Lugar de Devolución"
-                error={!lugarDevolucionValido}
-                helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+            </Grid>
+
+            <Grid item xs={12} sm={6}> {/* Lugar de Devolución en la segunda columna */}
+              <Autocomplete
+                freeSolo
+                options={predefinedLocations} // Usa la misma lista de lugares predefinidos
+                value={formAlquiler.lugarDevolucion}
+                onChange={handleLugarDevolucionChange} // Usa el manejador adaptado para Autocomplete
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Lugar de Devolución"
+                    error={!lugarDevolucionValido}
+                    helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+                  />
+                )}
               />
-            )}
-          />
+            </Grid>
+          </Grid>
+          
           <Box>
             <Grid direction="column" container spacing={2} my={2.5}>
               <Grid
