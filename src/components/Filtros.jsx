@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button, Autocomplete, TextField } from '@mui/material';
 
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -81,6 +81,8 @@ const Filtros = ({handleFiltros}) => {
     }
   }, [error]);
 
+  // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
+  const predefinedLocations = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
   return (
     <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius: 5 }}>

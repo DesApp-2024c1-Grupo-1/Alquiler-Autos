@@ -140,7 +140,7 @@ export function FormAlquiler({ car }) {
         noValidate
         autoComplete="off"
       >
-        {/* Campo de Lugar de Retiro modificado para usar Autocomplete */}
+        {/* Campo de Lugar de Retiro y Devolucion modificado para usar Autocomplete */}
         <div>
           {/* Usamos un Grid para alinear los campos de Lugar de Retiro y Lugar de Devolución en una fila */}
           <Grid container spacing={2}> {/* Grid container para organizar los elementos en una fila */}
@@ -180,7 +180,7 @@ export function FormAlquiler({ car }) {
               />
             </Grid>
           </Grid>
-          
+
           <Box>
             <Grid direction="column" container spacing={2} my={2.5}>
               <Grid
