@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button, Autocomplete, TextField } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button, Autocomplete } from '@mui/material';
 
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -94,16 +94,22 @@ const Filtros = ({handleFiltros}) => {
             item xs={12} sm={12} xl={12} lg={12}
             sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
           >
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de Retiro"
-              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mr: 1 }}
-              defaultValue={formAlquiler.lugarRetiro}
-              onChange={(e) => {
-                dispatch(editLugarRetiro(e.target.value));
-                setRetiro(e.target.value);
+            <Autocomplete
+              freeSolo
+              options={predefinedLocations} //Utiliza la lista de lugares predefinidos
+              value={retiro || formAlquiler.lugarRetiro} //Aca Maneja el valor actual
+              onChange={(event, newValue) => {
+                setRetiro(newValue); //Actualiza el estado local
+                dispatch(editLugarRetiro(newValue)); //Actualiza el valor en Redux
               }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de Retiro"
+                  sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mr: 1 }}
+                />
+              )}
             />
             <TextField
               required
