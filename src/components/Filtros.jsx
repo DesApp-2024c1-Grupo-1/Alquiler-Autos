@@ -111,18 +111,25 @@ const Filtros = ({handleFiltros}) => {
                 />
               )}
             />
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de devolución"
-              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mx: 1 }}
-              defaultValue={formAlquiler.lugarDevolucion}
-              onChange={(e) => {
-                dispatch(editLugarDevolucion(e.target.value));
-                setDevolucion(e.target.value);
+            <Autocomplete
+              freeSolo
+              options={predefinedLocations} //Utiliza la misma lista de lugares predefinidos
+              value={devolucion || formAlquiler.lugarDevolucion} //Aca Maneja el valor actual
+              onChange={(event, newValue) => {
+                setDevolucion(newValue); //Actualiza el estado local
+                dispatch(editLugarDevolucion(newValue)); //Actualiza el valor en Redux
               }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de devolución"
+                  sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mx: 1 }}
+                />
+              )}
             />
           </Grid>
+
           <Grid
             my={2}
             pr={1}
