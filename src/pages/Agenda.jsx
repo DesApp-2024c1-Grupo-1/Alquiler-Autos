@@ -70,19 +70,19 @@ function AgendaPage() {
     }
 
     setAppointment(event);
-    setAppointmentInfo(event.data?.cliente?.nombre);
-    setAppointmentLocation(event.data?.lugarDevolucion);
+    setAppointmentInfo(event.alquiler.cliente?.nombre);
+    setAppointmentLocation(event.alquiler.lugarDevolucion);
     setAppointmentTime(time);
-    setAppointmentReason(  event.data?.lugarRetiro );
+    setAppointmentReason(  event.alquiler.lugarRetiro );
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
-    setAppointmentTimeR(event.data?.fechaRetiro)
-    setAppointmentTimeD(event.data?.fechaDevolucion)
+    setAppointmentTimeR(event.alquiler.fechaRetiro)
+    setAppointmentTimeD(event.alquiler.fechaDevolucion)
 
 
-    const fechaRetiro = event.data?.fechaRetiro;
-    const fechaDevolucion = event.data?.fechaDevolucion;
+    const fechaRetiro = event.alquiler.fechaRetiro;
+    const fechaDevolucion = event.alquiler.fechaDevolucion;
 
     console.log('Fecha Retiro:', fechaRetiro);
     console.log('Fecha Devolucion:', fechaDevolucion);
@@ -100,7 +100,7 @@ function AgendaPage() {
 
   const viewAppointmentFile = useCallback(() => {
     setTooltipOpen(false);
-    setCustomerData(appointment.data?.cliente);
+    setCustomerData(appointment.alquiler.cliente);
     setCustomerPopupOpen(true);
   }, [appointment]);
 
@@ -174,10 +174,11 @@ function AgendaPage() {
       />
     <Popup
       anchor={tooltipAnchor}
-      closeOnOverlayClick={false}
+      closeOnOverlayClick={true} //Para que el tooltip se cierre al hacer click en otro lado
       contentPadding={false}
       display="anchored"
       isOpen={isTooltipOpen}
+      onClose={() => setTooltipOpen(false)} //Para que el tooltip se cierre al hacer click en otro lado
       showOverlay={false}
       touchUi={false}
       width={350}
