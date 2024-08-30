@@ -128,6 +128,16 @@ const Filtros = ({ handleFiltros }) => {
     }
   }, [error]);
 
+  //Maneja los cambios en lugar de retiro
+  const handleLugarRetiroChange = (event, newValue) => {
+    dispatch(editLugarRetiro(newValue)); 
+  };
+
+  //Maneja los cambios en lugar de devolución
+  const handleLugarDevolucionChange = (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue)); 
+  };
+
   {
     /* Campo de Lugar de Retiro y Devolucion modificado para usar Autocomplete */
   }
@@ -141,11 +151,8 @@ const Filtros = ({ handleFiltros }) => {
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={retiro || formAlquiler.lugarRetiro} //Aca Maneja el valor actual
-              onChange={(event, newValue) => {
-                setRetiro(newValue); //Actualiza el estado local
-                dispatch(editLugarRetiro(newValue)); //Actualiza el valor en Redux
-              }}
+              value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
+              onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -164,11 +171,8 @@ const Filtros = ({ handleFiltros }) => {
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={devolucion || formAlquiler.lugarDevolucion} //Aca Maneja el valor actual
-              onChange={(event, newValue) => {
-                setDevolucion(newValue); //Actualiza el estado local
-                dispatch(editLugarDevolucion(newValue)); //Actualiza el valor en Redux
-              }}
+              value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
+              onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
               renderInput={(params) => (
                 <TextField
                   {...params}

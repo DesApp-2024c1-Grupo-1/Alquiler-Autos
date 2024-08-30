@@ -52,8 +52,6 @@ export function FormAlquiler({ car }) {
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
 
-  // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
-  //const lugaresFijos = ["Hurlingham", "Morón", "San Martin", "Aeroparque", "Aeropuerto Ezeiza"];
 
   useEffect(() => {
     dispatch(editAuto(car));
@@ -120,16 +118,13 @@ export function FormAlquiler({ car }) {
   }, [errorDevolucion]);
 
 
-  // Maneja el cambio de lugar de retiro usando Autocomplete
-  const handleLugarRetiroChange = (event, value) => {
-    dispatch(editLugarRetiro(value));
-    setLugarRetiroValido(!!value);
+  //Manteniene los valores ingresados por el usuario
+  const handleLugarRetiroChange = (event, newValue) => {
+    dispatch(editLugarRetiro(newValue)); 
   };
 
-  // Maneja el cambio de lugar de devolución usando Autocomplete
-  const handleLugarDevolucionChange = (event, value) => {
-    dispatch(editLugarDevolucion(value));
-    setLugarDevolucionValido(!!value);
+  const handleLugarDevolucionChange = (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue)); 
   };
 
 
@@ -151,8 +146,8 @@ export function FormAlquiler({ car }) {
               <Autocomplete
                 freeSolo
                 options={lugaresFijos} // Usa la lista de lugares predefinidos
-                value={formAlquiler.lugarRetiro}
-                onChange={handleLugarRetiroChange} // Usa el manejador adaptado para Autocomplete
+                value={formAlquiler.lugarRetiro || ''}
+                onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -169,8 +164,8 @@ export function FormAlquiler({ car }) {
               <Autocomplete
                 freeSolo
                 options={lugaresFijos} // Usa la misma lista de lugares predefinidos
-                value={formAlquiler.lugarDevolucion}
-                onChange={handleLugarDevolucionChange} // Usa el manejador adaptado para Autocomplete
+                value={formAlquiler.lugarDevolucion || ''}
+                onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
                 renderInput={(params) => (
                   <TextField
                     {...params}
