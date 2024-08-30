@@ -19,13 +19,44 @@ import { blueGrey } from "@mui/material/colors";
 
 
 export default function ButtonEditCar(car) {
+
     const {carData} = car
-    
     const [open, setOpen] = React.useState(false);
     const [combustible, setCombustible] = React.useState('');
     const [transmision, setTransmision] = React.useState('');
     const [ac, setAc] = React.useState('');
     const [capacidad, setCapacidad] = React.useState('');
+    const [formValues, setFormValues] = React.useState({
+      name: '',
+      brand: '',
+      year: '',
+      km: '',
+      color: '',
+      price: '',
+      image: '',
+      patente: ''
+    })
+
+    React.useEffect(() => {
+      if (carData) {
+          // Si hay auto, se establece sus como valores iniciales
+          setFormValues({
+              name: carData.name || '',
+              brand: carData.brand || '',
+              year: carData.year || '',
+              km: carData.km || '',
+              color: carData.color || '',
+              price: carData.price || '',
+              image: carData.image || '',
+              patente: carData.patente || ''
+          });
+          setCombustible(carData.combustible || '');
+          setTransmision(carData.transmision || '');
+          setAc(carData.ac ? 'Sí' : 'No');
+          setCapacidad(carData.capacidad || '');
+      }
+  }, [carData]); // Se ejecuta cada vez que carData cambie
+    
 
 
     const handleClickOpen = () => {
@@ -73,6 +104,8 @@ export default function ButtonEditCar(car) {
                   type="text"
                   fullWidth
                   variant="standard"
+                  value={formValues.name}
+                  onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -84,6 +117,8 @@ export default function ButtonEditCar(car) {
                   type="text"
                   fullWidth
                   variant="standard"
+                  value={formValues.brand}
+                  onChange={(e) => setFormValues({ ...formValues, brand: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -95,6 +130,8 @@ export default function ButtonEditCar(car) {
                   type="number"
                   fullWidth
                   variant="standard"
+                  value={formValues.year}
+                  onChange={(e) => setFormValues({ ...formValues, year: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -106,6 +143,8 @@ export default function ButtonEditCar(car) {
                   type="number"
                   fullWidth
                   variant="standard"
+                  value={formValues.km}
+                  onChange={(e) => setFormValues({...formValues, km: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -117,6 +156,8 @@ export default function ButtonEditCar(car) {
                   type="text"
                   fullWidth
                   variant="standard"
+                  value={formValues.color}
+                  onChange={(e) => setFormValues({...formValues, color: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -128,6 +169,8 @@ export default function ButtonEditCar(car) {
                   type="number"
                   fullWidth
                   variant="standard"
+                  value={formValues.price}
+                  onChange={(e) => setFormValues({...formValues, price: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -139,6 +182,8 @@ export default function ButtonEditCar(car) {
                   type="url"
                   fullWidth
                   variant="standard"
+                  value={formValues.image}
+                  onChange={(e) => setFormValues({...formValues, image: e.target.value })}
                 />
                 <FormControl fullWidth variant="standard" margin="dense" requered>
                     <InputLabel id="transmision-label">Transmisión</InputLabel>
@@ -212,6 +257,8 @@ export default function ButtonEditCar(car) {
                   type="text"
                   fullWidth
                   variant="standard"
+                  value={formValues.patente}
+                  onChange={(e) => setFormValues({...formValues, patente: e.target.value })}
                 />
               </DialogContent>
               <DialogActions>
