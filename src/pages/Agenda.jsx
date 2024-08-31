@@ -63,7 +63,7 @@ function AgendaPage() {
   const openTooltip = useCallback((args) => {
     const event = args.event;
     const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
-    console.log('Event Data:', event); // Verifica los datos del evento
+    // console.log('Event Data:', event); // Verifica los datos del evento
 
     if (timer.current) {
       clearTimeout(timer.current);
@@ -84,8 +84,8 @@ function AgendaPage() {
     const fechaRetiro = event.alquiler.fechaRetiro;
     const fechaDevolucion = event.alquiler.fechaDevolucion;
 
-    console.log('Fecha Retiro:', fechaRetiro);
-    console.log('Fecha Devolucion:', fechaDevolucion);
+    // console.log('Fecha Retiro:', fechaRetiro);
+    // console.log('Fecha Devolucion:', fechaDevolucion);
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
     setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
