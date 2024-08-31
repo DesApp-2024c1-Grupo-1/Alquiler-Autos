@@ -11,10 +11,12 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl
+  InputLabel, InputAdornment, FormControl, Modal
 } from "@mui/material";
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { Portal } from '@mui/material';
+
+
 
 
 setOptions({
@@ -70,6 +72,25 @@ function AgendaPage() {
   const [customerData, setCustomerData] = useState({});
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
 
+
+  const handleEditClick = () => {
+    setEditPopupOpen(true);
+  };
+
+  const handleEditDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSaveChanges = () => {
+    // Aquí deberías hacer la lógica para guardar los cambios en el servidor o en el estado
+    console.log('Guardar cambios', editData);
+    setEditPopupOpen(false);
+  };
+
+  const handleCloseEditPopup = () => {
+    setEditPopupOpen(false);
+  };
 
   const [editData, setEditData] = useState({
     lugarRetiro: '',
@@ -202,13 +223,7 @@ function AgendaPage() {
 
   return (
     <>
-      <style>
-        {`
-        .MuiDateTimePicker-root {
-          z-index: 1500 !important; /* Asegúrate de que el calendario esté sobre el Popup */
-        }
-      `}
-      </style>
+<Box>
 
       <Eventcalendar
         data={appointments}
@@ -222,6 +237,7 @@ function AgendaPage() {
         displayTimezone='America/Buenos_Aires'
 
       />
+
       <Popup
         anchor={tooltipAnchor}
         closeOnOverlayClick={false}
@@ -232,6 +248,7 @@ function AgendaPage() {
         touchUi={false}
         width={350}
       >
+         <div style={{ backgroundColor: 'red', height: '100%', width: '100%' }}>
         <div className="mds-tooltip" onMouseEnter={() => { }} onMouseLeave={() => { }}>
           <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor }}>
             <span>{appointmentInfo}</span>
@@ -265,7 +282,11 @@ function AgendaPage() {
 
           </div>
         </div>
+
+        </div>
       </Popup>
+
+
       <Popup
         isOpen={isCustomerPopupOpen}
         onClose={() => setCustomerPopupOpen(false)}
@@ -367,20 +388,11 @@ function AgendaPage() {
                 className="customer-popup-label"
                 style={{
                   fontWeight: 'bold',
-                  color: '#555',
-                }}
-              >
-                Teléfono:
-              </span>
+                  color: '#555',}}>Teléfono:</span>
               <span
                 className="customer-popup-value"
                 style={{
-                  color: '#777',
-                }}
-              >
-                {customerData.telefono}
-              </span>
-            </div>
+                color: '#777',}}>{customerData.telefono}</span></div>
             <div
               className="customer-popup-item"
               style={{
@@ -429,98 +441,81 @@ function AgendaPage() {
         duration={5000}
       />
 
-      <Popup
-        isOpen={isEditPopupOpen}
-        onClose={() => setEditPopupOpen(false)}
-        display="center"
-        contentPadding={true}
-        closeOnOverlayClick={true}
-        style={{
-          borderRadius: '8px',
-          overflow: 'hidden',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-          width: '600px',
-          maxWidth: '90%',
-          height: 'auto',
-          maxHeight: '80vh',
-          position: 'relative',
-          padding: '20px',
-          zIndex: 500 // Asegúrate de que sea mayor que el del DateTimePicker
+
+
+
+
+      <Modal
+        open={isEditPopupOpen}
+        onClose={handleCloseEditPopup}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+         <Box
+        sx={{
+          width: 500,
+          height:400,
+          padding: 2,
+          backgroundColor: 'white',
+          position: 'absolute',
+          top: '50%', // Centra verticalmente
+          left: '50%', // Centra horizontalmente
+          transform: 'translate(-50%, -50%)', // Ajusta para centrar en ambas direcciones
+          boxShadow: 24, // Sombra opcional
+          borderRadius: 1, // Esquinas redondeadas opcional
         }}
       >
-        <Box p={2}>
-          <div className="edit-popup-header">
-            <h2>Editar Cita</h2>
-          </div>
-          <div className="edit-popup-body">
-            <Box mb={2}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="lugarRetiro">Lugar Retiro</InputLabel>
-                <OutlinedInput
-                  id="lugarRetiro"
-                  value={editData.lugarRetiro}
-                  onChange={(e) => setEditData({ ...editData, lugarRetiro: e.target.value })}
-                />
-              </FormControl>
-            </Box>
-            <Box mb={2}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="lugarDevolucion">Lugar Devolución</InputLabel>
-                <OutlinedInput
-                  id="lugarDevolucion"
-                  value={editData.lugarDevolucion}
-                  onChange={(e) => setEditData({ ...editData, lugarDevolucion: e.target.value })}
-                />
-              </FormControl>
-            </Box>
-            <Box mb={2}>
-              <LocalizationProvider dateAdapter={AdapterDateFns} locale={enGB}>
-                <DesktopDateTimePicker
-                  label="Fecha Retiro"
-                  inputFormat="MM/dd/yyyy HH:mm"
-                  value={editData.fechaRetiro}
-                  onChange={(newValue) => setEditData({ ...editData, fechaRetiro: newValue })}
-                  renderInput={(params) => <TextField {...params} fullWidth style={{ zIndex: 1500 }} />}
-                />
-              </LocalizationProvider>
-            </Box>
-            <Box mb={2}>
-              <LocalizationProvider dateAdapter={AdapterDateFns} locale={enGB}>
-                <DesktopDateTimePicker
-                  label="Fecha Devolución"
-                  inputFormat="MM/dd/yyyy HH:mm"
-                  value={editData.fechaDevolucion}
-                  onChange={(newValue) => setEditData({ ...editData, fechaDevolucion: newValue })}
-                  renderInput={(params) => <TextField {...params} style={{ zIndex: 1500 }} />}
-                />
-              </LocalizationProvider>
-            </Box>
-          </div>
-          <div className="edit-popup-footer">
-            <Button
-              color="primary"
-              onClick={() => {
+          <Typography variant="h6" >Editar Evento</Typography>
+          <Box
+          >
+            
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+              <Box sx={{display: 'flex', gap: 2, mb:2 }}>
 
-                const updatedAppointment = { ...appointment };
-                updatedAppointment.data.lugarRetiro = editData.lugarRetiro;
-                updatedAppointment.data.lugarDevolucion = editData.lugarDevolucion;
-                updatedAppointment.data.fechaRetiro = editData.fechaRetiro;
-                updatedAppointment.data.fechaDevolucion = editData.fechaDevolucion;
-                setAppointment(updatedAppointment);
-                setAppointments(appointments.map(item => item.id === updatedAppointment.id ? updatedAppointment : item));
-                setEditPopupOpen(false);
-                setToastMessage('Cita actualizada');
-                setToastOpen(true);
-              }}
-            >
-              Guardar
-            </Button>
-            <Button color="secondary" onClick={() => setEditPopupOpen(false)}>
-              Cancelar
-            </Button>
-          </div>
+
+             
+              <Box sx={{display: 'flex'}}>
+              <DesktopDateTimePicker
+                label="Fecha de Retiro"
+                value={editData.fechaRetiro ? new Date(editData.fechaRetiro) : null}
+                onChange={(newValue) => setEditData((prevData) => ({ ...prevData, fechaRetiro: newValue }))}
+                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              />
+              </Box>
+              <Box sx={{display: 'flex'}}>
+              <DesktopDateTimePicker
+                label="Fecha de Devolución"
+                value={editData.fechaDevolucion ? new Date(editData.fechaDevolucion) : null}
+                onChange={(newValue) => setEditData((prevData) => ({ ...prevData, fechaDevolucion: newValue }))}
+                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              />
+              </Box>
+              </Box>
+            </LocalizationProvider>
+
+            <TextField
+              label="Lugar de Retiro"
+              name="lugarRetiro"
+              value={editData.lugarRetiro}
+              onChange={handleEditDataChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Lugar de Devolución"
+              name="lugarDevolucion"
+              value={editData.lugarDevolucion}
+              onChange={handleEditDataChange}
+              fullWidth
+              margin="normal"
+            />
+          </Box>
+          <Button variant="contained"  sx={{ backgroundColor: 'blue', color: 'white', '&:hover': { backgroundColor: 'darkblue' } }} onClick={handleSaveChanges}>Guardar Cambios</Button>
+          <Button variant="outlined" color="secondary" onClick={handleCloseEditPopup}>Cancelar</Button>
         </Box>
-      </Popup>
+      </Modal>
+    </Box>
+
     </>
   );
 
