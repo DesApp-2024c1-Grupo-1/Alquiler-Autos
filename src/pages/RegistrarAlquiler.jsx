@@ -169,7 +169,7 @@ export function FormAlquiler({ car }) {
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
                     onChange={(newValue) => {
-                      dispatch(editFechaRetiro(newValue.toString()))
+                      dispatch(editFechaRetiro(newValue))
                     }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
@@ -193,7 +193,7 @@ export function FormAlquiler({ car }) {
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
                     onChange={(newValue) => {
-                      dispatch(editFechaDevolucion(newValue.toString()))
+                      dispatch(editFechaDevolucion(newValue))
                     }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
