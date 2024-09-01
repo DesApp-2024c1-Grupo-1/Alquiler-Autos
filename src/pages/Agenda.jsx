@@ -14,10 +14,6 @@ import {
   InputLabel, InputAdornment, FormControl, Modal
 } from "@mui/material";
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
-import { Portal } from '@mui/material';
-
-
-
 
 setOptions({
   locale: localeEs,
@@ -74,15 +70,23 @@ function AgendaPage() {
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   
   const [appointmentPatente, setAppointmentPatente] = useState('null');
+  const [isEditDatosCOpen, setEditDatosCOpen] = useState(false)
 
+  const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
+  
 
- 
+  const handleEditDatosCChange = (e) => {
+    const { name, value } = e.target;
+    setEditDatosC((prevData) => ({ ...prevData, [name]: value }));
+  };
 
+  const handleSaveCustomerChanges = () => {
+    console.log('Guardar cambios del cliente', editDatosC);
+    setEditCustomerModalOpen(false);
 
-  const events=[
-    {eventId: 1, patente: event.data}
-  ]
-
+    // Aca agregar la lógica para guardar los cambios en el backend 
+  };
+  
 
 
   const handleDeleteClick = () => {
@@ -91,7 +95,7 @@ function AgendaPage() {
 
   const handleConfirmDelete = () => {
     setDeleteConfirmOpen(false);
-    // Aquí colocas la lógica para eliminar el elemento
+
     deleteAppointment();
   };
 
@@ -110,8 +114,8 @@ function AgendaPage() {
   };
 
   const handleSaveChanges = () => {
-    // Aquí deberías hacer la lógica para guardar los cambios en el servidor o en el estado
     console.log('Guardar cambios', editData);
+    {/*Agregar logica de back aca tambien*/}
     setEditPopupOpen(false);
   };
 
@@ -125,6 +129,13 @@ function AgendaPage() {
     fechaRetiro: '',
     fechaDevolucion: ''
   });
+
+  const [editDatosC, setEditDatosC] = useState({
+    nombre: '',
+    documento: '',
+    telefono: '',
+    email: ''
+  })
 
 
 
@@ -164,6 +175,7 @@ function AgendaPage() {
     console.log('Fecha Retiro:', fechaRetiro);
     console.log('Fecha Devolucion:', fechaDevolucion);
     console.log('La patente es: ', patenteEs)
+    console.log('La persona es:', event.data?.cliente?.nombre )
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
     setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -230,7 +242,6 @@ function AgendaPage() {
 
 
   const deleteAppointment = useCallback(() => {
-    // Filtra las citas para eliminar ambas (retiro y devolución) basadas en la patente
     setAppointments((appointments) =>
         appointments.filter((item) => item.data?.car?.patente !== appointmentPatente)
     );
@@ -250,6 +261,19 @@ function AgendaPage() {
     setTooltipOpen(false);
     setEditPopupOpen(true);
   }, [appointment]);
+
+  const editDatosCliente = useCallback(() => {
+    console.log('Ejecutando editDatosCliente');
+    console.log('Datos del cliente antes de set:', appointment?.data?.cliente?.nombre);
+    setEditDatosC({
+      nombre: appointment.data?.cliente?.nombre || '',
+      documento: appointment.data?.cliente?.documento || '',
+      telefono: appointment.data?.cliente?.telefono || '',
+      email: appointment.data?.cliente?.email
+    });
+    setCustomerPopupOpen(false);  
+    setEditCustomerModalOpen(true);  
+  },[appointment]); 
 
 
 
@@ -319,6 +343,9 @@ function AgendaPage() {
         </div>
       </Popup>
 
+
+
+
       <Popup
         isOpen={isDeleteConfirmOpen}
         onClose={handleCancelDelete}
@@ -367,6 +394,7 @@ function AgendaPage() {
               backgroundColor: '#f7f7f7',
               padding: '16px',
               borderBottom: '1px solid #e0e0e0',
+              width:350
             }}
           >
             <h2
@@ -474,7 +502,7 @@ function AgendaPage() {
               <span
                 className="customer-popup-value"
                 style={{
-                  color: '#777',
+                  color: '#777', 
                 }}
               >
                 {customerData.email}
@@ -489,6 +517,9 @@ function AgendaPage() {
               textAlign: 'right',
             }}
           >
+            <Button color="primary" className="mds-tooltip-button" onClick={editDatosCliente}>
+              Editar datos cliente
+            </Button>
             <Button color="secondary" onClick={() => setCustomerPopupOpen(false)}>
               Cerrar
             </Button>
@@ -514,7 +545,7 @@ function AgendaPage() {
          <Box
         sx={{
           width: 500,
-          height:400,
+          height:350,
           padding: 2,
           backgroundColor: 'white',
           position: 'absolute',
@@ -525,7 +556,7 @@ function AgendaPage() {
           borderRadius: 1, 
         }}
       >
-          <Typography variant="h6" >Editar Evento</Typography>
+          <Typography variant="h6" marginBottom={1}>Editar Evento</Typography>
           <Box
           >  
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
@@ -565,11 +596,71 @@ function AgendaPage() {
               margin="normal"
             />
           </Box>
-          <Button variant="contained"  sx={{ backgroundColor: 'blue', color: 'white', '&:hover': { backgroundColor: 'darkblue' } }} onClick={handleSaveChanges}>Guardar Cambios</Button>
-          <Button variant="outlined" color="secondary" onClick={handleCloseEditPopup}>Cancelar</Button>
+          <Button  color="primary" onClick={handleSaveChanges}>Guardar Cambios</Button>
+          <Button  color="secondary" onClick={handleCloseEditPopup}>Cancelar</Button>
         </Box>
       </Modal>
+
+
+      <Modal
+        open={isEditCustomerModalOpen}
+        onClose={() => setEditCustomerModalOpen(false)}
+      >
+  <Box sx={{
+          width: 500,
+          height:475,
+          padding: 2,
+          backgroundColor: 'white',
+          position: 'absolute',
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          boxShadow: 24, 
+          borderRadius: 1, 
+        }}>
+    <Typography variant="h6" marginBottom={2}>Editar Datos del Cliente</Typography>
+    <TextField
+      label="Nombre"
+      name="nombre"
+      value={editDatosC.nombre}
+      onChange={handleEditDatosCChange}
+      fullWidth
+      sx={{padding:2}}
+    />
+    <TextField
+      label="Documento"
+      name="documento"
+      value={editDatosC.documento}
+      onChange={handleEditDatosCChange}
+      fullWidth
+      sx={{padding:2}}
+    />
+    <TextField
+      label="Teléfono"
+      name="telefono"
+      value={editDatosC.telefono}
+      onChange={handleEditDatosCChange}
+      fullWidth
+      sx={{padding:2}}
+    />
+    <TextField
+      label="Email"
+      name="email"
+      value={editDatosC.email}
+      onChange={handleEditDatosCChange}
+      fullWidth
+      sx={{padding:2}}
+    />
+    <Button color="primary" onClick={handleSaveCustomerChanges}>Guardar</Button>
+    <Button color="secondary" onClick={() => setEditCustomerModalOpen(false)}>Cancelar</Button>
+  </Box>
+</Modal>
+
+      
     </Box>
+
+
+
 
     </>
   );
