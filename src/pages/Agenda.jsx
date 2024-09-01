@@ -71,6 +71,33 @@ function AgendaPage() {
   const [isCustomerPopupOpen, setCustomerPopupOpen] = useState(false);
   const [customerData, setCustomerData] = useState({});
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
+  const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  
+  const [appointmentPatente, setAppointmentPatente] = useState('null');
+
+
+ 
+
+
+  const events=[
+    {eventId: 1, patente: event.data}
+  ]
+
+
+
+  const handleDeleteClick = () => {
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setDeleteConfirmOpen(false);
+    // Aquí colocas la lógica para eliminar el elemento
+    deleteAppointment();
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmOpen(false);
+  };
 
 
   const handleEditClick = () => {
@@ -126,6 +153,9 @@ function AgendaPage() {
     setTooltipOpen(true);
     setAppointmentTimeR(event.data?.fechaRetiro)
     setAppointmentTimeD(event.data?.fechaDevolucion)
+    setAppointmentPatente(event.data?.car?.patente)
+
+    const patenteEs = event.data?.car?.patente
 
 
     const fechaRetiro = event.data?.fechaRetiro;
@@ -133,6 +163,7 @@ function AgendaPage() {
 
     console.log('Fecha Retiro:', fechaRetiro);
     console.log('Fecha Devolucion:', fechaDevolucion);
+    console.log('La patente es: ', patenteEs)
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
     setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -202,7 +233,7 @@ function AgendaPage() {
     {/*Para delete*/ }
     setAppointments(appointments.filter((item) => item.id !== appointment.id));
     setTooltipOpen(false);
-    setToastMessage('Cita eliminada');
+    setToastMessage('Auto eliminado');
     setToastOpen(true);
   }, [appointments, appointment]);
 
@@ -223,7 +254,7 @@ function AgendaPage() {
 
   return (
     <>
-<Box>
+      <Box>
 
       <Eventcalendar
         data={appointments}
@@ -248,11 +279,11 @@ function AgendaPage() {
         touchUi={false}
         width={350}
       >
-         <div style={{ backgroundColor: 'red', height: '100%', width: '100%' }}>
+         <div style={{ height: '100%', width: '100%' }}>
         <div className="mds-tooltip" onMouseEnter={() => { }} onMouseLeave={() => { }}>
-          <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor }}>
-            <span>{appointmentInfo}</span>
-            <span className="mbsc-pull-right">{appointmentTime}</span>
+          <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor, padding:2 }}>
+            <span style={{marginLeft:'8px'}}>{appointmentInfo}</span>
+            {/*<span className="mbsc-pull-right">{appointmentTime}</span> No tiene utilidad*/}
           </div>
 
           <div className="mbsc-padding">
@@ -276,15 +307,43 @@ function AgendaPage() {
               Editar
             </Button>
 
-            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={deleteAppointment}>
-              Eliminar
-            </Button>
+              <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>
+                Eliminar
+              </Button>
 
           </div>
         </div>
 
         </div>
       </Popup>
+
+      <Popup
+        isOpen={isDeleteConfirmOpen}
+        onClose={handleCancelDelete}
+        display="center"
+        contentPadding={false}
+        closeOnOverlayClick={true}
+      >
+        <Box p={2}>
+          <Typography variant="h6" gutterBottom>
+            Confirmación de Eliminación
+          </Typography>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar este elemento?
+          </Typography>
+          <Box mt={2}>
+            <Button variant="contained" color="primary" onClick={handleConfirmDelete}>
+              Confirmar
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleCancelDelete} style={{ marginLeft: 8 }}>
+              Cancelar
+            </Button>
+          </Box>
+        </Box>
+      </Popup>
+
+
+
 
 
       <Popup
@@ -444,7 +503,6 @@ function AgendaPage() {
 
 
 
-
       <Modal
         open={isEditPopupOpen}
         onClose={handleCloseEditPopup}
@@ -458,22 +516,18 @@ function AgendaPage() {
           padding: 2,
           backgroundColor: 'white',
           position: 'absolute',
-          top: '50%', // Centra verticalmente
-          left: '50%', // Centra horizontalmente
-          transform: 'translate(-50%, -50%)', // Ajusta para centrar en ambas direcciones
-          boxShadow: 24, // Sombra opcional
-          borderRadius: 1, // Esquinas redondeadas opcional
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          boxShadow: 24, 
+          borderRadius: 1, 
         }}
       >
           <Typography variant="h6" >Editar Evento</Typography>
           <Box
-          >
-            
+          >  
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-              <Box sx={{display: 'flex', gap: 2, mb:2 }}>
-
-
-             
+              <Box sx={{display: 'flex', gap: 2, mb:2 }}>         
               <Box sx={{display: 'flex'}}>
               <DesktopDateTimePicker
                 label="Fecha de Retiro"
@@ -492,7 +546,6 @@ function AgendaPage() {
               </Box>
               </Box>
             </LocalizationProvider>
-
             <TextField
               label="Lugar de Retiro"
               name="lugarRetiro"
