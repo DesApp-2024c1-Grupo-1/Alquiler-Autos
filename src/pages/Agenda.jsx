@@ -230,12 +230,14 @@ function AgendaPage() {
 
 
   const deleteAppointment = useCallback(() => {
-    {/*Para delete*/ }
-    setAppointments(appointments.filter((item) => item.id !== appointment.id));
+    // Filtra las citas para eliminar ambas (retiro y devolución) basadas en la patente
+    setAppointments((appointments) =>
+        appointments.filter((item) => item.data?.car?.patente !== appointmentPatente)
+    );
     setTooltipOpen(false);
     setToastMessage('Auto eliminado');
     setToastOpen(true);
-  }, [appointments, appointment]);
+}, [appointments, appointmentPatente]);
 
 
   const editAppointment = useCallback(() => {
