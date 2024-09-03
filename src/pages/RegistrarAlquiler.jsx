@@ -120,11 +120,13 @@ export function FormAlquiler({ car }) {
 
   //Manteniene los valores ingresados por el usuario
   const handleLugarRetiroChange = (event, newValue) => {
-    dispatch(editLugarRetiro(newValue)); 
+    dispatch(editLugarRetiro(newValue));
+    setLugarRetiroValido(!!newValue); 
   };
 
   const handleLugarDevolucionChange = (event, newValue) => {
     dispatch(editLugarDevolucion(newValue)); 
+    setLugarDevolucionValido(!!newValue);
   };
 
 
