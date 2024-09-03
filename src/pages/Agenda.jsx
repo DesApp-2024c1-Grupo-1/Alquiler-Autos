@@ -361,7 +361,7 @@ function AgendaPage() {
             ¿Estás seguro de que deseas eliminar este elemento?
           </Typography>
           <Box mt={2}>
-            <Button variant="contained" color="primary" onClick={handleConfirmDelete}>
+            <Button color="danger" onClick={handleConfirmDelete}>
               Confirmar
             </Button>
             <Button variant="outlined" color="secondary" onClick={handleCancelDelete} style={{ marginLeft: 8 }}>
