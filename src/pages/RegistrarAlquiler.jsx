@@ -3,7 +3,7 @@ import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
   InputLabel, InputAdornment, FormControl, Button
 } from "@mui/material";
-import {  getCarById,getCarByIdFake  } from "../services/CarsService.js";
+import { getCarById, getCarByIdFake } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
 import { useParams } from 'react-router-dom';
 
@@ -17,6 +17,8 @@ import { enGB } from 'date-fns/locale';
 
 import AddClientDialog from '../components/AddClientDialog.jsx';
 import { set } from "lodash";
+
+import { CarCard } from "../components/CarCard.jsx";
 
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
@@ -43,9 +45,9 @@ export function FormAlquiler({ car }) {
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
 
-  const [retiroValido,setRetiroValido] = useState(true)
-  const [devolucionValido,setDevolucionValido] = useState(true)
-  const [activeButton,setButton] = useState(true)
+  const [retiroValido, setRetiroValido] = useState(true)
+  const [devolucionValido, setDevolucionValido] = useState(true)
+  const [activeButton, setButton] = useState(true)
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
 
@@ -64,12 +66,12 @@ export function FormAlquiler({ car }) {
 
 
   useEffect(() => {
-    if(retiroValido && devolucionValido){
+    if (retiroValido && devolucionValido) {
       setButton(true)
-    }else{
+    } else {
       setButton(false)
     }
-  },[retiroValido,devolucionValido])
+  }, [retiroValido, devolucionValido])
 
   const [errorRetiro, setErrorRetiro] = React.useState(null);
   const [errorDevolucion, setErrorDevolucion] = React.useState(null);
@@ -127,131 +129,105 @@ export function FormAlquiler({ car }) {
     setLugarDevolucionValido(!!value); // Verifica si el campo no está vacío
   };
 
-
   return (
-    <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
+    <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
       <Box
         component="form"
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiTextField-root': { m: 0, width: '100%' },
         }}
         noValidate
         autoComplete="off"
       >
-        <div>
-          <TextField
-            required
-            id="outlined-required"
-            label="Lugar de Retiro"
-            defaultValue={formAlquiler.lugarRetiro}
-            onChange={handleLugarRetiroChange}
-            error={!lugarRetiroValido}
-            helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
-          />
-          <TextField
-            required
-            id="outlined-required"
-            label="Lugar de devolución"
-            defaultValue={formAlquiler.lugarDevolucion}
-            onChange={handleLugarDevolucionChange}
-            error={!lugarDevolucionValido}
-            helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
-          />
-          <Box>
-            <Grid direction="column" container spacing={2} my={2.5}>
-              <Grid
-                pr={1}
-                item xs={12} sm={12} xl={12} lg={12}
-                sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
-              >
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-                  <DesktopDateTimePicker
-                    label="Retiro"
-                    value={new Date(formAlquiler.fechaRetiro)}
-                    onChange={(newValue) => {
-                      dispatch(editFechaRetiro(newValue.toString()))
-                    }}
-                    sx={{ backgroundColor: "#f5f7fa" }}
-                    disablePast
-                    onError={(newError) => {
-                      setErrorRetiro(newError)
-                      setRetiroValido(false)
-                    }}
-                    onAccept={() => {
-                      setRetiroValido(true)
-                    }}
-                    slotProps={{
-                      textField: {
-                        helperText: errorMessageRetiro,
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-                  <DesktopDateTimePicker
-                    label="Devolucion"
-                    value={new Date(formAlquiler.fechaDevolucion)}
-                    onChange={(newValue) => {
-                      dispatch(editFechaDevolucion(newValue.toString()))
-                    }}
-                    sx={{ backgroundColor: "#f5f7fa" }}
-                    disablePast
-                    minDate={new Date(formAlquiler.fechaRetiro)}
-                    onError={(newError) => {
-                      setErrorDevolucion(newError)
-                      setDevolucionValido(false)
-                    }}
-                    slotProps={{
-                      textField: {
-                        helperText: errorMessageDevolucion,
-                      },
-                    }}
-                    onAccept={() => {
-                      setDevolucionValido(true)
-                    }}
-                  />
-                </LocalizationProvider>
-
-              </Grid>
-            </Grid>
-          </Box>
-        </div>
-        <div>
-          <FormControl sx={{ m: 1, display: 'flex', justifyContent: 'center', flexDirection: 'row' }} variant="outlined">
+        <Grid container spacing={'8%'} sx={{ p: 2 }}>
+          <Grid item xs={12} md={6}>
             <TextField
               required
               id="outlined-required"
-              label="Cantidad de dias"
+              label="Lugar de Retiro"
+              defaultValue={formAlquiler.lugarRetiro}
+              onChange={handleLugarRetiroChange}
+              error={!lugarRetiroValido}
+              helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              required
+              id="outlined-required"
+              label="Lugar de devolución"
+              defaultValue={formAlquiler.lugarDevolucion}
+              onChange={handleLugarDevolucionChange}
+              error={!lugarDevolucionValido}
+              helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+              <DesktopDateTimePicker
+                label="Retiro"
+                value={new Date(formAlquiler.fechaRetiro)}
+                onChange={(newValue) => dispatch(editFechaRetiro(newValue))}
+                disablePast
+                onError={(newError) => {
+                  setErrorRetiro(newError);
+                  setRetiroValido(false);
+                }}
+                onAccept={() => setRetiroValido(true)}
+                slotProps={{
+                  textField: { helperText: errorMessageRetiro },
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+              <DesktopDateTimePicker
+                label="Devolucion"
+                value={new Date(formAlquiler.fechaDevolucion)}
+                onChange={(newValue) => dispatch(editFechaDevolucion(newValue))}
+                disablePast
+                minDate={new Date(formAlquiler.fechaRetiro)}
+                onError={(newError) => {
+                  setErrorDevolucion(newError);
+                  setDevolucionValido(false);
+                }}
+                onAccept={() => setDevolucionValido(true)}
+                slotProps={{
+                  textField: { helperText: errorMessageDevolucion },
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              required
+              id="outlined-required"
+              label="Cantidad de días"
               value={formAlquiler.cantidadDias}
               disabled
             />
-          </FormControl>
-          <FormControl fullWidth sx={{ m: 1, width: '52ch' }}>
-            <InputLabel htmlFor="outlined-adornment-amount">Precio final</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-amount"
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
               type="number"
-              startAdornment={<InputAdornment position="start">$</InputAdornment>}
               label="Precio final"
               value={formAlquiler.precioFinal}
               onChange={(e) => dispatch(editPrecioFinal(e.target.value))}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              }}
             />
-          </FormControl>
-        </div>
-        <div>
-          <FormControl sx={{ m: 2, display: 'flex', justifyContent: 'center' }} variant="outlined">
-
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-              <Stack direction="row" spacing={5}>
-                <AddClientDialog validated={activeButton}></AddClientDialog>
-                <Button variant="contained" color="error" onClick={() => {cancelar}}>
-                  Cancelar
-                </Button>
-              </Stack>
-            </Box>
-          </FormControl>
-        </div>
+          </Grid>
+        </Grid>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
+          <Stack direction="row" spacing={2}>
+            <AddClientDialog validated={activeButton} />
+            <Button variant="contained" color="error" onClick={cancelar}>
+              Cancelar
+            </Button>
+          </Stack>
+        </Box>
       </Box>
     </Card>
   );
@@ -275,21 +251,72 @@ export function PageAlquiler() {
     //const obtainedCar = await getCarByIdFake(carID);
     setCar(obtainedCar);
   }, []);
-  
+
 
   useEffect(() => {
     axiosCarById()
   }, []);
 
-
-  return car && <Stack direction='column'>
-    <Typography variant='h4' sx={{ mb: 2 }}>Registrar Alquiler</Typography>
-    <Grid sx={{ display: 'flex', placeContent: "center" }}>
-          <><Grid item key={1} xs={12} md={6} sx={{ px: 2, py: 2, mr: 10 }}>
-            <CardAlquiler car={car} key={car.id} />
-          </Grid><Grid item key={2} xs={12} md={6} sx={{ px: 2, py: 2 }}>
+  return (
+    car && (
+      <Stack direction="column" spacing={2} alignItems="inherit">
+        <Typography variant="h4" align="left">Registrar Alquiler</Typography>
+        <Grid container justifyContent="center">
+          <Grid
+            item xs={12} sm={6} md={6} lg={5} xl={6} sx={{ display: 'flex', justifyContent: 'flex-end'}}
+          >
+            <Box 
+              // display="flex" justifyContent="flex-start"
+              // sx={{ maxWidth: '500px', minWidth: '300px' }}
+              sx={{ maxWidth: '500px', mr: '2%'}}
+            >
+              <CarCard car={car} isHomePage={false} />
+            </Box>
+          </Grid>
+          <Grid
+            item xs={12} sm={6} md={6} lg={7} xl={6} sx={{  display: 'flex', justifyContent: 'flex-start'   }}
+          >
+            <Box 
+              // display="flex" justifyContent="s"
+              //  sx={{ maxWidth: '700px', minWidth: '350px' }}
+              sx={{ maxWidth: '700px', ml: '2%' }}
+            >
               <FormAlquiler car={car} />
-            </Grid></>
-    </Grid>
-  </Stack>;
+            </Box>
+          </Grid>
+        </Grid>
+      </Stack>
+    )
+  );
+
+  return (
+    car && (
+      <Stack direction="column" spacing={2} alignItems="inherit">
+        <Typography variant="h4" align="left">Registrar Alquiler</Typography>
+        <Grid container justifyContent="center">
+          <Grid
+            item xs={12} sm={6} md={6} lg={5} sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <Box display="flex" justifyContent="center"
+              // sx={{ maxWidth: '500px', minWidth: '300px' }}
+              sx={{ maxWidth: '500px', mr: 1 }}
+            >
+              <CarCard car={car} isHomePage={false} />
+            </Box>
+          </Grid>
+          <Grid
+            item xs={12} sm={6} md={6} lg={7} sx={{  display: 'flex', justifyContent: 'center' }}
+          >
+            <Box display="flex" justifyContent="center"
+              //  sx={{ maxWidth: '700px', minWidth: '350px' }}
+              sx={{ maxWidth: '700px', ml: 1 }}
+            >
+              <FormAlquiler car={car} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Stack>
+    )
+  );
+
 }
