@@ -1,136 +1,212 @@
-import React, { useState } from 'react';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, FormLabel, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import React, { useState } from "react";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography,
+  Grid,
+  FormLabel,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Autocomplete,
+} from "@mui/material";
 
-
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
-import { TextField } from '@mui/material';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
+import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion } from "../store/alquilerFormSlice.js";
-import { enGB } from 'date-fns/locale';
+import {
+  editFechaRetiro,
+  editLugarRetiro,
+  editFechaDevolucion,
+  editLugarDevolucion,
+} from "../store/alquilerFormSlice.js";
+import { useLocalStorage } from "../config/useLocalStorage.js";
+import { enGB } from "date-fns/locale";
 
+// Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
+export const lugaresFijos = [
+  "Hurlingham",
+  "Morón",
+  "San Martin",
+  "Aeroparque",
+  "Aeropuerto Ezeiza",
+];
 
-const Filtros = ({handleFiltros}) => {
+const Filtros = ({ handleFiltros }) => {
   const [selectedAireAcondicionado, setAireAcondicionado] = useState(null);
   const [selectedCombustibleType, setCombustibleType] = useState(null);
   const [selectedTransmisionType, setTransmisionType] = useState(null);
   const [capacitiy, setCapacity] = useState("");
-  const [retiro, setRetiro] = useState(null)
-  const [devolucion, setDevolucion] = useState(null)
+  const [retiro, setRetiro] = useState(null);
+  const [devolucion, setDevolucion] = useState(null);
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
-    console.log("AC: ", event.target.value)
+    console.log("AC: ", event.target.value);
   };
 
   const CombustibleTypeChange = (event) => {
     setCombustibleType(event.target.value);
-    console.log("Combustible: ", event.target.value)
+    console.log("Combustible: ", event.target.value);
   };
 
   const TransmisionTypeChange = (event) => {
     setTransmisionType(event.target.value);
-    console.log("Transmision: ", event.target.value)
+    console.log("Transmision: ", event.target.value);
   };
 
   const CapacityTypeChange = (event) => {
     setCapacity(event.target.value);
-    console.log("Capacity: ", event.target.value)
+    console.log("Capacity: ", event.target.value);
   };
 
   const BuscarButton = (event) => {
-    console.log("BuscarButton: ", selectedAireAcondicionado, selectedCombustibleType, selectedTransmisionType, capacitiy, retiro, devolucion)
-    const filtros = {ac: selectedAireAcondicionado, combustible: selectedCombustibleType, transmision: selectedTransmisionType, capacidad: capacitiy, fechaRetiro: formAlquiler.fechaRetiro , fechaDevolucion: formAlquiler.fechaDevolucion}
-    handleFiltros(filtros)
-  }
+    console.log(
+      "BuscarButton: ",
+      selectedAireAcondicionado,
+      selectedCombustibleType,
+      selectedTransmisionType,
+      capacitiy,
+      retiro,
+      devolucion
+    );
+    const filtros = {
+      ac: selectedAireAcondicionado,
+      combustible: selectedCombustibleType,
+      transmision: selectedTransmisionType,
+      capacidad: capacitiy || null,
+      retiro: retiro,
+      devolucion: devolucion,
+    };
+    handleFiltros(filtros);
+  };
 
   const BorrarButton = (event) => {
-    const filtros = {ac: null, combustible: null, transmision: null, capacidad: null, fechaRetiro: null, fechaDevolucion: null}
-    setCapacity('')
-    setCombustibleType(null)
-    setTransmisionType(null)
-    setAireAcondicionado(null)
-    handleFiltros(filtros)
-  }
-
+    const filtros = {
+      ac: null,
+      combustible: null,
+      transmision: null,
+      capacidad: null,
+      retiro: null,
+      devolucion: null,
+    };
+    setCapacity("");
+    setCombustibleType(null);
+    setTransmisionType(null);
+    setAireAcondicionado(null);
+    handleFiltros(filtros);
+  };
 
   const dispatch = useDispatch();
-  const formAlquiler = useSelector(state => state.alquiler);
+  const formAlquiler = useSelector((state) => state.alquiler);
 
   const [error, setError] = React.useState(null);
 
   const errorMessage = React.useMemo(() => {
     switch (error) {
-      case 'minDate': {
-        return 'La fecha de devolución no puede ser menor a la de retiro';
+      case "minDate": {
+        return "La fecha de devolución no puede ser menor a la de retiro";
       }
 
-      case 'invalidDate': {
-        return 'La fecha es invalida';
+      case "invalidDate": {
+        return "La fecha es invalida";
       }
 
-      case 'disablePast': {
-        return 'La fecha no puede ser en el pasado';
+      case "disablePast": {
+        return "La fecha no puede ser en el pasado";
       }
 
       default: {
-        return '';
+        return "";
       }
     }
   }, [error]);
 
+  //Maneja los cambios en lugar de retiro
+  const handleLugarRetiroChange = (event, newValue) => {
+    dispatch(editLugarRetiro(newValue)); 
+  };
 
+  //Maneja los cambios en lugar de devolución
+  const handleLugarDevolucionChange = (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue)); 
+  };
+
+  {
+    /* Campo de Lugar de Retiro y Devolucion modificado para usar Autocomplete */
+  }
   return (
-    <Box sx={{ backgroundColor: "#B3D0FB", height: '100%', p: 3, borderRadius: 5 }}>
+    <Box
+      sx={{ backgroundColor: "#B3D0FB", height: "100%", p: 3, borderRadius: 5 }}
+    >
       <Box>
-        <Grid direction="column" container spacing={2}>
-          <Grid
-            pr={1}
-            my={2}
-            item xs={12} sm={12} xl={12} lg={12}
-            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
-          >
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de Retiro"
-              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mr: 1 }}
-              defaultValue={formAlquiler.lugarRetiro}
-              onChange={(e) => {
-                dispatch(editLugarRetiro(e.target.value));
-                setRetiro(e.target.value);
-              }}
-            />
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de devolución"
-              sx={{ backgroundColor: "#B3D0FB", pl: 1, flex: 1, mx: 1 }}
-              defaultValue={formAlquiler.lugarDevolucion}
-              onChange={(e) => {
-                dispatch(editLugarDevolucion(e.target.value));
-                setDevolucion(e.target.value);
-              }}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <Autocomplete
+              freeSolo
+              options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
+              value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
+              onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de Retiro"
+                  sx={{
+                    backgroundColor: "#B3D0FB",
+                    width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                />
+              )}
             />
           </Grid>
-          <Grid
-            my={2}
-            pr={1}
-            item xs={12} sm={12} xl={12} lg={12}
-            sx={{ display: "flex", placeContent: "center", justifyContent: "space-around" }}
-          >
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+
+          <Grid item xs={12} sm={6}>
+            <Autocomplete
+              freeSolo
+              options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
+              value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
+              onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de Devolución"
+                  sx={{
+                    backgroundColor: "#B3D0FB",
+                    width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2} my={2}>
+          <Grid item xs={12} sm={6}>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
               <DesktopDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => {
-                  dispatch(editFechaRetiro(newValue.toString()))
+                  dispatch(editFechaRetiro(newValue.toString()));
                 }}
-                sx={{ backgroundColor: "#B3D0FB", flex: 1, pr: 0, mx: 1 }}
+                sx={{
+                  backgroundColor: "#B3D0FB",
+                  width: "100%",
+                }}
                 disablePast
                 onError={(newError) => {
-                  setError(newError)
+                  setError(newError);
                 }}
                 slotProps={{
                   textField: {
@@ -139,17 +215,27 @@ const Filtros = ({handleFiltros}) => {
                 }}
               />
             </LocalizationProvider>
-  
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={enGB}
+            >
               <DesktopDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
-                onChange={(newValue) => dispatch(editFechaDevolucion(newValue.toString()))}
-                sx={{ backgroundColor: "#B3D0FB", flex: 1, pl: 1, mx: 1 }}
+                onChange={(newValue) =>
+                  dispatch(editFechaDevolucion(newValue.toString()))
+                }
+                sx={{
+                  backgroundColor: "#B3D0FB",
+                  width: "100%",
+                }}
                 disablePast
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
-                  setError(newError)
+                  setError(newError);
                 }}
                 slotProps={{
                   textField: {
@@ -161,10 +247,19 @@ const Filtros = ({handleFiltros}) => {
           </Grid>
         </Grid>
       </Box>
-  
-      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around" }}>
+
+      <Box
+        sx={{
+          p: 3,
+          display: "flex",
+          placeContent: "center",
+          justifyContent: "space-around",
+        }}
+      >
         <FormControl sx={{ mr: 6 }}>
-          <FormLabel id="demo-controlled-radio-buttons-group">Aire Acondicionado</FormLabel>
+          <FormLabel id="demo-controlled-radio-buttons-group">
+            Aire Acondicionado
+          </FormLabel>
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
@@ -175,9 +270,11 @@ const Filtros = ({handleFiltros}) => {
             <FormControlLabel value={false} control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
-  
+
         <FormControl>
-          <FormLabel id="demo-controlled-radio-buttons-group">Combustible</FormLabel>
+          <FormLabel id="demo-controlled-radio-buttons-group">
+            Combustible
+          </FormLabel>
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
@@ -185,25 +282,46 @@ const Filtros = ({handleFiltros}) => {
             onChange={CombustibleTypeChange}
           >
             <FormControlLabel value="Nafta" control={<Radio />} label="Nafta" />
-            <FormControlLabel value="Electrico" control={<Radio />} label="Electrico" />
+            <FormControlLabel
+              value="Electrico"
+              control={<Radio />}
+              label="Electrico"
+            />
           </RadioGroup>
         </FormControl>
       </Box>
-  
-      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around"  }}>
+
+      <Box
+        sx={{
+          p: 3,
+          display: "flex",
+          placeContent: "center",
+          justifyContent: "space-around",
+        }}
+      >
         <FormControl sx={{ mr: 2 }}>
-          <FormLabel id="demo-controlled-radio-buttons-group">Transmisión</FormLabel>
+          <FormLabel id="demo-controlled-radio-buttons-group">
+            Transmisión
+          </FormLabel>
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
             value={selectedTransmisionType}
             onChange={TransmisionTypeChange}
           >
-            <FormControlLabel value="Automatica" control={<Radio />} label="Automática" />
-            <FormControlLabel value="Manual" control={<Radio />} label="Manual" />
+            <FormControlLabel
+              value="Automatica"
+              control={<Radio />}
+              label="Automática"
+            />
+            <FormControlLabel
+              value="Manual"
+              control={<Radio />}
+              label="Manual"
+            />
           </RadioGroup>
         </FormControl>
-  
+
         <FormControl sx={{ ml: 10, width: 140 }} size="small">
           <InputLabel id="demo-select-small-label">Capacidad</InputLabel>
           <Select
@@ -221,27 +339,29 @@ const Filtros = ({handleFiltros}) => {
           </Select>
         </FormControl>
       </Box>
-  
-      <Box sx={{ p: 3, display: "flex", placeContent: "center", justifyContent: "space-around"  }}>
-        <Button 
-        variant="outlined" 
-        color="success" 
-        sx={{ mr: 3 }}
-        onClick={() => BuscarButton()}
+
+      <Box
+        sx={{
+          p: 3,
+          display: "flex",
+          placeContent: "center",
+          justifyContent: "space-around",
+        }}
+      >
+        <Button
+          variant="outlined"
+          color="success"
+          sx={{ mr: 3 }}
+          onClick={() => BuscarButton()}
         >
           Buscar
         </Button>
-        <Button 
-        variant="outlined" 
-        color="error"
-        onClick={() => BorrarButton()}
-        >
+        <Button variant="outlined" color="error" onClick={() => BorrarButton()}>
           Borrar
         </Button>
       </Box>
     </Box>
   );
-  
 };
 
 export default Filtros;

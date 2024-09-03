@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Button
+  InputLabel, InputAdornment, FormControl, Button, Autocomplete
 } from "@mui/material";
 import { getCarById, getCarByIdFake } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
@@ -19,6 +19,8 @@ import AddClientDialog from '../components/AddClientDialog.jsx';
 import { set } from "lodash";
 
 import { CarCard } from "../components/CarCard.jsx";
+// Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
+import { lugaresFijos } from "../components/Filtros.jsx";
 
 function CardAlquiler({ car }) {
   return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
@@ -117,16 +119,13 @@ export function FormAlquiler({ car }) {
   }, [errorDevolucion]);
 
 
-  const handleLugarRetiroChange = (e) => {
-    const value = e.target.value;
-    dispatch(editLugarRetiro(value));
-    setLugarRetiroValido(!!value); // Verifica si el campo no está vacío
+  //Manteniene los valores ingresados por el usuario
+  const handleLugarRetiroChange = (event, newValue) => {
+    dispatch(editLugarRetiro(newValue)); 
   };
 
-  const handleLugarDevolucionChange = (e) => {
-    const value = e.target.value;
-    dispatch(editLugarDevolucion(value));
-    setLugarDevolucionValido(!!value); // Verifica si el campo no está vacío
+  const handleLugarDevolucionChange = (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue)); 
   };
 
   return (
@@ -141,26 +140,39 @@ export function FormAlquiler({ car }) {
       >
         <Grid container spacing={'8%'} sx={{ p: 2 }}>
           <Grid item xs={12} md={6}>
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de Retiro"
-              defaultValue={formAlquiler.lugarRetiro}
-              onChange={handleLugarRetiroChange}
-              error={!lugarRetiroValido}
-              helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
-            />
+          <Autocomplete
+                freeSolo
+                options={lugaresFijos} // Usa la lista de lugares predefinidos
+                value={formAlquiler.lugarRetiro || ''}
+                onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Lugar de Retiro"
+                    error={!lugarRetiroValido}
+                    helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+                  />
+                )}
+              />
+
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              required
-              id="outlined-required"
-              label="Lugar de devolución"
-              defaultValue={formAlquiler.lugarDevolucion}
-              onChange={handleLugarDevolucionChange}
-              error={!lugarDevolucionValido}
-              helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
-            />
+          <Autocomplete
+                freeSolo
+                options={lugaresFijos} // Usa la misma lista de lugares predefinidos
+                value={formAlquiler.lugarDevolucion || ''}
+                onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Lugar de Devolución"
+                    error={!lugarDevolucionValido}
+                    helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+                  />
+                )}
+              />
           </Grid>
           <Grid item xs={12} md={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
