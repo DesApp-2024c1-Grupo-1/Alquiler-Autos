@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { esNuevo } from "../services/Estadisticas";
 import { Container, Grid } from "@mui/material";
 import axios, { all } from "axios";
 import { registrarAlquiler } from "../services/AlquilerService"; // Asumiendo que aquí está definida la función registrarAlquiler
@@ -153,29 +154,6 @@ export function Estadisticas() {
         }, 0);
 
 
-
-//función que espera una fecha para calcular hace cuantos días fue
-//comparando fechaActual con fecha de lanzamiento de el auto
-
-function diferenciaEnDias(car) {
-    const fechaActual = new Date();
-    const fechaLanzamiento = new Date(car); // Convertir a Date
-
-    const diferenciaEnMilisegundos = fechaActual.getTime() - fechaLanzamiento.getTime();
-
-    // Convertir la diferencia a días
-    const dias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-
-    return dias;
-}
-
-//función que espera una fecha y si la misma tiene una diferencia mayor a 30 días con la actual devuelve false
-
-function esNuevo(car) {
-    console.log(car)
-    return diferenciaEnDias(car) <= 30;
-
-}
 
 // Estilo base
 

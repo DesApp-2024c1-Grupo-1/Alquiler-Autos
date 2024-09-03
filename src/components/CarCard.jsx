@@ -11,29 +11,9 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonEditCar from "./ButtonEditCar";
+import { esNuevo } from "../services/Estadisticas";
 
 export function CarCard({car}) {
-  
-  function diferenciaEnDias(car) {
-    const fechaActual = new Date();
-    const fechaLanzamiento = new Date(car); // Convertir a Date
-
-    const diferenciaEnMilisegundos = fechaActual.getTime() - fechaLanzamiento.getTime();
-
-    // Convertir la diferencia a días
-    const dias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-
-    return dias;
-}
-
-//función que espera una fecha y si la misma tiene una diferencia mayor a 30 días con la actual devuelve false
-
-function esNuevo(car) {
-    console.log(car)
-    return diferenciaEnDias(car) <= 30;
-
-}
-
 
   return (
 
