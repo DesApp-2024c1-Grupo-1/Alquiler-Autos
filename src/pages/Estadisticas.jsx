@@ -193,7 +193,7 @@ const estiloPublicitario1 = {
     border: esNuevo(lanzamientoAutoMasAlquilado) ? "solid red" : estilo.border,
 };
 
-// Estilo publicitario basado en el auto mas alquilado en el anio
+// Estilo publicitario basado en el auto mas alquilado en el año
 const estiloPublicitario2 = {
     ...estilo,
     border: esNuevo(lanzamientoAutoMasAlquiladoAnio) ? "solid red" : estilo.border,

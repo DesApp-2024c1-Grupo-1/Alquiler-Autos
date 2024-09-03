@@ -14,7 +14,29 @@ import ButtonEditCar from "./ButtonEditCar";
 
 export function CarCard({car}) {
   
+  function diferenciaEnDias(car) {
+    const fechaActual = new Date();
+    const fechaLanzamiento = new Date(car); // Convertir a Date
+
+    const diferenciaEnMilisegundos = fechaActual.getTime() - fechaLanzamiento.getTime();
+
+    // Convertir la diferencia a días
+    const dias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+
+    return dias;
+}
+
+//función que espera una fecha y si la misma tiene una diferencia mayor a 30 días con la actual devuelve false
+
+function esNuevo(car) {
+    console.log(car)
+    return diferenciaEnDias(car) <= 30;
+
+}
+
+
   return (
+
     
     <Card sx={{ 
       //     //maxWidth: 345 
@@ -39,7 +61,10 @@ export function CarCard({car}) {
         />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[700] }}>
-              {car.brand}
+            {car.brand}{" "}
+  {esNuevo(car.fechaLanzamiento) && (
+    <span style={{ color: "green" }}>"Añadido recientemente"</span>
+  )}
             </Typography>
 
             <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[700] }}>
