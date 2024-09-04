@@ -3,8 +3,8 @@ import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs }
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { momentTimezone } from '@mobiscroll/react';
 import moment from 'moment-timezone';
-import { getEventos } from '../services/EventosService';
-import { set } from 'lodash';
+import { getEventos,actualizarEvento  } from '../services/EventosService';
+import { set, update } from 'lodash';
 import { enGB } from 'date-fns/locale';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -113,12 +113,23 @@ function AgendaPage() {
     setEditData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     console.log('Guardar cambios', editData);
-    {/*Agregar logica de back aca tambien*/}
-    setEditPopupOpen(false);
+  
+    try {
+      const updateEvent = await actualizarEvento(appointment.id, editData);
+  
+      setAppointments((appointments) =>
+        appointments.map((item) => 
+          item.id === updateEvent.id ? updateEvent : item
+        )
+      );
+      setEditPopupOpen(false);
+    } catch (error) {
+      console.error('Hubo un error al guardar los cambios:', error);
+    }
   };
-
+  
   const handleCloseEditPopup = () => {
     setEditPopupOpen(false);
   };
@@ -148,34 +159,37 @@ function AgendaPage() {
   const openTooltip = useCallback((args) => {
     const event = args.event;
     const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
-    console.log('Event Data:', event); // Verifica los datos del evento
+    {/*console.log('Event Data:', event); // Verifica los datos del evento*/}
 
     if (timer.current) {
       clearTimeout(timer.current);
     }
 
     setAppointment(event);
-    setAppointmentInfo(event.data?.cliente?.nombre);
-    setAppointmentLocation(event.data?.lugarDevolucion);
+    setAppointmentInfo(event.alquiler.cliente.nombre);
+    setAppointmentLocation(event.alquiler.lugarDevolucion);
     setAppointmentTime(time);
-    setAppointmentReason(event.data?.lugarRetiro);
+    setAppointmentReason(event.alquiler.lugarRetiro);
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
-    setAppointmentTimeR(event.data?.fechaRetiro)
-    setAppointmentTimeD(event.data?.fechaDevolucion)
-    setAppointmentPatente(event.data?.car?.patente)
+    setAppointmentTimeR(event.alquiler.fechaRetiro)
+    setAppointmentTimeD(event.alquiler.fechaDevolucion)
+
+    {/*setAppointmentPatente(event.data?.car?.patente)*/}
+
 
     const patenteEs = event.data?.car?.patente
 
 
-    const fechaRetiro = event.data?.fechaRetiro;
-    const fechaDevolucion = event.data?.fechaDevolucion;
-
+    const fechaRetiro = event.alquiler.fechaRetiro;
+    const fechaDevolucion = event.alquiler.fechaDevolucion;
+  {/*
     console.log('Fecha Retiro:', fechaRetiro);
     console.log('Fecha Devolucion:', fechaDevolucion);
     console.log('La patente es: ', patenteEs)
-    console.log('La persona es:', event.data?.cliente?.nombre )
+    console.log('La persona es:', event.alquiler.cliente)
+  */}
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
     setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -190,7 +204,7 @@ function AgendaPage() {
 
   const viewAppointmentFile = useCallback(() => {
     setTooltipOpen(false);
-    setCustomerData(appointment.data?.cliente);
+    setCustomerData(appointment.alquiler.cliente);
     setCustomerPopupOpen(true);
   }, [appointment]);
 
@@ -253,10 +267,10 @@ function AgendaPage() {
 
   const editAppointment = useCallback(() => {
     setEditData({
-      lugarRetiro: appointment.data?.lugarRetiro || '',
-      lugarDevolucion: appointment.data?.lugarDevolucion || '',
-      fechaRetiro: appointment.data?.fechaRetiro || '',
-      fechaDevolucion: appointment.data?.fechaDevolucion || ''
+      lugarRetiro: appointment.alquiler.lugarRetiro || '',
+      lugarDevolucion: appointment.alquiler.lugarDevolucion || '',
+      fechaRetiro: appointment.alquiler.fechaRetiro || '',
+      fechaDevolucion: appointment.alquiler.fechaDevolucion || ''
     });
     setTooltipOpen(false);
     setEditPopupOpen(true);
@@ -264,12 +278,12 @@ function AgendaPage() {
 
   const editDatosCliente = useCallback(() => {
     console.log('Ejecutando editDatosCliente');
-    console.log('Datos del cliente antes de set:', appointment?.data?.cliente?.nombre);
+    console.log('Datos del cliente antes de set:', appointment.alquiler.cliente.nombre);
     setEditDatosC({
-      nombre: appointment.data?.cliente?.nombre || '',
-      documento: appointment.data?.cliente?.documento || '',
-      telefono: appointment.data?.cliente?.telefono || '',
-      email: appointment.data?.cliente?.email
+      nombre: appointment.alquiler.cliente.nombre || '',
+      documento: appointment.alquiler.cliente.documento || '',
+      telefono: appointment.alquiler.cliente.telefono || '',
+      email: appointment.alquiler.cliente.email
     });
     setCustomerPopupOpen(false);  
     setEditCustomerModalOpen(true);  
