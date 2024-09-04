@@ -3,7 +3,7 @@ import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
   InputLabel, InputAdornment, FormControl, Button, Autocomplete
 } from "@mui/material";
-import {  getCarById,getCarByIdFake  } from "../services/CarsService.js";
+import { getCarById, getCarByIdFake } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
 import { useParams } from 'react-router-dom';
 
@@ -46,17 +46,18 @@ export function FormAlquiler({ car }) {
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
 
-  const [retiroValido,setRetiroValido] = useState(true)
-  const [devolucionValido,setDevolucionValido] = useState(true)
-  const [activeButton,setButton] = useState(true)
+  const [retiroValido, setRetiroValido] = useState(!!formAlquiler.fechaRetiro);
+  const [devolucionValido, setDevolucionValido] = useState(!!formAlquiler.fechaDevolucion);
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
+  const [activeButton, setButton] = useState()
 
 
   useEffect(() => {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
+    setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido); //Esto soluciona lo del home?
   }, []);
 
 
@@ -66,13 +67,6 @@ export function FormAlquiler({ car }) {
   }, [retiroValido, devolucionValido, lugarRetiroValido, lugarDevolucionValido]);
 
 
-  useEffect(() => {
-    if(retiroValido && devolucionValido){
-      setButton(true)
-    }else{
-      setButton(false)
-    }
-  },[retiroValido,devolucionValido])
 
   const [errorRetiro, setErrorRetiro] = React.useState(null);
   const [errorDevolucion, setErrorDevolucion] = React.useState(null);
@@ -121,15 +115,48 @@ export function FormAlquiler({ car }) {
   //Manteniene los valores ingresados por el usuario
   const handleLugarRetiroChange = (event, newValue) => {
     dispatch(editLugarRetiro(newValue));
-    setLugarRetiroValido(!!newValue); 
+    setLugarRetiroValido(!!newValue);
   };
 
-  const handleLugarDevolucionChange = (event, newValue) => {
-    dispatch(editLugarDevolucion(newValue)); 
+  const handleLugarDevolucionChange = async (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue));
     setLugarDevolucionValido(!!newValue);
   };
 
+  const handleFechas = async (newValue, tipo) => {
+    if (tipo == 'retiro') {
+      dispatch(editFechaRetiro(newValue.toString()));
+      validarFechas(newValue.toString(), formAlquiler.fechaDevolucion, tipo);
+    }
+    if (tipo == 'devolucion') {
+      dispatch(editFechaDevolucion(newValue.toString()));
+      validarFechas(formAlquiler.fechaRetiro, newValue.toString(), tipo);
+    }
+    
+  }
 
+  const validarFechas = (fRetiro,fDevolucion,tipo) => {
+    fRetiro = new Date(fRetiro)
+    fDevolucion = new Date(fDevolucion)
+    if(fRetiro < fDevolucion){
+      setRetiroValido(true)
+      setDevolucionValido(true)
+    }else{
+      setRetiroValido(false)
+      setDevolucionValido(false)
+    }
+  }
+
+  const handleFechasError = (newError, tipo) => {
+    if (tipo == 'retiro') {
+      setErrorRetiro(newError);
+    }
+    if (tipo == 'devolucion') {
+      setErrorDevolucion(newError);
+    }
+  }
+  
+  
   return (
     <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2} >
       <Box
@@ -193,14 +220,12 @@ export function FormAlquiler({ car }) {
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
                     onChange={(newValue) => {
+                      handleFechas(newValue, 'retiro')
                       dispatch(editFechaRetiro(newValue.toString()))
                     }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
-                    onError={(newError) => {
-                      setErrorRetiro(newError)
-                      setRetiroValido(false)
-                    }}
+                    onError={(newError) => {handleFechasError(newError, 'retiro')}}
                     onAccept={() => {
                       setRetiroValido(true)
                     }}
@@ -217,15 +242,13 @@ export function FormAlquiler({ car }) {
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
                     onChange={(newValue) => {
+                      handleFechas(newValue, 'devolucion')
                       dispatch(editFechaDevolucion(newValue.toString()))
                     }}
                     sx={{ backgroundColor: "#f5f7fa" }}
                     disablePast
                     minDate={new Date(formAlquiler.fechaRetiro)}
-                    onError={(newError) => {
-                      setErrorDevolucion(newError)
-                      setDevolucionValido(false)
-                    }}
+                    onError={(newError) => {handleFechasError(newError, 'devolucion')}}
                     slotProps={{
                       textField: {
                         helperText: errorMessageDevolucion,

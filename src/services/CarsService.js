@@ -7,7 +7,7 @@ const url = 'http://localhost:3000/car/';
 export async function getCarById(id){
   try {
     const response = await axios.get(url+id);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
