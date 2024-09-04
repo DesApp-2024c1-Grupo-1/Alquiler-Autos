@@ -57,8 +57,8 @@ export function HomePage() {
 
             <Grid container spacing={2} sx={{ mt: '1rem' }}>
               {allCars && allCars.length > 0 ? (
-                allCars.map((carData) => (
-                  <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
+                allCars.map((carData,index) => (
+                  <Grid key={index} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                       <CarCard car={carData} isHomePage={true} deleteCarFromHome={deleteCarFromCard} />
                   </Grid>
                 ))
