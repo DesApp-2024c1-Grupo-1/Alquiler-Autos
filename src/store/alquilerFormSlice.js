@@ -66,7 +66,6 @@ function diffDeDias(fecha1, fecha2) {
   const diferenciaMilisegundos = milisegundosFecha2 - milisegundosFecha1;
   let dias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
   dias = Math.max(1, Math.round(dias));
-  console.log("Cantidad de dias: ", dias)
 
   return Math.max(1, dias);
 

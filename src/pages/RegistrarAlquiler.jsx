@@ -47,17 +47,18 @@ export function FormAlquiler({ car }) {
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
 
-  const [retiroValido, setRetiroValido] = useState(true)
-  const [devolucionValido, setDevolucionValido] = useState(true)
-  const [activeButton, setButton] = useState(true)
+  const [retiroValido, setRetiroValido] = useState(!!formAlquiler.fechaRetiro);
+  const [devolucionValido, setDevolucionValido] = useState(!!formAlquiler.fechaDevolucion);
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
+  const [activeButton, setButton] = useState()
 
 
   useEffect(() => {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
+    setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido); //Esto soluciona lo del home?
   }, []);
 
 
@@ -67,13 +68,6 @@ export function FormAlquiler({ car }) {
   }, [retiroValido, devolucionValido, lugarRetiroValido, lugarDevolucionValido]);
 
 
-  useEffect(() => {
-    if (retiroValido && devolucionValido) {
-      setButton(true)
-    } else {
-      setButton(false)
-    }
-  }, [retiroValido, devolucionValido])
 
   const [errorRetiro, setErrorRetiro] = React.useState(null);
   const [errorDevolucion, setErrorDevolucion] = React.useState(null);
@@ -122,14 +116,50 @@ export function FormAlquiler({ car }) {
   //Manteniene los valores ingresados por el usuario
   const handleLugarRetiroChange = (event, newValue) => {
     dispatch(editLugarRetiro(newValue));
-    setLugarRetiroValido(!!newValue); 
+    setLugarRetiroValido(!!newValue);
   };
 
-  const handleLugarDevolucionChange = (event, newValue) => {
-    dispatch(editLugarDevolucion(newValue)); 
+  const handleLugarDevolucionChange = async (event, newValue) => {
+    dispatch(editLugarDevolucion(newValue));
     setLugarDevolucionValido(!!newValue);
   };
 
+  const handleFechas = async (newValue, tipo) => {
+    if (tipo == 'retiro') {
+      dispatch(editFechaRetiro(newValue.toString()));
+      validarFechas(newValue.toString(), formAlquiler.fechaDevolucion, tipo);
+    }
+    if (tipo == 'devolucion') {
+      dispatch(editFechaDevolucion(newValue.toString()));
+      validarFechas(formAlquiler.fechaRetiro, newValue.toString(), tipo);
+    }
+    
+  }
+
+  const validarFechas = (fRetiro,fDevolucion,tipo) => {
+    fRetiro = new Date(fRetiro)
+    fDevolucion = new Date(fDevolucion)
+    if(fRetiro < fDevolucion){
+      setRetiroValido(true)
+      setDevolucionValido(true)
+    }else{
+      setRetiroValido(false)
+      setDevolucionValido(false)
+    }
+  }
+
+  const handleFechasError = (newError, tipo) => {
+    if (tipo == 'retiro') {
+      setRetiroValido(false)
+      setErrorRetiro(newError);
+    }
+    if (tipo == 'devolucion') {
+      setDevolucionValido(false)
+      setErrorDevolucion(newError);
+    }
+  }
+  
+  
   return (
     <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
       <Box
@@ -178,40 +208,48 @@ export function FormAlquiler({ car }) {
           </Grid>
           <Grid item xs={12} md={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-              <DesktopDateTimePicker
-                label="Retiro"
-                value={new Date(formAlquiler.fechaRetiro)}
-                onChange={(newValue) => dispatch(editFechaRetiro(newValue))}
-                disablePast
-                onError={(newError) => {
-                  setErrorRetiro(newError);
-                  setRetiroValido(false);
-                }}
-                onAccept={() => setRetiroValido(true)}
-                slotProps={{
-                  textField: { helperText: errorMessageRetiro },
-                }}
-              />
-            </LocalizationProvider>
+                  <DesktopDateTimePicker
+                    label="Retiro"
+                    value={new Date(formAlquiler.fechaRetiro)}
+                    onChange={(newValue) => {
+                      handleFechas(newValue, 'retiro')
+                      dispatch(editFechaRetiro(newValue.toString()))
+                    }}
+                    disablePast
+                    onError={(newError) => {handleFechasError(newError, 'retiro')}}
+                    onAccept={() => {
+                      setRetiroValido(true)
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: errorMessageRetiro,
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
           </Grid>
           <Grid item xs={12} md={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-              <DesktopDateTimePicker
-                label="Devolucion"
-                value={new Date(formAlquiler.fechaDevolucion)}
-                onChange={(newValue) => dispatch(editFechaDevolucion(newValue))}
-                disablePast
-                minDate={new Date(formAlquiler.fechaRetiro)}
-                onError={(newError) => {
-                  setErrorDevolucion(newError);
-                  setDevolucionValido(false);
-                }}
-                onAccept={() => setDevolucionValido(true)}
-                slotProps={{
-                  textField: { helperText: errorMessageDevolucion },
-                }}
-              />
-            </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+                  <DesktopDateTimePicker
+                    label="Devolucion"
+                    value={new Date(formAlquiler.fechaDevolucion)}
+                    onChange={(newValue) => {
+                      handleFechas(newValue, 'devolucion')
+                      dispatch(editFechaDevolucion(newValue.toString()))
+                    }}
+                    disablePast
+                    minDate={new Date(formAlquiler.fechaRetiro)}
+                    onError={(newError) => {handleFechasError(newError, 'devolucion')}}
+                    slotProps={{
+                      textField: {
+                        helperText: errorMessageDevolucion,
+                      },
+                    }}
+                    onAccept={() => {
+                      setDevolucionValido(true)
+                    }}
+                  />
+                </LocalizationProvider>
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
