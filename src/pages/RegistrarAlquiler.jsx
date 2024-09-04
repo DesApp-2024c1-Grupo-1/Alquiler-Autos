@@ -149,9 +149,11 @@ export function FormAlquiler({ car }) {
 
   const handleFechasError = (newError, tipo) => {
     if (tipo == 'retiro') {
+      setRetiroValido(false)
       setErrorRetiro(newError);
     }
     if (tipo == 'devolucion') {
+      setDevolucionValido(false)
       setErrorDevolucion(newError);
     }
   }
