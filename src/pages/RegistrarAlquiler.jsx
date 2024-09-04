@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Button, Autocomplete
+  Box, Card, Grid, Stack, Typography, TextField,
+   InputAdornment, Button, Autocomplete
 } from "@mui/material";
-import { getCarById, getCarByIdFake } from "../services/CarsService.js";
+import { getCarById } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
 import { useParams } from 'react-router-dom';
 
@@ -12,35 +12,14 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
 import { useDispatch, useSelector } from "react-redux";
-import { calculateCantDias, calculatePrecioFinal, newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
+import { calculateCantDias, calculatePrecioFinal, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
 import { enGB } from 'date-fns/locale';
 
 import AddClientDialog from '../components/AddClientDialog.jsx';
-import { set } from "lodash";
 
 import { CarCard } from "../components/CarCard.jsx";
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
 import { lugaresFijos } from "../components/Filtros.jsx";
-
-function CardAlquiler({ car }) {
-  return <Card sx={{ backgroundColor: blueGrey[50], display: 'flex', flexDirection: 'column' }} elevation={2}>
-    <CardMedia
-      // image={"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Orange_Enzo_Ferrari_%287191948164%29.jpg/800px-Orange_Enzo_Ferrari_%287191948164%29.jpg"}
-      image={car.image}
-      sx={{ width: { xs: 200, sm: 500 }, height: 300 }}
-    />
-    <Stack direction='column' sx={{ flexGrow: 1, mt: 1, ml: 2 }}>
-      <Box sx={{ typography: 'h5', mb: 2, textAlign: 'center' }}>{car.name}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.capacidad} personas</Box>
-      {car.ac && <Box sx={{ typography: 'h6', mb: 1 }}>AC</Box>}
-      <Box sx={{ typography: 'h6', mb: 1 }}>Transmision: {car.transmision[0].toUpperCase() + car.transmision.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.color[0].toUpperCase() + car.color.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>{car.combustible[0].toUpperCase() + car.combustible.slice(1)}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>Patente: {car.patente}</Box>
-      <Box sx={{ typography: 'h6', mb: 1 }}>${car.price} / dia</Box>
-    </Stack>
-  </Card>;
-}
 
 export function FormAlquiler({ car }) {
 
@@ -58,7 +37,7 @@ export function FormAlquiler({ car }) {
     dispatch(editAuto(car));
     dispatch(calculateCantDias())
     dispatch(calculatePrecioFinal(car.price));
-    setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido); //Esto soluciona lo del home?
+    setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido);
   }, []);
 
 
@@ -131,12 +110,12 @@ export function FormAlquiler({ car }) {
     }
     if (tipo == 'devolucion') {
       dispatch(editFechaDevolucion(newValue.toString()));
-      validarFechas(formAlquiler.fechaRetiro, newValue.toString(), tipo);
+      validarFechas(formAlquiler.fechaRetiro, newValue.toString());
     }
     
   }
 
-  const validarFechas = (fRetiro,fDevolucion,tipo) => {
+  const validarFechas = (fRetiro,fDevolucion) => {
     fRetiro = new Date(fRetiro)
     fDevolucion = new Date(fDevolucion)
     if(fRetiro < fDevolucion){
@@ -298,9 +277,7 @@ export function PageAlquiler() {
   const [car, setCar] = useState();
 
   const axiosCarById = useCallback(async () => {
-    //Descomentar para usar la Base de Datos
     const obtainedCar = await getCarById(carID);
-    //const obtainedCar = await getCarByIdFake(carID);
     setCar(obtainedCar);
   }, []);
 
@@ -318,8 +295,6 @@ export function PageAlquiler() {
             item xs={12} sm={6} md={6} lg={5} xl={6} sx={{ display: 'flex', justifyContent: 'flex-end'}}
           >
             <Box 
-              // display="flex" justifyContent="flex-start"
-              // sx={{ maxWidth: '500px', minWidth: '300px' }}
               sx={{ maxWidth: '500px', mr: '2%'}}
             >
               <CarCard car={car} isHomePage={false} />
@@ -329,8 +304,6 @@ export function PageAlquiler() {
             item xs={12} sm={6} md={6} lg={7} xl={6} sx={{  display: 'flex', justifyContent: 'flex-start'   }}
           >
             <Box 
-              // display="flex" justifyContent="s"
-              //  sx={{ maxWidth: '700px', minWidth: '350px' }}
               sx={{ maxWidth: '700px', ml: '2%' }}
             >
               <FormAlquiler car={car} />
@@ -341,34 +314,5 @@ export function PageAlquiler() {
     )
   );
 
-  return (
-    car && (
-      <Stack direction="column" spacing={2} alignItems="inherit">
-        <Typography variant="h4" align="left">Registrar Alquiler</Typography>
-        <Grid container justifyContent="center">
-          <Grid
-            item xs={12} sm={6} md={6} lg={5} sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Box display="flex" justifyContent="center"
-              // sx={{ maxWidth: '500px', minWidth: '300px' }}
-              sx={{ maxWidth: '500px', mr: 1 }}
-            >
-              <CarCard car={car} isHomePage={false} />
-            </Box>
-          </Grid>
-          <Grid
-            item xs={12} sm={6} md={6} lg={7} sx={{  display: 'flex', justifyContent: 'center' }}
-          >
-            <Box display="flex" justifyContent="center"
-              //  sx={{ maxWidth: '700px', minWidth: '350px' }}
-              sx={{ maxWidth: '700px', ml: 1 }}
-            >
-              <FormAlquiler car={car} />
-            </Box>
-          </Grid>
-        </Grid>
-      </Stack>
-    )
-  );
 
 }
