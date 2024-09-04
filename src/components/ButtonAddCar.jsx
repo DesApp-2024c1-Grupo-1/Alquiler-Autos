@@ -15,6 +15,7 @@ import InputLabel from '@mui/material/InputLabel';
 
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { postCar } from '../services/CarsService';
 
 
 export default function ButtonAddCar() {
@@ -43,6 +44,7 @@ export default function ButtonAddCar() {
     formJson.capacidad = capacidad;
 
     console.log(formJson);
+    postCar(formJson);
     handleClose();
   };
 
@@ -64,8 +66,8 @@ export default function ButtonAddCar() {
                   autoFocus
                   required
                   margin="dense"
-                  id="name"
-                  name="name"
+                  id="brand"
+                  name="brand"
                   label="Marca"
                   type="text"
                   fullWidth
@@ -75,8 +77,8 @@ export default function ButtonAddCar() {
                   autoFocus
                   required  
                   margin="dense"
-                  id="brand"
-                  name="brand"
+                  id="name"
+                  name="name"
                   label="Modelo"
                   type="text"
                   fullWidth
@@ -137,7 +139,7 @@ export default function ButtonAddCar() {
                   fullWidth
                   variant="standard"
                 />
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="transmision-label">Transmisión</InputLabel>
                     <Select
                         labelId="transmision-label"
@@ -152,7 +154,7 @@ export default function ButtonAddCar() {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="combustible-label">Combustible</InputLabel>
                     <Select
                         labelId="combustible-label"
@@ -167,7 +169,7 @@ export default function ButtonAddCar() {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="ac-label">Aire Acondicionado</InputLabel>
                     <Select
                         labelId="ac-label"
@@ -182,7 +184,7 @@ export default function ButtonAddCar() {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="capacidad-label">Capacidad</InputLabel>
                     <Select
                         labelId="capacidad-label"

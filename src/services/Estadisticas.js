@@ -31,6 +31,6 @@ export async function getAllAlquileres() {
 //función que espera una fecha y si la misma tiene una diferencia mayor a 30 días con la actual devuelve false
 
 export function esNuevo(car) {
-    console.log(car)
+    // console.log(car)
     return diferenciaEnDias(car) <= 30;
 }

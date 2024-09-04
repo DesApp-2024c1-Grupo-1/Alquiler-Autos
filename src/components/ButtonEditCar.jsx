@@ -16,6 +16,8 @@ import MenuItem from '@mui/material/MenuItem';
 
 import EditIcon from '@mui/icons-material/Edit';
 import { blueGrey } from "@mui/material/colors";
+import { putCar } from '../services/CarsService';
+import { ca } from 'date-fns/locale';
 
 
 export default function ButtonEditCar(car) {
@@ -27,6 +29,7 @@ export default function ButtonEditCar(car) {
     const [ac, setAc] = React.useState('');
     const [capacidad, setCapacidad] = React.useState('');
     const [formValues, setFormValues] = React.useState({
+      id: '',
       name: '',
       brand: '',
       year: '',
@@ -41,6 +44,7 @@ export default function ButtonEditCar(car) {
       if (carData) {
           // Si hay auto, se establece sus como valores iniciales
           setFormValues({
+              id: carData.id || '',
               name: carData.name || '',
               brand: carData.brand || '',
               year: carData.year || '',
@@ -72,12 +76,14 @@ export default function ButtonEditCar(car) {
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries(formData.entries());
     
+        formJson.id = carData.id;
         formJson.combustible = combustible;
         formJson.transmision = transmision;
-        formJson.ac = ac === 'Sí' ? 1 : 0;
+        formJson.ac = ac === 'Sí' ? 'true' : 'false';
         formJson.capacidad = capacidad;
     
-        console.log(formJson);
+        console.log("Ultimate JSON: ",formJson);
+        putCar(formJson);
         handleClose();
       };
 
@@ -98,8 +104,8 @@ export default function ButtonEditCar(car) {
                   autoFocus
                   required
                   margin="dense"
-                  id="name"
-                  name="name"
+                  id="brand"
+                  name="brand"
                   label="Marca"
                   type="text"
                   fullWidth
@@ -111,8 +117,8 @@ export default function ButtonEditCar(car) {
                   autoFocus
                   required  
                   margin="dense"
-                  id="brand"
-                  name="brand"
+                  id="name"
+                  name="name"
                   label="Modelo"
                   type="text"
                   fullWidth
@@ -185,7 +191,7 @@ export default function ButtonEditCar(car) {
                   value={formValues.image}
                   onChange={(e) => setFormValues({...formValues, image: e.target.value })}
                 />
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="transmision-label">Transmisión</InputLabel>
                     <Select
                         labelId="transmision-label"
@@ -200,7 +206,7 @@ export default function ButtonEditCar(car) {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="combustible-label">Combustible</InputLabel>
                     <Select
                         labelId="combustible-label"
@@ -215,7 +221,7 @@ export default function ButtonEditCar(car) {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="ac-label">Aire Acondicionado</InputLabel>
                     <Select
                         labelId="ac-label"
@@ -230,7 +236,7 @@ export default function ButtonEditCar(car) {
                     </Select>
                 </FormControl>
 
-                <FormControl fullWidth variant="standard" margin="dense" requered>
+                <FormControl fullWidth variant="standard" margin="dense" required>
                     <InputLabel id="capacidad-label">Capacidad</InputLabel>
                     <Select
                         labelId="capacidad-label"

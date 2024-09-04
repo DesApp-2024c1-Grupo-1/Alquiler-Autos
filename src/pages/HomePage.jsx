@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, Container, Grid } from "@mui/material";
 import { CarCard } from '../components/CarCard.jsx';
-import { getAllCarsAvailable, getAllCarsFake } from "../services/CarsService";
+import { getAllCarsAvailable } from "../services/CarsService";
 import Filtros from '../components/Filtros.jsx';
 import ButtonAddCar from "../components/ButtonAddCar.jsx";
 import { NavLink } from "react-router-dom";
+import { set } from "lodash";
 
 
 
@@ -21,6 +22,10 @@ export function HomePage() {
   const handleFiltros = (filtros) => {
     console.log("Filtros en handleFiltros: ", filtros)
     fetchAllCars(filtros)
+  }
+
+  const deleteCarFromCard = (deletedCar) => {
+    setAllCars(allCars.filter(car => car.id != deletedCar.id));
   }
 
   useEffect(() => {
@@ -53,8 +58,8 @@ export function HomePage() {
             <Grid container spacing={2} sx={{ mt: '1rem' }}>
               {allCars && allCars.length > 0 ? (
                 allCars.map((carData) => (
-                  <Grid key={carData.id} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
-                      <CarCard car={carData} isHomePage={true} />
+                  <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
+                      <CarCard car={carData} isHomePage={true} deleteCarFromHome={deleteCarFromCard} />
                   </Grid>
                 ))
               ) : (

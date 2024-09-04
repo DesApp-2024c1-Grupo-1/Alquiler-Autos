@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Icon, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Icon, Stack, Typography } from "@mui/material";
 import { blueGrey } from "@mui/material/colors";
 import { is } from "date-fns/locale";
 import { NavLink } from "react-router-dom";
@@ -12,10 +12,19 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonEditCar from "./ButtonEditCar";
 import { esNuevo } from "../services/Estadisticas";
+import { deleteCarById } from "../services/CarsService";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useState } from "react";
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from "@mui/material";
 
 
 //Componente principal con la logica de la Card
-export function CarCard({ car, isHomePage }) {
+export function CarCard({ car, isHomePage, deleteCarFromHome }) {
 
   const configCard = isHomePage ?
     { justifyContent: 'space-between', height: '100%' } :
@@ -28,13 +37,13 @@ export function CarCard({ car, isHomePage }) {
         <>
           <Box style={{ textDecoration: 'none' }}>
             <CardActionArea sx={{ color: 'blue' }}>
-              <NavLink to={`/reserve/${car.id}`} style={{ textDecoration: 'none' }} isActive={false}>
+              <NavLink to={`/reserve/${car.id}`} style={{ textDecoration: 'none' }}>
                 <CarCardContent car={car} />
               </NavLink>
             </CardActionArea>
           </Box>
 
-          <CarCardBotones car={car} />
+          <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} />
         </>
       ) : (
         <Box style={{ textDecoration: 'none' }}>
@@ -148,20 +157,87 @@ function CarCardContent({ car }) {
 
 
 //Botones Borrar y Eliminar
-function CarCardBotones({ car }) {
-  return (
-    <Grid item xs={12} md={12} >
-      <Box display="flex" justifyContent="center" alignItems="center" paddingBottom={2}>
-        <CardActions>
-          <Button variant="outlined" size="small" color="inherit" endIcon={<DeleteIcon />} sx={{ mr: 2, color: blueGrey[700] }} onClick={() => console.log("delete")}>
-            Borrar
-          </Button>
-        </CardActions>
+function CarCardBotones({ car, deleteCarFromHome }) {
 
-        <CardActions>
-          <ButtonEditCar carData={car} />
-        </CardActions>
-      </Box>
-    </Grid>
+  const [open, setOpen] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false)
+  }
+
+  const confirmDelete = async (car) => {
+      const deletedCar = await deleteCarById(car.id)
+      deleteCarFromHome(deletedCar)
+      setOpenSnack(true);
+  }
+
+
+  return (
+    <>
+      <Grid item xs={12} md={12} >
+        <Box display="flex" justifyContent="center" alignItems="center" paddingBottom={2}>
+          <CardActions>
+            <Button variant="outlined" size="small" color="inherit" endIcon={<DeleteIcon />} sx={{ mr: 2, color: blueGrey[700] }} onClick={() => handleClickOpen(car.id)}>
+              Borrar
+            </Button>
+          </CardActions>
+
+          <CardActions>
+            <ButtonEditCar carData={car} />
+          </CardActions>
+        </Box>
+      </Grid>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"¿Seguro que desea eliminar este vehiculo?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <p>Estas por eliminar {car.brand} {car.name} {car.patente}</p>
+            <p> Esta accion no se puede deshacer.</p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={
+            () => {
+              confirmDelete(car);
+              handleClose();
+            }
+          } autoFocus>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+        <Alert
+          onClose={handleCloseSnack}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Auto eliminado con exito
+        </Alert>
+      </Snackbar>
+
+    </>
   )
+
 }
+
