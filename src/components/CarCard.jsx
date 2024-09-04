@@ -11,6 +11,7 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonEditCar from "./ButtonEditCar";
+import { esNuevo } from "../services/Estadisticas";
 
 
 //Componente principal con la logica de la Card
@@ -35,9 +36,9 @@ export function CarCard({ car, isHomePage }) {
 
           <CarCardBotones car={car} />
         </>
-      ) : ( 
+      ) : (
         <Box style={{ textDecoration: 'none' }}>
-            <CarCardContent car={car} />
+          <CarCardContent car={car} />
         </Box>
       )}
     </Card>
@@ -61,7 +62,10 @@ function CarCardContent({ car }) {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[700] }}>
-          {car.brand}
+          {car.brand}{" "}
+          {esNuevo(car.fechaLanzamiento) && (
+            <span style={{ color: "green" }}>"NEW"</span>
+          )}
         </Typography>
 
         <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[700] }}>
