@@ -16,6 +16,9 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { postCar } from '../services/CarsService';
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from "@mui/material";
+import { useState } from 'react';
 
 
 export default function ButtonAddCar() {
@@ -45,8 +48,15 @@ export default function ButtonAddCar() {
 
     console.log(formJson);
     postCar(formJson);
+    setOpenSnack(true);
     handleClose();
   };
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false)
+  }
+
+  const [openSnack, setOpenSnack] = useState(false);
 
    
     return (
@@ -219,6 +229,17 @@ export default function ButtonAddCar() {
               </DialogActions>
             </form>
           </Dialog>
+
+          <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert
+                    onClose={handleCloseSnack}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    Auto agregado con exito
+                </Alert>
+            </Snackbar>
         </React.Fragment>
       );
 }

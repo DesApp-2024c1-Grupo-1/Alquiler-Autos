@@ -17,8 +17,9 @@ import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import { blueGrey } from "@mui/material/colors";
 import { putCar } from '../services/CarsService';
-import { ca } from 'date-fns/locale';
-
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from "@mui/material";
+import { useState } from 'react';
 
 export default function ButtonEditCar(car) {
 
@@ -84,8 +85,15 @@ export default function ButtonEditCar(car) {
     
         console.log("Ultimate JSON: ",formJson);
         putCar(formJson);
+        setOpenSnack(true);
         handleClose();
       };
+
+      const handleCloseSnack = () => {
+        setOpenSnack(false)
+      }
+
+      const [openSnack, setOpenSnack] = useState(false);
 
   return (
     <React.Fragment>
@@ -273,6 +281,17 @@ export default function ButtonEditCar(car) {
               </DialogActions>
             </form>
           </Dialog>
+
+          <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert
+                    onClose={handleCloseSnack}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    Auto modificado con exito
+                </Alert>
+            </Snackbar>
         </React.Fragment>
   )
 }
