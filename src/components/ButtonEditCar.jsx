@@ -80,7 +80,7 @@ export default function ButtonEditCar(car) {
         formJson.id = carData.id;
         formJson.combustible = combustible;
         formJson.transmision = transmision;
-        formJson.ac = ac === 'Sí' ? 'true' : 'false';
+        formJson.ac = ac === 'Sí' ? true : false;
         formJson.capacidad = capacidad;
     
         console.log("Ultimate JSON: ",formJson);

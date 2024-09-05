@@ -43,7 +43,7 @@ export default function ButtonAddCar() {
 
     formJson.combustible = combustible;
     formJson.transmision = transmision;
-    formJson.ac = ac === 'Sí' ? 1 : 0;
+    formJson.ac = ac === 'Sí' ? true : false;
     formJson.capacidad = capacidad;
 
     console.log(formJson);
