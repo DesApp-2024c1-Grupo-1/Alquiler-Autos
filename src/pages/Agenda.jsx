@@ -3,7 +3,7 @@ import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs }
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { momentTimezone } from '@mobiscroll/react';
 import moment from 'moment-timezone';
-import { getEventos,actualizarEvento  } from '../services/EventosService';
+import { getEventos, actualizarAlquiler  } from '../services/EventosService';
 import { set, update } from 'lodash';
 import { enGB } from 'date-fns/locale';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -80,12 +80,46 @@ function AgendaPage() {
     setEditDatosC((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSaveCustomerChanges = () => {
+  const handleSaveCustomerChanges = async () => {
+    console.log('Evento completo', appointment);
     console.log('Guardar cambios del cliente', editDatosC);
-    setEditCustomerModalOpen(false);
-
-    // Aca agregar la lógica para guardar los cambios en el backend 
+    console.log('ID de Alquiler.cliente.id: ', appointment.alquiler.cliente.id);
+  
+    // Crear un nuevo objeto de alquiler, con los datos del cliente modificados
+    const alquilerModificado = {
+      ...appointment.alquiler, // Trae todos los datos del alquiler actual
+      cliente: {
+        ...appointment.alquiler.cliente, // Mantiene los datos del cliente actual
+        ...editDatosC, // Sobrescribe con los nuevos datos del cliente
+      },
+    };
+  
+    try {
+      // Llamada a la función actualizarAlquiler con el id del alquiler y el objeto modificado
+      const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
+  
+      // Actualizar el estado de las citas con los datos del alquiler y cliente modificados
+      setAppointments((appointments) =>
+        appointments.map((item) =>
+          item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
+        )
+      );
+  
+      
+      setEditCustomerModalOpen(false);
+  
+      // Mostrar un mensaje de éxito
+      setToastMessage('Datos del cliente actualizados correctamente');
+      setToastOpen(true);
+    } catch (error) {
+      // Manejo de errores 
+      console.error('Hubo un error al actualizar los datos del cliente:', error);
+      setToastMessage('Error al actualizar los datos del cliente');
+      setToastOpen(true);
+    }
   };
+  
+  
   
 
 
@@ -113,34 +147,66 @@ function AgendaPage() {
     setEditData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+
+
+
+  const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
+    const retiro = new Date(fechaRetiro);
+    const devolucion = new Date(fechaDevolucion);
+    
+    
+    const diffTime = Math.abs(devolucion - retiro);
+    
+   
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays;
+  };
+
+
+
   const handleSaveChanges = async () => {
-    console.log('Guardar cambios', editData);
+
+    const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
+    const alquilerModificado = {
+      ...editData,
+      cantidadDias
+    };
   
+    console.log('Guardar cambios', alquilerModificado);
+    
     try {
-      const updateEvent = await actualizarEvento(appointment.id, editData);
-  
+      const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);  
+    
       setAppointments((appointments) =>
         appointments.map((item) => 
-          item.id === updateEvent.id ? updateEvent : item
+          item.id === updateAlquiler.id ? updateAlquiler : item	
         )
       );
       setEditPopupOpen(false);
     } catch (error) {
-      console.error('Hubo un error al guardar los cambios:', error);
+      console.error('Hubo un error al actualizar el alquiler:', error);
     }
   };
+
+
+  
   
   const handleCloseEditPopup = () => {
     setEditPopupOpen(false);
   };
 
+  {/*ACA ABAJO TENGO QUE PONER LOS ATRIBUTOS*/}
   const [editData, setEditData] = useState({
+    
     lugarRetiro: '',
     lugarDevolucion: '',
     fechaRetiro: '',
-    fechaDevolucion: ''
+    fechaDevolucion: '',
+    cantidadDias: 0 // Inicialmente en 0, pero se actualizará antes de enviar los datos.
   });
 
+  
   const [editDatosC, setEditDatosC] = useState({
     nombre: '',
     documento: '',
@@ -179,17 +245,18 @@ function AgendaPage() {
     {/*setAppointmentPatente(event.data?.car?.patente)*/}
 
 
-    const patenteEs = event.data?.car?.patente
+    const patenteEs = event.alquiler.car.patente
 
 
     const fechaRetiro = event.alquiler.fechaRetiro;
     const fechaDevolucion = event.alquiler.fechaDevolucion;
-  {/*
+  
+    console.log('Evento completo', event)
     console.log('Fecha Retiro:', fechaRetiro);
     console.log('Fecha Devolucion:', fechaDevolucion);
     console.log('La patente es: ', patenteEs)
     console.log('La persona es:', event.alquiler.cliente)
-  */}
+  
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
     setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -244,12 +311,13 @@ function AgendaPage() {
   }, []);
 
   /*Este const sirve para cuando yo hago click sobre el cancelar*/
-  const updateAppointmentStatus = useCallback(() => {
+  {/*const updateAppointmentStatus = useCallback(() => {
     appointment.confirmed = !appointment.confirmed;
     setTooltipOpen(false);
     setToastMessage('Auto ' + (appointment.confirmed ? 'confirmado' : 'cancelado'));
     setToastOpen(true);
-  }, [appointment]);
+  }, [appointment]);*/}
+
 
   const formattedAppointmentTimeR = appointmentTimeR ? moment(appointmentTimeR).format('DD MMM YYYY HH:mm') : 'N/A';
   const formattedAppointmentTimeD = appointmentTimeD ? moment(appointmentTimeD).format('DD MMM YYYY HH:mm') : 'N/A';
@@ -266,15 +334,22 @@ function AgendaPage() {
 
 
   const editAppointment = useCallback(() => {
+    {/*ACA TENGO QUE PONER TODOS LOS ATRIBUTOS*/}
     setEditData({
       lugarRetiro: appointment.alquiler.lugarRetiro || '',
       lugarDevolucion: appointment.alquiler.lugarDevolucion || '',
       fechaRetiro: appointment.alquiler.fechaRetiro || '',
-      fechaDevolucion: appointment.alquiler.fechaDevolucion || ''
+      fechaDevolucion: appointment.alquiler.fechaDevolucion || '',
+      precioFinal: appointment.alquiler.precioFinal || '',
+      id: appointment.alquiler.id,
+      cantidadDias: appointment.alquiler.cantidadDias,
+      cliente: appointment.alquiler.cliente,
+      car: appointment.alquiler.car
     });
     setTooltipOpen(false);
     setEditPopupOpen(true);
   }, [appointment]);
+
 
   const editDatosCliente = useCallback(() => {
     console.log('Ejecutando editDatosCliente');
@@ -283,7 +358,14 @@ function AgendaPage() {
       nombre: appointment.alquiler.cliente.nombre || '',
       documento: appointment.alquiler.cliente.documento || '',
       telefono: appointment.alquiler.cliente.telefono || '',
-      email: appointment.alquiler.cliente.email
+      email: appointment.alquiler.cliente.email || '',
+      cantidadDias: appointment.alquiler.cantidadDias,
+      car: appointment.alquiler.car,
+      lugarRetiro: appointment.alquiler.lugarRetiro || '',
+      lugarDevolucion: appointment.alquiler.lugarDevolucion || '',
+      fechaRetiro: appointment.alquiler.fechaRetiro || '',
+      fechaDevolucion: appointment.alquiler.fechaDevolucion || '',
+      precioFinal: appointment.alquiler.precioFinal || ''
     });
     setCustomerPopupOpen(false);  
     setEditCustomerModalOpen(true);  
@@ -295,7 +377,6 @@ function AgendaPage() {
   return (
     <>
       <Box>
-
       <Eventcalendar
         data={appointments}
         showEventTooltip={false}
@@ -336,7 +417,6 @@ function AgendaPage() {
             <div className="mds-tooltip-label mbsc-margin">
               Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
             </div>
-
             <div className="mds-tooltip-label mbsc-margin">
               Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
             </div>

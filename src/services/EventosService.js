@@ -21,24 +21,34 @@
   }
 
 
-  export async function actualizarEvento(id, alquilerModificado) {
-  try {
-    const url = `http://localhost:3000/evento/${id}`;
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(alquilerModificado),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+  export async function actualizarAlquiler(id, alquilerModificado) {
+    console.log('Enviando datos de alquiler:', alquilerModificado);
+    try {
+      const url = `http://localhost:3000/alquiler/${id}`;
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(alquilerModificado),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+  
+ 
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      } else {
+        // Manejar otros tipos de respuesta si es necesario
+        return {};
+      }
+    } catch (error) {
+      console.error('Error al actualizar el alquiler:', error);
+      throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error al actualizar el evento:', error);
-    throw error;
   }
-}
+  
