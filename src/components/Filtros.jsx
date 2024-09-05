@@ -77,13 +77,14 @@ const Filtros = ({ handleFiltros }) => {
       devolucion
     );
     const filtros = {
-      ac: selectedAireAcondicionado,
-      combustible: selectedCombustibleType,
-      transmision: selectedTransmisionType,
-      capacidad: capacitiy || null,
-      retiro: retiro,
-      devolucion: devolucion,
-    };
+      ac: selectedAireAcondicionado, 
+      combustible: selectedCombustibleType, 
+      transmision: selectedTransmisionType, 
+      capacidad: capacitiy, 
+      fechaRetiro: formAlquiler.fechaRetiro, 
+      fechaDevolucion: formAlquiler.fechaDevolucion
+    }
+    console.log("Filtros en BuscarButton: ", filtros);
     handleFiltros(filtros);
   };
 
@@ -95,6 +96,8 @@ const Filtros = ({ handleFiltros }) => {
       capacidad: null,
       retiro: null,
       devolucion: null,
+      fechaRetiro: null, 
+      fechaDevolucion: null
     };
     setCapacity("");
     setCombustibleType(null);
