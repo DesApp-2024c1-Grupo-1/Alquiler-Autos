@@ -392,7 +392,8 @@ function AgendaPage() {
 
       <Popup
         anchor={tooltipAnchor}
-        closeOnOverlayClick={false}
+        onClose={() => setTooltipOpen(false)}
+        closeOnOverlayClick={true}
         contentPadding={false}
         display="anchored"
         isOpen={isTooltipOpen}
