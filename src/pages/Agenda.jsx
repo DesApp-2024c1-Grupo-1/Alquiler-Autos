@@ -11,9 +11,12 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Modal
+  InputLabel, InputAdornment, FormControl, Modal, FormControlLabel, Checkbox, Autocomplete
 } from "@mui/material";
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { red } from '@mui/material/colors';
+import { lugaresFijos } from "../components/Filtros.jsx";
+
 
 setOptions({
   locale: localeEs,
@@ -69,16 +72,83 @@ function AgendaPage() {
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   
+
+  const [formAlquiler, setFormAlquiler] = useState({ lugarRetiro: '', lugarDevolucion: '' });
+  const [lugarDevolucionValido, setLugarDevolucionValido] = useState(true);
+
+  
   const [appointmentPatente, setAppointmentPatente] = useState('null');
-  const [isEditDatosCOpen, setEditDatosCOpen] = useState(false)
+  const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
 
   const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
+
+ 
+
+  const [pagoTotal, setAppointmentPagoTotal] = useState('');
+
+
+  const [montoPago, setMontoPago] = useState(0); 
+
+
+const handleCheckboxChange = (event) => {
+  setIsTotalChecked(event.target.checked);
+  if (event.target.checked) {
+    setMontoPago(pagoTotal); // Asigno el saldo total por ahora, luego se asignara el pagoPediente
+  } else {
+    setMontoPago(0); 
+  }
+};
+
+
+  const [appointmentPago, setAppointmentPago] = useState('');
+
+
+  const [pagarSaldo, setPagarSaldo]= useState({
+    saldoOriginal: '',
+    saldoPendiente:'',
+    
+  });
+
+  const pagoAppointment = useCallback(() => {
+    setPagarSaldo({
+      saldoOriginal: '',  
+      saldoPendiente: '', 
+    });
+    setMontoPago('');
+    setTooltipOpen(false);  
+    setAppointmentPago(true);  
+  }, [appointment]);
+
+  const [isTotalChecked, setIsTotalChecked] = useState(false);
+
+
+{/*const saldoPendiente = pagarSaldo.saldoPendiente;  Asegurarme de tener este valor disponible*/}
+
+
+
+
+
+
+const handleLugarDevolucionChange = (event, newInputValue) => {
+  setFormAlquiler((prev) => ({ ...prev, lugarDevolucion: newInputValue }));
   
+  // Validación: comprueba si el lugar está en la lista
+  if (newInputValue.trim() === '') {
+    setLugarDevolucionValido(false); // El campo está vacío, no es válido
+  } else {
+    setLugarDevolucionValido(true); // Hay valor, es válido
+  }
+};
+
+
+
 
   const handleEditDatosCChange = (e) => {
     const { name, value } = e.target;
     setEditDatosC((prevData) => ({ ...prevData, [name]: value }));
   };
+
+
 
   const handleSaveCustomerChanges = async () => {
     console.log('Evento completo', appointment);
@@ -212,7 +282,12 @@ function AgendaPage() {
     documento: '',
     telefono: '',
     email: ''
-  })
+  });
+
+
+
+
+
 
 
 
@@ -221,12 +296,11 @@ function AgendaPage() {
 
   const myView = useMemo(() => ({ agenda: { type: 'day' } }), []);
 
+  
 
   const openTooltip = useCallback((args) => {
     const event = args.event;
     const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
-    {/*console.log('Event Data:', event); // Verifica los datos del evento*/}
-
     if (timer.current) {
       clearTimeout(timer.current);
     }
@@ -239,8 +313,9 @@ function AgendaPage() {
     setTooltipColor(event.color);
     setTooltipAnchor(args.domEvent.target);
     setTooltipOpen(true);
-    setAppointmentTimeR(event.alquiler.fechaRetiro)
-    setAppointmentTimeD(event.alquiler.fechaDevolucion)
+    setAppointmentTimeR(event.alquiler.fechaRetiro);
+    setAppointmentTimeD(event.alquiler.fechaDevolucion);
+    setAppointmentPagoTotal(event.alquiler.precioFinal);
 
     {/*setAppointmentPatente(event.data?.car?.patente)*/}
 
@@ -250,6 +325,7 @@ function AgendaPage() {
 
     const fechaRetiro = event.alquiler.fechaRetiro;
     const fechaDevolucion = event.alquiler.fechaDevolucion;
+    const saldoOriginal = event.alquiler.precioFinal;
   
     console.log('Evento completo', event)
     console.log('Fecha Retiro:', fechaRetiro);
@@ -421,10 +497,17 @@ function AgendaPage() {
             <div className="mds-tooltip-label mbsc-margin">
               Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
             </div>
+            
+            <div className='mds-tooltip-label mbsc-margin'>
+              Saldo Original: <span className='mbsc-light'> {pagoTotal}  </span>
+            </div>
+            <div className='mds-tooltip-label mbsc-margin'>
+              Saldo pendiente: <span className='mbsc-light'> {}  </span>
+            </div>
             <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
               Cliente
             </Button>
-            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
+            <Button color="secondary" className="mds-tooltip-button" onClick={pagoAppointment}>
               Pago
             </Button>
             <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>
@@ -677,22 +760,29 @@ function AgendaPage() {
               </Box>
               </Box>
             </LocalizationProvider>
-            <TextField
-              label="Lugar de Retiro"
-              name="lugarRetiro"
-              value={editData.lugarRetiro}
-              onChange={handleEditDataChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Lugar de Devolución"
-              name="lugarDevolucion"
-              value={editData.lugarDevolucion}
-              onChange={handleEditDataChange}
-              fullWidth
-              margin="normal"
-            />
+
+            <Autocomplete
+        options={lugaresFijos}
+        getOptionLabel={(option) => option}
+        value={editData.lugarRetiro}
+        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))}
+        renderInput={(params) => (
+          <TextField {...params} label="Lugar de Retiro" margin="normal" fullWidth />
+        )}
+      />
+
+      {/* Autocomplete para Lugar de Devolución */}
+      <Autocomplete
+        options={lugaresFijos}
+        getOptionLabel={(option) => option}
+        value={editData.lugarDevolucion}
+        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))}
+        renderInput={(params) => (
+          <TextField {...params} label="Lugar de Devolución" margin="normal" fullWidth />
+        )}
+      />
+
+
           </Box>
           <Button  color="primary" onClick={handleSaveChanges}>Guardar Cambios</Button>
           <Button  color="secondary" onClick={handleCloseEditPopup}>Cancelar</Button>
@@ -753,6 +843,93 @@ function AgendaPage() {
     <Button color="secondary" onClick={() => setEditCustomerModalOpen(false)}>Cancelar</Button>
   </Box>
 </Modal>
+
+
+
+<Modal
+  open={appointmentPago}
+  onClose={() => setAppointmentPago(false)}  
+>
+  <Box sx={{
+    width: 400,
+    height: 325,
+    padding: 2,
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    boxShadow: 24,
+    borderRadius: 1,
+  }}>
+    <Typography variant="h6" marginBottom={2}  sx={{ borderBottom: '1px solid #e0e0e0' }} >Pago de Saldo</Typography>
+    
+    <div className="payment-popup-item"
+        style={{
+          padding: '10px',
+        
+          
+        }}
+    >
+      <span className="payment-popup-label">Saldo Original:</span>
+      <span style={{paddingLeft:'10px'}}>{pagoTotal}</span>
+    </div>
+    
+    <div className="payment-popup-item"
+     style={{
+      padding: '10px',
+      marginBottom:'20px',
+     
+      
+    }}
+      >
+      <span className="payment-popup-label">Saldo Pendiente:</span>
+      <span>{/* ACA VA INFO */}</span>
+    </div>
+
+
+    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, paddingLeft: '10px'}}>
+          <TextField
+            label="Cantidad a Pagar"
+            type="number"
+            variant="outlined"
+            value={montoPago}
+            onChange={(e) => setMontoPago(e.target.value)}
+            style={{ marginRight: 16, width: 225 }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isTotalChecked}
+                onChange={handleCheckboxChange}
+                color="primary"
+              />
+            }
+            label="Total"
+          />
+        </Box>
+
+
+
+    <Box sx={{pading: 20, marginTop:4, paddingLeft: '10px'}}>
+      <Button color="primary" onClick={() => handlePayment()} style={{ marginRight: 8 }}>
+        Realizar Pagos
+      </Button>
+      <Button color="danger" onClick={() => setAppointmentPago(false)}>
+        Cancelar
+      </Button>
+      <Button color='info' className="mds-tooltip-button mbsc-pull-right" onClick={()=> setAppointmentPago(false)}>
+          Historial
+      </Button>
+    </Box>
+   
+            
+    
+    
+  </Box>
+</Modal>
+
+
 
       
     </Box>
