@@ -23,6 +23,7 @@
 
   export async function actualizarAlquiler(id, alquilerModificado) {
     console.log('Enviando datos de alquiler:', alquilerModificado);
+    console.log('Enviando datos de pagos:', alquilerModificado.pagos);
     try {
       const url = `http://localhost:3000/alquiler/${id}`;
       const response = await fetch(url, {

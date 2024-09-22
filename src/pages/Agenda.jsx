@@ -85,15 +85,19 @@ function AgendaPage() {
  
 
   const [pagoTotal, setAppointmentPagoTotal] = useState('');
+  const [saldoP, setAppointmentSaldoP] = useState('');
 
 
-  const [montoPago, setMontoPago] = useState(0); 
+  const [montoPago, setMontoPago] = useState(''); 
+  
+  
+
 
 
 const handleCheckboxChange = (event) => {
   setIsTotalChecked(event.target.checked);
   if (event.target.checked) {
-    setMontoPago(pagoTotal); // Asigno el saldo total por ahora, luego se asignara el pagoPediente
+    setMontoPago(saldoP); // Asigno el saldoPendiente
   } else {
     setMontoPago(0); 
   }
@@ -124,8 +128,52 @@ const handleCheckboxChange = (event) => {
 
 {/*const saldoPendiente = pagarSaldo.saldoPendiente;  Asegurarme de tener este valor disponible*/}
 
+const handleSavePayment = async () => {
+  console.log('Evento completo', appointment);
+  console.log('Monto a pagar:', montoPago);
+  console.log('Funcionamiento Pagos', appointment.alquiler.pagos)
 
+  const nuevoSaldoPendiente = Number(saldoP) - Number(montoPago);
 
+  const nuevoPago = {
+    fecha: new Date(), 
+    monto: parseFloat(montoPago),  
+    alquiler: { id: appointment.alquiler.id } 
+  };
+  
+  
+  // Modificar el alquiler con el nuevo pago
+  const alquilerModificado = {
+    ...appointment.alquiler,
+    saldoPendiente: nuevoSaldoPendiente,
+    cantidadDias: appointment.alquiler.cantidadDias,
+    pagos: [...appointment.alquiler.pagos, nuevoPago] 
+};
+
+console.log('Pagos antes de guardar:', alquilerModificado.pagos); // Verifica que tenga el nuevo pago
+
+try {
+  const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
+
+  // Verifica si la actualización fue exitosa
+  if (!updateAlquiler) {
+    alert("No se pudo actualizar el alquiler.");
+    return;
+  }
+
+  // Actualiza el estado de las citas
+  setAppointments((appointments) =>
+    appointments.map((item) =>
+      item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
+    )
+  );
+
+  alert("Pago realizado con éxito.");
+} catch (error) {
+  console.error("Error al actualizar el saldo pendiente:", error);
+  alert("Error al realizar el pago.");
+}
+};
 
 
 
@@ -208,16 +256,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   };
 
 
-  const handleEditClick = () => {
-    setEditPopupOpen(true);
-  };
-
-  const handleEditDataChange = (e) => {
-    const { name, value } = e.target;
-    setEditData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-
+  
 
 
   const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
@@ -266,7 +305,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     setEditPopupOpen(false);
   };
 
-  {/*ACA ABAJO TENGO QUE PONER LOS ATRIBUTOS*/}
+  
   const [editData, setEditData] = useState({
     
     lugarRetiro: '',
@@ -316,6 +355,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     setAppointmentTimeR(event.alquiler.fechaRetiro);
     setAppointmentTimeD(event.alquiler.fechaDevolucion);
     setAppointmentPagoTotal(event.alquiler.precioFinal);
+    setAppointmentSaldoP(event.alquiler.saldoPendiente);
 
     {/*setAppointmentPatente(event.data?.car?.patente)*/}
 
@@ -332,6 +372,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     console.log('Fecha Devolucion:', fechaDevolucion);
     console.log('La patente es: ', patenteEs)
     console.log('La persona es:', event.alquiler.cliente)
+    
   
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -369,30 +410,10 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
 
 
 
-  const handleMouseEnter = useCallback(() => {
-    if (timer.current) {
-      clearTimeout(timer.current);
-      timer.current = null;
-    }
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    timer.current = setTimeout(() => {
-      setTooltipOpen(false);
-    }, 200);
-  }, []);
-
   const handleToastClose = useCallback(() => {
     setToastOpen(false);
   }, []);
 
-  /*Este const sirve para cuando yo hago click sobre el cancelar*/
-  {/*const updateAppointmentStatus = useCallback(() => {
-    appointment.confirmed = !appointment.confirmed;
-    setTooltipOpen(false);
-    setToastMessage('Auto ' + (appointment.confirmed ? 'confirmado' : 'cancelado'));
-    setToastOpen(true);
-  }, [appointment]);*/}
 
 
   const formattedAppointmentTimeR = appointmentTimeR ? moment(appointmentTimeR).format('DD MMM YYYY HH:mm') : 'N/A';
@@ -499,10 +520,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
             </div>
             
             <div className='mds-tooltip-label mbsc-margin'>
-              Saldo Original: <span className='mbsc-light'> {pagoTotal}  </span>
-            </div>
-            <div className='mds-tooltip-label mbsc-margin'>
-              Saldo pendiente: <span className='mbsc-light'> {}  </span>
+              Saldo pendiente: <span className='mbsc-light'> {saldoP}  </span>
             </div>
             <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
               Cliente
@@ -884,7 +902,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     }}
       >
       <span className="payment-popup-label">Saldo Pendiente:</span>
-      <span>{/* ACA VA INFO */}</span>
+      <span style={{paddingLeft:'10px'}}>{saldoP}</span>
     </div>
 
 
@@ -912,7 +930,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
 
 
     <Box sx={{pading: 20, marginTop:4, paddingLeft: '10px'}}>
-      <Button color="primary" onClick={() => handlePayment()} style={{ marginRight: 8 }}>
+      <Button color="primary" onClick={() => handleSavePayment()} style={{ marginRight: 8 }}>
         Realizar Pagos
       </Button>
       <Button color="danger" onClick={() => setAppointmentPago(false)}>
