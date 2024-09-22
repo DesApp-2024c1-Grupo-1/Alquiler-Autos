@@ -422,7 +422,10 @@ function AgendaPage() {
               Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
             </div>
             <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
-              Datos de Cliente
+              Cliente
+            </Button>
+            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
+              Pago
             </Button>
             <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>
               Editar
