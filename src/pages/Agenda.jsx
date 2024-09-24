@@ -107,11 +107,7 @@ const handleCheckboxChange = (event) => {
   const [appointmentPago, setAppointmentPago] = useState('');
 
 
-  const [pagarSaldo, setPagarSaldo]= useState({
-    saldoOriginal: '',
-    saldoPendiente:'',
-    
-  });
+  
 
   const pagoAppointment = useCallback(() => {
     setPagarSaldo({
@@ -322,6 +318,15 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     telefono: '',
     email: ''
   });
+
+
+  const [editPago, setEditPago] = useState({
+    
+    precioFinal: '',
+    saldoPendiente:'',
+    cantidadDias: 0 // Inicialmente en 0, pero se actualizará antes de enviar los datos.
+  });
+
 
 
 
