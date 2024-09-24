@@ -44,7 +44,6 @@
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       } else {
-        // Manejar otros tipos de respuesta si es necesario
         return {};
       }
     } catch (error) {
@@ -52,6 +51,30 @@
       throw error;
     }
   }
-  
+
 
   
+
+
+
+  export async function registrarPago(idAlquiler, monto) {
+    try {
+      const url = `http://localhost:3000/pago/alquiler/${idAlquiler}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ monto: monto }), 
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} al registrar el pago`);
+      }
+  
+      return await response.json(); 
+    } catch (error) {
+      console.error('Error al registrar el pago:', error);
+      throw error;
+    }
+  }

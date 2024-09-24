@@ -3,7 +3,7 @@ import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs }
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { momentTimezone } from '@mobiscroll/react';
 import moment from 'moment-timezone';
-import { getEventos, actualizarAlquiler  } from '../services/EventosService';
+import { getEventos, actualizarAlquiler, registrarPago   } from '../services/EventosService';
 import { set, update } from 'lodash';
 import { enGB } from 'date-fns/locale';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -32,14 +32,14 @@ function AgendaPage() {
   const [appointments, setAppointments] = useState([])
 
   const fetchAllEvents = useCallback(async () => {
-    //Descomentar para usar la Base de Datos
+    
     const obtainedEvents = await getEventos();
     //obtainedEvents = obtainedEvents.map(e =>{  e.end = null})
 
     //const obtainedEvents = eventosFake;
 
 
-    console.log('Eventos obtenidos:', obtainedEvents); // Verificar los datos aquí
+    console.log('Eventos obtenidos:', obtainedEvents); 
 
     setAppointments(obtainedEvents);
   }, []);
@@ -88,9 +88,11 @@ function AgendaPage() {
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
-  const [montoPago, setMontoPago] = useState(''); 
+
   
   
+  const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
+ 
 
 
 
@@ -109,39 +111,97 @@ const handleCheckboxChange = (event) => {
 
   
 
-  const pagoAppointment = useCallback(() => {
-    setPagarSaldo({
-      saldoOriginal: '',  
-      saldoPendiente: '', 
-    });
-    setMontoPago('');
-    setTooltipOpen(false);  
-    setAppointmentPago(true);  
-  }, [appointment]);
-
   const [isTotalChecked, setIsTotalChecked] = useState(false);
 
+  const [montoPago, setMontoPago] = useState(''); 
 
-{/*const saldoPendiente = pagarSaldo.saldoPendiente;  Asegurarme de tener este valor disponible*/}
+  const handlePago = async () => {
+
+    const monto = parseFloat(montoPago);
+  
+   
+    if (isNaN(monto) || monto <= 0) {
+      console.error('El monto debe ser un número positivo.');
+      setToastMessage('El monto debe ser un número positivo.');
+      setToastOpen(true);
+      return;
+    }
+  
+    console.log('Realizando pago para el alquiler ID:', appointment.alquiler.id);
+    console.log('Monto del pago:', monto);
+
+      
+  if (montoPago > saldoP) {
+    console.error('El monto a pagar no puede ser mayor que el saldo pendiente.');
+    setToastMessage('El monto a pagar no puede ser mayor que el saldo pendiente.');
+    setToastOpen(true);
+    return;
+  }
+  
+    try {
+      
+      const response = await registrarPago(appointment.alquiler.id, monto);
+      
+     
+      if (response) {
+       
+        setAppointments((appointments) => 
+          appointments.map((item) => 
+            item.alquiler.id === appointment.alquiler.id
+              ? { ...item, alquiler: { ...item.alquiler, pagos: [...item.alquiler.pagos, response] } }
+              : item
+          )
+        );
+  
+        
+        setAppointmentPago(false);
+  
+        
+        setToastMessage('Pago registrado correctamente');
+      }
+    } catch (error) {
+      
+      console.error('Error al registrar el pago:', error);
+      setToastMessage('Error al registrar el pago');
+    } finally {
+     
+      setToastOpen(true);
+    }
+  };
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/*
 
 const handleSavePayment = async () => {
   console.log('Evento completo', appointment);
   console.log('Monto a pagar:', montoPago);
   console.log('Funcionamiento Pagos', appointment.alquiler.pagos)
 
-  const nuevoSaldoPendiente = Number(saldoP) - Number(montoPago);
-
   const nuevoPago = {
     fecha: new Date(), 
-    monto: parseFloat(montoPago),  
-    alquiler: { id: appointment.alquiler.id } 
+    monto: parseFloat(montoPago)
   };
   
   
   // Modificar el alquiler con el nuevo pago
   const alquilerModificado = {
     ...appointment.alquiler,
-    saldoPendiente: nuevoSaldoPendiente,
     cantidadDias: appointment.alquiler.cantidadDias,
     pagos: [...appointment.alquiler.pagos, nuevoPago] 
 };
@@ -170,6 +230,9 @@ try {
   alert("Error al realizar el pago.");
 }
 };
+*/}
+
+
 
 
 
@@ -318,15 +381,6 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     telefono: '',
     email: ''
   });
-
-
-  const [editPago, setEditPago] = useState({
-    
-    precioFinal: '',
-    saldoPendiente:'',
-    cantidadDias: 0 // Inicialmente en 0, pero se actualizará antes de enviar los datos.
-  });
-
 
 
 
@@ -530,9 +584,18 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
             <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
               Cliente
             </Button>
-            <Button color="secondary" className="mds-tooltip-button" onClick={pagoAppointment}>
+            <Button
+                color="secondary"
+                className="mds-tooltip-button"
+                onClick={() => {
+                  setTooltipOpen(false);  
+                  setAppointmentPago(true);  
+                  
+                }}
+              >
               Pago
             </Button>
+
             <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>
               Editar
             </Button>
@@ -935,7 +998,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
 
 
     <Box sx={{pading: 20, marginTop:4, paddingLeft: '10px'}}>
-      <Button color="primary" onClick={() => handleSavePayment()} style={{ marginRight: 8 }}>
+      <Button color="primary" onClick={() => handlePago()} style={{ marginRight: 8 }}>
         Realizar Pagos
       </Button>
       <Button color="danger" onClick={() => setAppointmentPago(false)}>
