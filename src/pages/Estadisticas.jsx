@@ -1,245 +1,109 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Container, Grid } from "@mui/material";
-import axios, { all } from "axios";
-import { registrarAlquiler } from "../services/AlquilerService"; // Asumiendo que aquí está definida la función registrarAlquiler
-import { getCarById } from "../services/CarsService";
-
-
-
-
-// export function Estadisticas() {
-//     const [allAlquileres, setAllAlquileres] = useState([]);
-//     const [nombreAutoMasAlquilado, setNombreAutoMasAlquilado] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en toda la historia.
-//     const [imagenAutoMasAlquilado, setImagenAutoMasAlquilado] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en toda la historia.
-//     const [nombreAutoMasAlquiladoMes, setNombreAutoMasAlquiladoMes] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en el mes actual.
-//     const [imagenAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en el mes actual.
-//     const [nombreAutoMasAlquiladoAnio, setNombreAutoMasAlquiladoAnio] = useState("No disponible"); // Define un estado para almacenar el nombre del auto más alquilado en el año actual.
-//     const [imagenAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio] = useState(null); // Define un estado para almacenar la URL de la imagen del auto más alquilado en el año actual.
-
-//     const fetchAllAlquileres = useCallback(async () => {
-//         try {
-//             const response = await axios.get("http://localhost:3000/alquiler");
-//             const alquileres = response.data;
-//             console.log("Alquileres obtenidos:", alquileres); // Depuración
-//             setAllAlquileres(alquileres);
-//             await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquilado, setImagenAutoMasAlquilado); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en toda la historia.
-//             await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquiladoMes, setImagenAutoMasAlquiladoMes, 'month'); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en el mes actual.
-//             await obtenerAutoMasAlquilado(alquileres, setNombreAutoMasAlquiladoAnio, setImagenAutoMasAlquiladoAnio, 'year'); // Llama a la función obtenerAutoMasAlquilado para obtener el auto más alquilado en el año actual.
-//         } catch (error) {
-//             console.error("Error fetching alquileres:", error);
-//         }
-//     }, []);
-
-//     useEffect(() => {
-//         fetchAllAlquileres();
-//     }, [fetchAllAlquileres]);
-
-//     // Función para obtener el auto más alquilado en el periodo especificado.
-//     // "alquileres" lista de todos los alquileres.
-//     const obtenerAutoMasAlquilado = async (alquileres, setNombre, setImagen, periodo) => {
-//         const filteredAlquileres = alquileres.filter((alquiler) => { // Función que filtra los alquileres por 'periodo': mes actual ('month'), año actual ('year') o toda la historia (undefined).
-//             const fechaAlquiler = new Date(alquiler.fechaRetiro); // Convierte la fecha de retiro del alquiler en un objeto 'Date', para facilitar la comparación.
-//             if (periodo === 'month') {
-//                 const mesActual = new Date().getMonth() + 1;
-//                 const anioActual = new Date().getFullYear();
-//                 return (
-//                     fechaAlquiler.getMonth() + 1 === mesActual &&
-//                     fechaAlquiler.getFullYear() === anioActual
-//                 );
-//             } else if (periodo === 'year') {
-//                 const anioActual = new Date().getFullYear();
-//                 return fechaAlquiler.getFullYear() === anioActual;
-//             } else {
-//                 return true; // No filtrar, obtener datos de toda la historia
-//             }
-//         });
-
-//         // Almacena la cantidad de veces que se alquiló cada auto en un periodo especificado.
-//         // Las claves son los IDs de los autos y los valores son las veces que se alquilaron.
-//         const autosAlquilados = filteredAlquileres.reduce((acc, alquiler) => {
-//             const carId = alquiler.car?.id;
-//             if (carId) {
-//                 if (acc[carId]) {
-//                     acc[carId]++;
-//                 } else {
-//                     acc[carId] = 1;
-//                 }
-//             }
-//             return acc;
-//         }, {});
-
-//         let autoMasAlquiladoId = null;
-//         let maxVecesAlquilado = 0;
-//         Object.keys(autosAlquilados).forEach((carId) => {
-//             if (autosAlquilados[carId] > maxVecesAlquilado) {
-//                 maxVecesAlquilado = autosAlquilados[carId];
-//                 autoMasAlquiladoId = carId;
-//             }
-//         });
-
-//         if (autoMasAlquiladoId) {
-//             try {
-//                 const autoDetails = await getCarById(autoMasAlquiladoId);
-//                 setNombre(autoDetails.name); // Función para establecer el nombre del auto más alquilado.
-//                 setImagen(autoDetails.image); // Función para establecer la imagen del auto más alquilado.
-//             } catch (error) {
-//                 console.error("Error al obtener los detalles del auto:", error);
-//             }
-//         } else {
-//             console.warn("No se encontró un auto más alquilado");
-//         }
-//     };
-
-//     const estilo = {
-//         backgroundColor: "#e4e9f0",
-//         borderRadius: "5px",
-//         border: "solid",
-//         padding: 2,
-//     };
-
-//     const mesActual = new Date().getMonth() + 1; // Mes actual (1-12)
-//     const anioActual = new Date().getFullYear();
-
-//         //filtro de alquileres por mes y por año
-
-//         // Filtrar alquileres del mes actual
-//         const alquileresMesActual = allAlquileres.filter((alquiler) => {
-//             const fechaAlquiler = new Date(alquiler.fechaRetiro);
-//             return (
-//                 fechaAlquiler.getMonth() + 1 === mesActual &&
-//                 fechaAlquiler.getFullYear() === anioActual
-//             );
-//         });
-
-//         // Filtrar alquileres del año actual
-//         const alquileresAnioActual = allAlquileres.filter((alquiler) => {
-//             const fechaAlquiler = new Date(alquiler.fechaRetiro);
-//             return (
-//                 fechaAlquiler.getFullYear() === anioActual
-//             );
-//         });
-
-
-//         // dias de alquiler
-
-
-//         // Calcular los días totales de alquiler en el mes actual
-//         const diasTotalesMesActual = alquileresMesActual.reduce((total, alquiler) => {
-//             return total + alquiler.cantidadDias;
-//         }, 0);
-
-//         // Calcular los días totales de alquiler en el año
-//         const diasTotalesAnio = alquileresAnioActual.reduce((total, alquiler) => {
-//             return total + alquiler.cantidadDias;
-//         }, 0);
-
-//         // Calcular los días totales de alquiler 
-//         const diasTotales = allAlquileres.reduce((total, alquiler) => {
-//             return total + alquiler.cantidadDias;
-//         }, 0);
-
-
-//         //ganancias
-
-//         // Calcular el precio total de alquileres en el mes actual
-//         const gananciaMesActual = alquileresMesActual.reduce((total, alquiler) => {
-//             return total + alquiler.precioFinal;
-//         }, 0);
-
-//         // Calcular el precio total de alquileres
-//         const ganancia = allAlquileres.reduce((total, alquiler) => {
-//             return total + alquiler.precioFinal;
-//         }, 0);
-
-//         // Calcular el precio total de alquileres en el año
-//         const gananciaAnioActual = alquileresAnioActual.reduce((total, alquiler) => {
-//             return total + alquiler.precioFinal;
-//         }, 0);
-
-
-//     return (
-//         <Container maxWidth="100%">
-//             <Grid container spacing={2} sx={{ display: "flex", flexWrap: "wrap" }}>      
-//                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
-//                     <h2>Alquileres Totales</h2>
-//                     <hr style={{ border: "1px solid" }} />
-//                     <div>
-//                         <p>Cantidad de Alquileres: {allAlquileres.length}</p>
-//                         {/* Calcular días totales de alquiler */}
-//                         <p>Días totales de alquiler: {diasTotales}</p>
-//                         {/* Calcular ganancia total */}
-//                         <p>Ganancia total: {ganancia}</p>
-//                         {/* Mostrar auto más alquilado */}
-//                         <p>Auto más alquilado: {nombreAutoMasAlquilado}</p>
-//                         {imagenAutoMasAlquilado && <img src={imagenAutoMasAlquilado} alt="Auto más alquilado" style={{ width: "100%" }} />}
-//                     </div>
-//                 </Grid>
-//                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
-//                     <h2>Alquileres del año</h2>
-//                     <hr style={{ border: "1px solid" }} />
-//                     <div>
-//                         <p>Cantidad de Alquileres: {alquileresAnioActual.length}</p>
-//                         {/* Calcular días totales de alquiler */}
-//                         <p>Días totales de alquiler: {diasTotalesAnio}</p>
-//                         {/* Calcular ganancia total */}
-//                         <p>Ganancia total: {gananciaAnioActual}</p>
-//                         {/* Mostrar auto más alquilado */}
-//                         <p>Auto más alquilado en el año: {nombreAutoMasAlquiladoAnio}</p>
-//                         {imagenAutoMasAlquiladoAnio && <img src={imagenAutoMasAlquiladoAnio} alt="Auto más alquilado en el año" style={{ width: "100%" }} />}
-//                     </div>
-//                 </Grid> 
-//                 <Grid item xs={12} sm={6} md={4} lg={4} sx={estilo}>
-//                     <h2>Alquileres Del Mes</h2>
-//                     <hr style={{ border: "1px solid" }} />
-//                     <div>
-//                         <p>Cantidad de Alquileres: {alquileresMesActual.length}</p>
-//                         {/* Calcular días totales de alquiler */}
-//                         <p>Días totales de alquiler: {diasTotalesMesActual} </p>
-//                         {/* Calcular ganancia total */}
-//                         <p>Ganancia total: {gananciaMesActual}</p>
-//                         {/* Mostrar auto más alquilado */}
-//                         <p>Auto más alquilado en el mes: {nombreAutoMasAlquiladoMes}</p>
-//                         {imagenAutoMasAlquiladoMes && <img src={imagenAutoMasAlquiladoMes} alt="Auto más alquilado en el mes" style={{ width: "100%" }} />}
-//                     </div>
-//                 </Grid>  
-//             </Grid>
-//         </Container>
-//     );
-// }
-
-// export default Estadisticas;
-
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Importa los estilos
 
-const cards = [
-    {
-        image: 'https://via.placeholder.com/400/FF5733/FFFFFF?text=Card+1',
-        title: 'Card 1',
-        description: 'Descripción de la Card 1.',
-    },
-    {
-        image: 'https://via.placeholder.com/400/33FF57/FFFFFF?text=Card+2',
-        title: 'Card 2',
-        description: 'Descripción de la Card 2.',
-    },
-    {
-        image: 'https://via.placeholder.com/400/3357FF/FFFFFF?text=Card+3',
-        title: 'Card 3',
-        description: 'Descripción de la Card 3.',
-    },
-];
+export function Estadisticas() {
+    const [allAlquileres, setAllAlquileres] = useState([]);
+    const [datosEstadisticas, setDatosEstadisticas] = useState([]);
 
+    const fetchAllAlquileres = useCallback(async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/alquiler");
+            const alquileres = response.data;
+            console.log("Alquileres obtenidos:", alquileres);
+            setAllAlquileres(alquileres);
+            procesarDatosEstadisticas(alquileres);
+        } catch (error) {
+            console.error("Error fetching alquileres:", error);
+        }
+    }, []);
 
-export function Estadisticas(){
+    useEffect(() => {
+        fetchAllAlquileres();
+    }, [fetchAllAlquileres]);
+
+    const obtenerAutoMasAlquilado = (alquileres) => {
+        const autosAlquilados = {};
+        alquileres.forEach(alquiler => {
+            const carId = alquiler.car?.id;
+            if (carId) {
+                autosAlquilados[carId] = (autosAlquilados[carId] || 0) + 1;
+            }
+        });
+
+        let autoMasAlquiladoId = null;
+        let maxVecesAlquilado = 0;
+        Object.keys(autosAlquilados).forEach((carId) => {
+            if (autosAlquilados[carId] > maxVecesAlquilado) {
+                maxVecesAlquilado = autosAlquilados[carId];
+                autoMasAlquiladoId = carId;
+            }
+        });
+
+        return autoMasAlquiladoId;
+    };
+
+    const procesarDatosEstadisticas = async (alquileres) => {
+        const mesActual = new Date().getMonth() + 1;
+        const anioActual = new Date().getFullYear();
+
+        const alquileresMesActual = alquileres.filter(alquiler => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            return (fechaAlquiler.getMonth() + 1 === mesActual && fechaAlquiler.getFullYear() === anioActual);
+        });
+
+        const alquileresAnioActual = alquileres.filter(alquiler => {
+            const fechaAlquiler = new Date(alquiler.fechaRetiro);
+            return (fechaAlquiler.getFullYear() === anioActual);
+        });
+
+        const autoMasAlquiladoTotalId = obtenerAutoMasAlquilado(alquileres);
+        const autoMasAlquiladoMesId = obtenerAutoMasAlquilado(alquileresMesActual);
+        const autoMasAlquiladoAnioId = obtenerAutoMasAlquilado(alquileresAnioActual);
+
+        // Obtener detalles de los autos más alquilados
+        const getAutoDetails = async (carId) => {
+            if (!carId) return { name: "No disponible", image: null };
+            const response = await axios.get(`http://localhost:3000/car/${carId}`); // Cambia la URL según tu API
+            return { name: response.data.name, image: response.data.image };
+        };
+
+        const [autoTotal, autoMes, autoAnio] = await Promise.all([
+            getAutoDetails(autoMasAlquiladoTotalId),
+            getAutoDetails(autoMasAlquiladoMesId),
+            getAutoDetails(autoMasAlquiladoAnioId)
+        ]);
+
+        const datos = [
+            {
+                image: autoTotal.image || 'https://via.placeholder.com/400/FF5733/FFFFFF?text=Total+Alquileres',
+                title: 'Alquileres Totales',
+                description: `Cantidad: ${alquileres.length}, Días: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+            },
+            {
+                image: autoAnio.image || 'https://via.placeholder.com/400/33FF57/FFFFFF?text=Alquileres+del+Año',
+                title: 'Alquileres del Año',
+                description: `Cantidad: ${alquileresAnioActual.length}, Días: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+            },
+            {
+                image: autoMes.image || 'https://via.placeholder.com/400/3357FF/FFFFFF?text=Alquileres+del+Mes',
+                title: 'Alquileres del Mes',
+                description: `Cantidad: ${alquileresMesActual.length}, Días: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+            },
+        ];
+
+        setDatosEstadisticas(datos);
+    };
+
     return (
         <div style={{ maxWidth: '600px', margin: 'auto' }}>
             <Carousel showArrows={true} infiniteLoop={true} useKeyboardArrows>
-                {cards.map((card, index) => (
+                {datosEstadisticas.map((data, index) => (
                     <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
-                        <img src={card.image} alt={card.title} style={{ width: '100%', borderRadius: '8px' }} />
-                        <h3>{card.title}</h3>
-                        <p>{card.description}</p>
+                        <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
+                        <h3>{data.title}</h3>
+                        <p>{data.description}</p>
                     </div>
                 ))}
             </Carousel>
@@ -248,6 +112,3 @@ export function Estadisticas(){
 }
 
 export default Estadisticas;
-
-
-
