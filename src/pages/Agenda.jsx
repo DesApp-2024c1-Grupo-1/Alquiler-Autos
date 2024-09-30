@@ -585,7 +585,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
               Cliente
             </Button>
             <Button
-                color="secondary"
+                color="success"
                 className="mds-tooltip-button"
                 onClick={() => {
                   setTooltipOpen(false);  
