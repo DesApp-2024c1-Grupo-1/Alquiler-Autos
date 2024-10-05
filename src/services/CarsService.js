@@ -66,3 +66,13 @@ export const getAllCarsAxios = async(filtros) =>{
       }
     }
 
+    export const checkPatenteExists = async (patente) => {
+      try {
+        const response = await axios.get(url+patente)
+        return response.data.exists //true si la patente ya existe 
+      } catch (error) {
+        console.error("Numero de Dominio ya Registrado: ", error);
+        return false;
+      }
+    }
+

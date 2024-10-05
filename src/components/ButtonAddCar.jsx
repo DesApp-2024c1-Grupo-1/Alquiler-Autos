@@ -20,6 +20,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { Alert } from "@mui/material";
 import { useState } from 'react';
 
+import { checkPatenteExists } from '../services/CarsService';
 
 export default function ButtonAddCar() {
   const [open, setOpen] = React.useState(false);
@@ -36,7 +37,7 @@ export default function ButtonAddCar() {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
@@ -46,11 +47,25 @@ export default function ButtonAddCar() {
     formJson.ac = ac === 'Sí' ? true : false;
     formJson.capacidad = capacidad;
 
-    console.log(formJson);
-    postCar(formJson);
-    setOpenSnack(true);
-    handleClose();
-  };
+    try{
+      const patenteExists = await checkPatenteExists(formJson.patente) 
+      if(patenteExists){
+        //si la patente ya existe , muestra un error en el formulario
+        setErrorPatente("La patente ya está registrada en el sistema")
+        return //detiene el proceso de agregar el auto
+        }
+      //si no existe la patente, agrega el auto
+      console.log(formJson);
+      await postCar(formJson);
+      setOpenSnack(true);
+      handleClose();
+      window.location.reload();
+    } catch(error) {
+      console.error("Error al agregar el auto:" ,error);
+    }
+      
+  }
+const [errorPatente, setErrorPatente] = useState('')
 
   const handleCloseSnack = () => {
     setOpenSnack(false)
@@ -221,6 +236,8 @@ export default function ButtonAddCar() {
                   type="text"
                   fullWidth
                   variant="standard"
+                  error={Boolean(errorPatente)}//Marca el campo como error, si existe errorPatente
+                  helperText={errorPatente} //Muestra el mensaje de error
                 />
               </DialogContent>
               <DialogActions>
