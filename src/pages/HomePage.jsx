@@ -53,7 +53,7 @@ export function HomePage() {
             }}>
 
             {/* <Buscador sx={{ mx: 20, my: 20 }} /> */}
-            <ButtonAddCar />
+            <ButtonAddCar setAllCars={setAllCars} allCars={allCars} />
 
             <Grid container spacing={2} sx={{ mt: '1rem' }}>
               {allCars && allCars.length > 0 ? (

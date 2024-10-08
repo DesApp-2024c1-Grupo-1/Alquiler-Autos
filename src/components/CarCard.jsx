@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Icon, Stack, Typography } from "@mui/material";
+import { Box, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Icon, Typography } from "@mui/material";
 import { blueGrey } from "@mui/material/colors";
 import { NavLink } from "react-router-dom";
 import BuildIcon from '@mui/icons-material/Build';
@@ -11,7 +11,6 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import ButtonEditCar from "./ButtonEditCar";
 import { esNuevo } from "../services/Estadisticas";
 import DeleteCarDialog from "./DeleteCarDialog";
-import { Opacity } from "@mui/icons-material";
 
 
 //Componente principal con la logica de la Card
@@ -60,7 +59,8 @@ function CarCardContent({ car }) {
         sx={{
           width: '100%',
           height: '100%', // Asegura que la imagen ocupe todo el espacio disponible
-          objectFit: 'cover', // Hace que la imagen cubra todo el espacio disponible
+          minHeight: '300px', // Altura mínima de la imagen
+          objectFit: 'cover'
         }}
       />
       <CardContent>
