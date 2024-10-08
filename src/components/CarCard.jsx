@@ -11,6 +11,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import ButtonEditCar from "./ButtonEditCar";
 import { esNuevo } from "../services/Estadisticas";
 import DeleteCarDialog from "./DeleteCarDialog";
+import { Opacity } from "@mui/icons-material";
 
 
 //Componente principal con la logica de la Card
@@ -20,10 +21,11 @@ export function CarCard({ car, isHomePage, deleteCarFromHome }) {
     { justifyContent: 'space-between', height: '100%' } :
     { backgroundColor: "#e4e9f0", display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' };
 
+  const cardReservedStyle = car.reservado ? { opacity: 0.5, color: "black" } : {};
 
   return (
     <Card sx={configCard}>
-      {isHomePage ? (
+      {isHomePage && !car.reservado ? (
         <>
           <Box style={{ textDecoration: 'none' }}>
             <CardActionArea sx={{ color: 'blue' }}>
@@ -36,9 +38,11 @@ export function CarCard({ car, isHomePage, deleteCarFromHome }) {
           <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} />
         </>
       ) : (
-        <Box style={{ textDecoration: 'none' }}>
+        <Box style={cardReservedStyle}>
           <CarCardContent car={car} />
+          {car.reservado && <h2 style={{ margin: 0, textAlign: "center" }}>RESERVADO</h2>}
         </Box>
+
       )}
     </Card>
   )
