@@ -7,6 +7,7 @@ import Taller from "./pages/Taller"
 import Estadisticas from "./pages/Estadisticas"
 import RegistrarPago from "./pages/RegistrarPago"
 import Login from "./pages/Login"
+import AlquileresPage from "./pages/Alquileres";
 
 export function AppRouter() {
   return (
@@ -20,6 +21,7 @@ export function AppRouter() {
       <Route path='/estadisticas' element={<Estadisticas />} />
       <Route path='/registrarPago' element={<RegistrarPago />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/alquileres' element={<AlquileresPage />} />
       
     </Routes>
   );
