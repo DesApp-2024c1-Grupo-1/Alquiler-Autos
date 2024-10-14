@@ -2,15 +2,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Importa los estilos
+import { getAllAlquileres } from './Estadisticas'; // Importa la función desde Estadisticas.js
 
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
     const [datosEstadisticas, setDatosEstadisticas] = useState([]);
 
+    //Llamada a la función importada para obtener los alquileres.
     const fetchAllAlquileres = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:3000/alquiler");
-            const alquileres = response.data;
+            const alquileres = await getAllAlquileres(); //Llamada a la función importada.
             console.log("Alquileres obtenidos:", alquileres);
             setAllAlquileres(alquileres);
             procesarDatosEstadisticas(alquileres);
