@@ -10,8 +10,6 @@ export function AlquileresPage() {
             const response = await axios.get("http://localhost:3000/alquiler");
             const alquileres = response.data;
             console.log("Alquileres obtenidos:", alquileres);
-             // Ordenar los alquileres por fechaRetiro (de más antigua a más reciente)
-            alquileres = alquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro));
             setAllAlquileres(alquileres);
         } catch (error) {
             console.error("Error fetching alquileres:", error);
@@ -21,14 +19,16 @@ export function AlquileresPage() {
     useEffect(() => {
         fetchAllAlquileres();
     }, [fetchAllAlquileres]);
-
+    
+        // Ordenar los alquileres por fechaRetiro (de más antigua a más reciente)
+    const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))       
 
     return (
         <>
             <Typography variant="h4" gutterBottom>
                 Alquileres
             </Typography>
-                {allAlquileres.map((alquiler) => (
+                {alquileresOrdenados.map((alquiler) => (
                     <Card 
                         key={alquiler.id} 
                         sx={{
