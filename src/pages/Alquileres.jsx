@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Box, Card, CardContent, Typography, List } from '@mui/material';
+import { getAllAlquileres } from './Estadisticas'; //Importamos la función desde 'Estadisticas.js'.
+
 export function AlquileresPage() {
 
     const [allAlquileres, setAllAlquileres] = useState([]);
 
+    //Llama a la función importada en lugar de definirla aca.
     const fetchAllAlquileres = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:3000/alquiler");
-            const alquileres = response.data;
+            const alquileres = await getAllAlquileres(); //Llama a la función importada.
             console.log("Alquileres obtenidos:", alquileres);
             setAllAlquileres(alquileres);
         } catch (error) {
