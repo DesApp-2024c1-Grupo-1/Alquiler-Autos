@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Box, Card, CardContent, Typography, List } from '@mui/material';
-import { getAllAlquileres } from './Estadisticas'; //Importamos la función desde 'Estadisticas.js'.
+import { getAllAlquileres } from '../services/Estadisticas'; //Importamos la función desde 'Estadisticas.js'.
 
 export function AlquileresPage() {
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Importa los estilos
-import { getAllAlquileres } from './Estadisticas'; // Importa la función desde Estadisticas.js
+import { getAllAlquileres } from '../services/Estadisticas'; // Importa la función desde Estadisticas.js
 
 export function Estadisticas() {
     const [allAlquileres, setAllAlquileres] = useState([]);
