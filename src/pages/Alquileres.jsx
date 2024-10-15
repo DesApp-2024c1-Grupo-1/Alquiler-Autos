@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Box, Card, CardContent, Typography, List } from '@mui/material';
+import {Card, CardContent, Typography} from '@mui/material';
 export function AlquileresPage() {
 
     const [allAlquileres, setAllAlquileres] = useState([]);
@@ -20,7 +20,7 @@ export function AlquileresPage() {
         fetchAllAlquileres();
     }, [fetchAllAlquileres]);
     
-        // Ordenar los alquileres por fechaRetiro (de más antigua a más reciente)
+        // Ordenar los alquileres por fechaRetiro
     const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))       
 
     return (
@@ -34,7 +34,7 @@ export function AlquileresPage() {
                         sx={{
                             mb: 2,
                             borderRadius: '16px',
-                            backgroundColor: '#B3D0FB', // Fondo celeste claro
+                            backgroundColor: '#B3D0FB', 
                             boxShadow: 3
                         }}
                     >
@@ -42,8 +42,13 @@ export function AlquileresPage() {
                             <Typography variant="h6">
                                 ID de Alquiler: {alquiler.id}
                             </Typography>
-                            <Typography variant="body1">
-                                Fecha de Inicio: {alquiler.fechaRetiro}
+                            <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+                                Auto: {alquiler.car.name}{"\n"}
+                                Cliente: {alquiler.cliente.nombre} , Telefono: {alquiler.cliente.telefono}{"\n"}
+                                Fecha de Inicio: {alquiler.fechaRetiro}{"\n"}
+                                Fecha de Fin: {alquiler.fechaDevolucion}{"\n"}
+                                Monto total: {alquiler.precioFinal}{"\n"}
+                                Saldo: {alquiler.saldoPendiente}{"\n"}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -54,3 +59,11 @@ export function AlquileresPage() {
 
 export default AlquileresPage;
 
+/*
+auto 
+cliente
+
+estado
+retirado a retirar o devuelto
+
+*/
