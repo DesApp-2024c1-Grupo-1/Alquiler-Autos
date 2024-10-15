@@ -13,9 +13,11 @@ import axios from 'axios'
 
 
 const navArrayLinks = [
+  /*
   {
       title:"Taller", path:"/taller", icon: <ConstructionIcon />
   },
+  */
   {
       title:"Agenda", path:"/agenda", icon: <EventNoteIcon />
   },
@@ -25,9 +27,11 @@ const navArrayLinks = [
   {
       title:"Estadisticas", path:"/estadisticas", icon: <LeaderboardIcon />
   },
+  /*
   {
       title:"Registrar Pago", path:"/registrarPago", icon: <CurrencyExchangeIcon />
   },
+  */
   {
       title:"Home", path:"/", icon: <HomeIcon />
   },
