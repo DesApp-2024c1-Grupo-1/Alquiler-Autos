@@ -59,7 +59,7 @@ function CarCardContent({ car }) {
         sx={{
           width: '100%',
           height: '100%', // Asegura que la imagen ocupe todo el espacio disponible
-          minHeight: '300px', // Altura mínima de la imagen
+          //minHeight: '300px', // Altura mínima de la imagen
           objectFit: 'cover'
         }}
       />
