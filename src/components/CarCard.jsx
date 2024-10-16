@@ -162,7 +162,7 @@ function CarCardBotones({ car, deleteCarFromHome, editCarFromHome }) {
           </CardActions>
 
           <CardActions>
-            <ButtonEditCar carData={car} editCarFromHome={editCarFromHome}/>
+            <ButtonEditCar carData={car} editCarFromCard={editCarFromHome}/>
           </CardActions>
         </Box>
       </Grid>

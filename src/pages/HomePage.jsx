@@ -29,7 +29,8 @@ export function HomePage() {
   }
 
   const editCarFromCard = (editCar) => {
-    setAllCars([...allCars, editCar])
+    //setAllCars([...allCars, editCar])
+    setAllCars(allCars.map(car => car.id === editCar.id ? editCar : car));
   }
 
   useEffect(() => {
