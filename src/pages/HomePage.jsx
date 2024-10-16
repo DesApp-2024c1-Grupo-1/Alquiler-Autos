@@ -28,6 +28,10 @@ export function HomePage() {
     setAllCars(allCars.filter(car => car.id != deletedCar.id));
   }
 
+  const editCarFromCard = (editCar) => {
+    setAllCars([...allCars, editCar])
+  }
+
   useEffect(() => {
     fetchAllCars();
   }, [fetchAllCars]);
@@ -59,7 +63,7 @@ export function HomePage() {
               {allCars && allCars.length > 0 ? (
                 allCars.map((carData,index) => (
                   <Grid key={index} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
-                      <CarCard car={carData} isHomePage={true} deleteCarFromHome={deleteCarFromCard} />
+                      <CarCard car={carData} isHomePage={true} deleteCarFromHome={deleteCarFromCard} editCarFromHome={editCarFromCard}/>
                   </Grid>
                 ))
               ) : (

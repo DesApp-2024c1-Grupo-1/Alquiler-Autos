@@ -14,7 +14,7 @@ import DeleteCarDialog from "./DeleteCarDialog";
 
 
 //Componente principal con la logica de la Card
-export function CarCard({ car, isHomePage, deleteCarFromHome }) {
+export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome}) {
 
   const configCard = isHomePage ?
     { justifyContent: 'space-between', height: '100%' } :
@@ -34,7 +34,7 @@ export function CarCard({ car, isHomePage, deleteCarFromHome }) {
             </CardActionArea>
           </Box>
 
-          <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} />
+          <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} editCarFromHome={editCarFromHome}/>
         </>
       ) : (
         <Box style={cardReservedStyle}>
@@ -151,7 +151,7 @@ function CarCardContent({ car }) {
 
 
 //Botones Borrar y Eliminar
-function CarCardBotones({ car, deleteCarFromHome }) {
+function CarCardBotones({ car, deleteCarFromHome, editCarFromHome }) {
 
   return (
     <>
@@ -162,7 +162,7 @@ function CarCardBotones({ car, deleteCarFromHome }) {
           </CardActions>
 
           <CardActions>
-            <ButtonEditCar carData={car} />
+            <ButtonEditCar carData={car} editCarFromHome={editCarFromHome}/>
           </CardActions>
         </Box>
       </Grid>

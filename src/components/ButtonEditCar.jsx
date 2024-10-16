@@ -21,7 +21,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { Alert } from "@mui/material";
 import { useState } from 'react';
 
-export default function ButtonEditCar(car) {
+export default function ButtonEditCar(car, editCarFromHome) {
 
     const {carData} = car
     const [open, setOpen] = React.useState(false);
@@ -71,6 +71,13 @@ export default function ButtonEditCar(car) {
     const handleClose = () => {
         setOpen(false);
       };
+
+    const confirmEdit = async (car) => {
+      const editedCar = await putCar(car)
+      editCarFromHome(editedCar) // Actualiza la lista de autos en Home
+      console.log("Edited car: ", editedCar)
+      setOpenSnack(true);
+    }
     
       const handleSubmit = (event) => {
         event.preventDefault();
@@ -84,8 +91,8 @@ export default function ButtonEditCar(car) {
         formJson.capacidad = capacidad;
     
         console.log("Ultimate JSON: ",formJson);
-        putCar(formJson);
-        setOpenSnack(true);
+        confirmEdit(formJson)
+        
         handleClose();
       };
 
