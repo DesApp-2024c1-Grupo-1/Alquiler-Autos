@@ -40,7 +40,11 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 
 export default function ButtonAddCar({setAllCars, allCars}) {
-  const [open, setOpen] = React.useState(false);
+
+  const [open, setOpen] = React.useState(false)
+  const [openSnack, setOpenSnack] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // Para mostrar mensaje de error
+
 
   const [editableCar, setEditableCar] = useState({
     name: null,
@@ -61,8 +65,19 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     setOpen(false);
   };
 
+  // Función que valida si la patente ya existe
+  const isPatenteDuplicated = (patente) => {
+    return allCars.some(car => car.patente === patente);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    
+    if (isPatenteDuplicated(editableCar.patente)) {
+      setErrorMessage("La patente ya está registrada");
+      setOpenSnack(true); // Muestra el snackbar con error
+      return;
+    }
     editableCar.ac = editableCar.ac === 'Sí' ? true : false;
     
     console.log("Agregando auto: ", editableCar)
@@ -76,7 +91,7 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     setOpenSnack(false)
   }
 
-  const [openSnack, setOpenSnack] = useState(false);
+  
 
   return (
 
@@ -108,11 +123,11 @@ export default function ButtonAddCar({setAllCars, allCars}) {
       <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
         <Alert
           onClose={handleCloseSnack}
-          severity="success"
+          severity={errorMessage === "Auto agregado con éxito" ? "success" : "error"}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Auto agregado con exito
+          {errorMessage}
         </Alert>
       </Snackbar>
 
