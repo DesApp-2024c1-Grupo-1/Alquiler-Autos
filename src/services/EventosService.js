@@ -20,7 +20,6 @@
       .catch(error => console.error(error));
   }
 
-
   export async function actualizarAlquiler(id, alquilerModificado) {
     console.log('Enviando datos de alquiler:', alquilerModificado);
     console.log('Enviando datos de pagos:', alquilerModificado.pagos);
@@ -52,11 +51,6 @@
     }
   }
 
-
-  
-
-
-
   export async function registrarPago(idAlquiler, monto) {
     try {
       const url = `http://localhost:3000/pago/alquiler/${idAlquiler}`;
@@ -78,3 +72,28 @@
       throw error;
     }
   }
+
+  export async function eliminarAlquiler(idAlquiler) {
+    try {
+      const url = `http://localhost:3000/alquiler/${idAlquiler}`; // Usar idAlquiler en la URL
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      // Verificar si la respuesta fue exitosa
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+  
+      console.log('Alquiler eliminado con éxito.');
+      return true; // Retornar true en caso de éxito
+    } catch (error) {
+      console.error('Error al eliminar el alquiler:', error);
+      throw error;
+    }
+  }
+  
