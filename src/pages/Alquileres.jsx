@@ -21,7 +21,23 @@ export function AlquileresPage() {
     }, [fetchAllAlquileres]);
     
         // Ordenar los alquileres por fechaRetiro
-    const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))       
+    const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))   
+
+   
+
+    function compararFechas(fechaRetiro, fechaDevolucion) {
+        const actual = new Date(); // Definir fechaActual aquí
+        const retiro = new Date(fechaRetiro);
+        const devolucion = new Date(fechaDevolucion);
+      
+        if (actual < retiro) {
+          return "Esperando a retirar";
+        } else if (actual > retiro && actual < devolucion) {
+          return "Retirado";
+        } else {
+          return "Devuelto";
+        }
+      }
 
     return (
         <>
@@ -49,6 +65,7 @@ export function AlquileresPage() {
                                 Fecha de Fin: {alquiler.fechaDevolucion}{"\n"}
                                 Monto total: {alquiler.precioFinal}{"\n"}
                                 Saldo: {alquiler.saldoPendiente}{"\n"}
+                                Estado: {compararFechas(alquiler.fechaRetiro, alquiler.fechaDevolucion)}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -58,12 +75,3 @@ export function AlquileresPage() {
 }
 
 export default AlquileresPage;
-
-/*
-auto 
-cliente
-
-estado
-retirado a retirar o devuelto
-
-*/
