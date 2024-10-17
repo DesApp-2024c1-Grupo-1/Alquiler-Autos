@@ -11,6 +11,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import ButtonEditCar from "./ButtonEditCar";
 import { esNuevo } from "../services/Estadisticas";
 import DeleteCarDialog from "./DeleteCarDialog";
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 
 //Componente principal con la logica de la Card
@@ -64,10 +65,21 @@ function CarCardContent({ car }) {
         }}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div" sx={{ color: blueGrey[700] }}>
+        <Typography gutterBottom variant="h5" 
+                    component="div" sx={{ 
+                    color: blueGrey[700], 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center' 
+  }}>
           {car.brand}{" "}
           {esNuevo(car.fechaLanzamiento) && (
-            <span style={{ color: "green" }}>"NEW"</span>
+            <span style={{ color: "#ffd803" }}>
+              <Icon sx={{pr: 4, pb:4.2}}>
+                <AutoAwesomeIcon fontSize="large"/>
+              </Icon>
+            </span>
+            
           )}
         </Typography>
 
