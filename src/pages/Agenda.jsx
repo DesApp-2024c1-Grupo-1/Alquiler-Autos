@@ -3,7 +3,7 @@ import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs }
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { momentTimezone } from '@mobiscroll/react';
 import moment from 'moment-timezone';
-import { getEventos, actualizarAlquiler, registrarPago   } from '../services/EventosService';
+import { getEventos, actualizarAlquiler, registrarPago, eliminarAlquiler   } from '../services/EventosService';
 import { set, update } from 'lodash';
 import { enGB } from 'date-fns/locale';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -34,9 +34,6 @@ function AgendaPage() {
   const fetchAllEvents = useCallback(async () => {
     
     const obtainedEvents = await getEventos();
-    //obtainedEvents = obtainedEvents.map(e =>{  e.end = null})
-
-    //const obtainedEvents = eventosFake;
 
 
     console.log('Eventos obtenidos:', obtainedEvents); 
@@ -84,7 +81,7 @@ function AgendaPage() {
 
  
 
-  const [pagoTotal, setAppointmentPagoTotal] = useState('');
+  const [pagoTotal, setAppointmentPagoTotal] = useState(false);
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
@@ -106,7 +103,7 @@ const handleCheckboxChange = (event) => {
 };
 
 
-  const [appointmentPago, setAppointmentPago] = useState('');
+  const [appointmentPago, setAppointmentPago] = useState(false);
 
 
   
@@ -262,7 +259,6 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     console.log('Guardar cambios del cliente', editDatosC);
     console.log('ID de Alquiler.cliente.id: ', appointment.alquiler.cliente.id);
   
-    // Crear un nuevo objeto de alquiler, con los datos del cliente modificados
     const alquilerModificado = {
       ...appointment.alquiler, // Trae todos los datos del alquiler actual
       cliente: {
@@ -272,10 +268,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     };
   
     try {
-      // Llamada a la función actualizarAlquiler con el id del alquiler y el objeto modificado
       const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
-  
-      // Actualizar el estado de las citas con los datos del alquiler y cliente modificados
       setAppointments((appointments) =>
         appointments.map((item) =>
           item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
@@ -284,12 +277,10 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   
       
       setEditCustomerModalOpen(false);
-  
-      // Mostrar un mensaje de éxito
       setToastMessage('Datos del cliente actualizados correctamente');
       setToastOpen(true);
     } catch (error) {
-      // Manejo de errores 
+      
       console.error('Hubo un error al actualizar los datos del cliente:', error);
       setToastMessage('Error al actualizar los datos del cliente');
       setToastOpen(true);
@@ -297,17 +288,27 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   };
   
   
-  
-
 
   const handleDeleteClick = () => {
     setDeleteConfirmOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    setDeleteConfirmOpen(false);
+  const handleConfirmDelete = async () => {
+    setDeleteConfirmOpen(false); 
+    setTooltipOpen(false);
+    try {
+      await eliminarAlquiler(appointment.alquiler.id); 
+      setToastMessage('Alquiler eliminado con éxito');
+      setToastOpen(true);
 
-    deleteAppointment();
+      setAppointments((appointments) => 
+        appointments.filter((item) => item.alquiler.id !== appointment.alquiler.id)
+      );
+    } catch (error) {
+      console.error('Error al eliminar el alquiler:', error);
+      setToastMessage('Error al eliminar el alquiler');
+      setToastOpen(true);
+    }
   };
 
   const handleCancelDelete = () => {
@@ -315,7 +316,6 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   };
 
 
-  
 
 
   const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
