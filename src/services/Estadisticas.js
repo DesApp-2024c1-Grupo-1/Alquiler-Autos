@@ -14,6 +14,27 @@ export async function getAllAlquileres() {
     }
 };
 
+//Funcion que maneja la obtención y el estado de los alquileres.
+export function useFetchAlquileres() {
+  const [allAlquileres, setAllAlquileres] = useState([]);
+
+  const fetchAllAlquileres = useCallback(async () => {
+      try {
+          const alquileres = await getAllAlquileres(); //Llama a la función que obtiene los alquileres.
+          console.log("Alquileres obtenidos:", alquileres);
+          setAllAlquileres(alquileres);
+      } catch (error) {
+          console.error("Error fetching alquileres:", error);
+      }
+  }, []);
+
+  useEffect(() => {
+      fetchAllAlquileres(); //Llamada para obtener los alquileres cuando se monta el componente.
+  }, [fetchAllAlquileres]);
+
+  return allAlquileres; //Devuelve el estado de los alquileres.
+}
+
 
   //función que espera una fecha para calcular hace cuantos días fue
   //comparando fechaActual con fecha de lanzamiento de el auto
