@@ -46,6 +46,11 @@ const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos ele
                                     key={item.title}
                                     component= {NavLink}
                                     to={item.path}
+                                    sx={{color: 'white',
+                                        '&:hover': {
+                                            color: 'lightblue' // Color del texto al hacer hover
+                                            }
+                                    }}
                                     >
                                     {item.title}
                                 </Button>

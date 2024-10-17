@@ -81,7 +81,7 @@ function AgendaPage() {
 
  
 
-  const [pagoTotal, setAppointmentPagoTotal] = useState('');
+  const [pagoTotal, setAppointmentPagoTotal] = useState(false);
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
@@ -103,7 +103,7 @@ const handleCheckboxChange = (event) => {
 };
 
 
-  const [appointmentPago, setAppointmentPago] = useState('');
+  const [appointmentPago, setAppointmentPago] = useState(false);
 
 
   
@@ -277,12 +277,10 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   
       
       setEditCustomerModalOpen(false);
-  
-      // Mostrar un mensaje de éxito
       setToastMessage('Datos del cliente actualizados correctamente');
       setToastOpen(true);
     } catch (error) {
-      // Manejo de errores 
+      
       console.error('Hubo un error al actualizar los datos del cliente:', error);
       setToastMessage('Error al actualizar los datos del cliente');
       setToastOpen(true);
@@ -290,8 +288,6 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
   };
   
   
-  
-
 
   const handleDeleteClick = () => {
     setDeleteConfirmOpen(true);
