@@ -49,7 +49,8 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
               name: carData.name || '',
               brand: carData.brand || '',
               year: carData.year || '',
-              km: carData.km || '',
+              km: carData.km !== undefined ? carData.km : '', // Verifica explícitamente que no sea undefined
+              //km: carData.km || '',
               color: carData.color || '',
               price: carData.price || '',
               image: carData.image || '',
@@ -72,12 +73,6 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
         setOpen(false);
       };
 
-    // const confirmEdit = async (car) => {
-    //   const editedCar = await putCar(car)
-    //   editCarFromHome(editedCar) // Actualiza la lista de autos en Home
-    //   console.log("Edited car: ", editedCar)
-    //   setOpenSnack(true);
-    // }
     
       const handleSubmit = (event) => {
         event.preventDefault();
@@ -89,6 +84,9 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
         formJson.transmision = transmision;
         formJson.ac = ac === 'Sí' ? true : false;
         formJson.capacidad = capacidad;
+
+        // Convierte los Km en un numero antes de enviar
+        formJson.km = Number(formJson.km);
     
         console.log("Ultimate JSON: ",formJson);
         putCar(formJson).then(() => {
