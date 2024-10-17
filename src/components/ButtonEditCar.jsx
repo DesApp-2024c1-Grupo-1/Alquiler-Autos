@@ -284,7 +284,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
-                <Button type="submit">Agregar Auto</Button>
+                <Button type="submit">Editar Auto</Button>
               </DialogActions>
             </form>
           </Dialog>
