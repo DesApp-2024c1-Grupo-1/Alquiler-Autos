@@ -289,7 +289,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
             </form>
           </Dialog>
 
-          <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+          <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnack}>
                 <Alert
                     onClose={handleCloseSnack}
                     severity="success"
