@@ -1,27 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import {Card, CardContent, Typography} from '@mui/material';
+import { Box, Card, CardContent, Typography, List } from '@mui/material';
+import { useAlquileres } from '../services/ListaDeAlquileresService';
+
 export function AlquileresPage() {
 
-    const [allAlquileres, setAllAlquileres] = useState([]);
+    const allAlquileres = useAlquileres(); //Usa la funcion para obtener los alquileres
 
-    const fetchAllAlquileres = useCallback(async () => {
-        try {
-            const response = await axios.get("http://localhost:3000/alquiler");
-            const alquileres = response.data;
-            console.log("Alquileres obtenidos:", alquileres);
-            setAllAlquileres(alquileres);
-        } catch (error) {
-            console.error("Error fetching alquileres:", error);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchAllAlquileres();
-    }, [fetchAllAlquileres]);
-    
-        // Ordenar los alquileres por fechaRetiro
-    const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))   
+        // Ordenar los alquileres por fechaRetiro (de más antigua a más reciente)
+    const alquileresOrdenados = allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro))       
 
    
 

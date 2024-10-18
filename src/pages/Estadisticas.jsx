@@ -2,27 +2,25 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Importa los estilos
+import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 
 export function Estadisticas() {
-    const [allAlquileres, setAllAlquileres] = useState([]);
+    const allAlquileres = useAlquileres(); //Usa la funcion para obtener los alquileres
     const [datosEstadisticas, setDatosEstadisticas] = useState([]);
 
-    const fetchAllAlquileres = useCallback(async () => {
-        try {
-            const response = await axios.get("http://localhost:3000/alquiler");
-            const alquileres = response.data;
-            console.log("Alquileres obtenidos:", alquileres);
-            setAllAlquileres(alquileres);
-            procesarDatosEstadisticas(alquileres);
-        } catch (error) {
-            console.error("Error fetching alquileres:", error);
-        }
-    }, []);
-
     useEffect(() => {
-        fetchAllAlquileres();
-    }, [fetchAllAlquileres]);
+        async function fetchDatos() {
+            if (allAlquileres.length > 0) { //Solo procesar si hay datos
+                const datos = await procesarDatosEstadisticas(allAlquileres);
+                console.log("Datos procesados:", datos);
+                setDatosEstadisticas(datos);
+            }
+        }
 
+        fetchDatos();
+    }, [allAlquileres]); //Ejecutar efecto cuando se actualicen los alquileres
+
+    
     const obtenerAutoMasAlquilado = (alquileres) => {
         const autosAlquilados = {};
         alquileres.forEach(alquiler => {
@@ -94,19 +92,30 @@ export function Estadisticas() {
         ];
 
         setDatosEstadisticas(datos);
+        return datos;
     };
 
     return (
         <div style={{ maxWidth: '600px', margin: 'auto' }}>
-            <Carousel showArrows={true} infiniteLoop={true} useKeyboardArrows>
-                {datosEstadisticas.map((data, index) => (
-                    <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
-                        <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
-                        <h3>{data.title}</h3>
-                        <p>{data.description}</p>
-                    </div>
-                ))}
-            </Carousel>
+            {datosEstadisticas.length > 0 ? (
+                <Carousel showThumbs={false} showArrows={true} infiniteLoop={true} useKeyboardArrows>
+                    {datosEstadisticas.map((data, index) => (
+                        <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
+                            {data.image ? (
+                                <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
+                            ) : (
+                                <div style={{ height: '200px', backgroundColor: '#ccc', borderRadius: '8px' }}>
+                                    <p>No image available</p>
+                                </div>
+                            )}
+                            <h3>{data.title}</h3>
+                            <p>{data.description}</p>
+                        </div>
+                    ))}
+                </Carousel>
+            ) : (
+                <h3>Cargando estadísticas...</h3> 
+            )}
         </div>
     );
 }

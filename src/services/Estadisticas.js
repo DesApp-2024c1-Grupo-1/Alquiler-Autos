@@ -2,14 +2,15 @@ import axios from 'axios'
 
 const url = 'http://localhost:3000/alquiler';
 
-
+//Modifico la URL para que haga la solicitud a la lista completa de alquileres.
 export async function getAllAlquileres() {
     try {
-      const response = await axios.get(url+id);
+      const response = await axios.get(url); //Petición a la URL correcta.
       console.log(response);
       return response.data;
     } catch (error) {
       console.error(error);
+      return []; //Devuelve un array vacío en caso de error.
     }
 };
 
