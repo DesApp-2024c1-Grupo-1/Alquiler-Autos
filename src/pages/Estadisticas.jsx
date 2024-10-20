@@ -73,21 +73,32 @@ export function Estadisticas() {
             getAutoDetails(autoMasAlquiladoAnioId)
         ]);
 
+
+
         const datos = [
             {
                 image: autoTotal.image || 'https://via.placeholder.com/400/FF5733/FFFFFF?text=Total+Alquileres',
                 title: 'Alquileres Totales',
-                description: `Cantidad: ${alquileres.length}, Días: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `Cantidad de alquileres: ${alquileres.length}`,
+                mas: `${autoTotal.name}`,
+                dias: `Días totales de alquiler: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
             },
             {
                 image: autoAnio.image || 'https://via.placeholder.com/400/33FF57/FFFFFF?text=Alquileres+del+Año',
                 title: 'Alquileres del Año',
-                description: `Cantidad: ${alquileresAnioActual.length}, Días: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `Cantidad de alquileres: ${alquileresAnioActual.length}`,
+                mas: `${autoAnio.name}`,
+                dias: `Días totales de alquiler: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
             },
             {
                 image: autoMes.image || 'https://via.placeholder.com/400/3357FF/FFFFFF?text=Alquileres+del+Mes',
                 title: 'Alquileres del Mes',
-                description: `Cantidad: ${alquileresMesActual.length}, Días: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `cantidad de alquileres: ${alquileresMesActual.length}`,
+                mas: `${autoMes.name}`,
+                dias: `Días totales de alquiler: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`
             },
         ];
 
@@ -108,12 +119,12 @@ export function Estadisticas() {
                                     <p>No image available</p>
                                 </div>
                             )}
-                            <h1>{data.title}</h1>
+                            <h1>{data.mas}</h1>
+                            <h2>{data.title}</h2>
                             <p>{data.cantidad}</p>
                             <p>{data.dias}</p>
                             <p>{data.ganancia}</p>
-                            <p>{data.mas}</p>
-                            <p>{data.description}</p>
+                            
                         </div>
                     ))}
                 </Carousel>
