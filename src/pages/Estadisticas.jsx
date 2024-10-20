@@ -108,7 +108,11 @@ export function Estadisticas() {
                                     <p>No image available</p>
                                 </div>
                             )}
-                            <h3>{data.title}</h3>
+                            <h1>{data.title}</h1>
+                            <p>{data.cantidad}</p>
+                            <p>{data.dias}</p>
+                            <p>{data.ganancia}</p>
+                            <p>{data.mas}</p>
                             <p>{data.description}</p>
                         </div>
                     ))}
@@ -117,6 +121,22 @@ export function Estadisticas() {
                 <h3>Cargando estadísticas...</h3> 
             )}
         </div>
+
+    // <div style={{ maxWidth: '600px', margin: 'auto' }}>
+    // <Carousel showArrows={true} infiniteLoop={true} useKeyboardArrows>
+    //     {datosEstadisticas.map((data, index) => (
+    //         <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
+    //             <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
+    //             <h1>{data.title}</h1>
+    //             <p>{data.cantidad}</p>
+    //             <p>{data.dias}</p>
+    //             <p>{data.ganancia}</p>
+    //             <p>{data.mas}</p>
+    //             <p>{data.description}</p>
+    //         </div>
+    //     ))}
+    // </Carousel>
+    // </div>
     );
 }
 
