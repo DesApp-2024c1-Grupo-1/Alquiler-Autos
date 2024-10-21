@@ -154,7 +154,7 @@ const Estadisticas = () => {
           <Card 
             sx={{ 
               height: 'auto', // Cambiar a auto para que se ajuste
-              backgroundColor: '#FFD700', // Oro para el primer lugar
+              backgroundColor: '#f2b925', // Oro para el primer lugar
               textAlign: 'center', 
               boxShadow: 5 
             }}
@@ -175,7 +175,7 @@ const Estadisticas = () => {
           <Card 
             sx={{ 
               height: 'auto', // Cambiar a auto para que se ajuste
-              backgroundColor: '#B3D0FB', 
+              backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
               boxShadow: 3 
             }}
@@ -246,7 +246,7 @@ const Estadisticas = () => {
           <Card 
             sx={{ 
               height: 'auto', 
-              backgroundColor: '#B3D0FB', 
+              backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
               boxShadow: 3 
             }}
@@ -317,7 +317,7 @@ const Estadisticas = () => {
           <Card 
             sx={{ 
               height: 'auto', 
-              backgroundColor: '#B3D0FB', 
+              backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
               boxShadow: 3 
             }}
