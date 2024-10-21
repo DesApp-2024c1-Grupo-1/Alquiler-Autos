@@ -73,21 +73,32 @@ export function Estadisticas() {
             getAutoDetails(autoMasAlquiladoAnioId)
         ]);
 
+
+
         const datos = [
             {
                 image: autoTotal.image || 'https://via.placeholder.com/400/FF5733/FFFFFF?text=Total+Alquileres',
                 title: 'Alquileres Totales',
-                description: `Cantidad: ${alquileres.length}, Días: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `Cantidad de alquileres: ${alquileres.length}`,
+                mas: `${autoTotal.name}`,
+                dias: `Días totales de alquiler: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
             },
             {
                 image: autoAnio.image || 'https://via.placeholder.com/400/33FF57/FFFFFF?text=Alquileres+del+Año',
                 title: 'Alquileres del Año',
-                description: `Cantidad: ${alquileresAnioActual.length}, Días: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `Cantidad de alquileres: ${alquileresAnioActual.length}`,
+                mas: `${autoAnio.name}`,
+                dias: `Días totales de alquiler: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
             },
             {
                 image: autoMes.image || 'https://via.placeholder.com/400/3357FF/FFFFFF?text=Alquileres+del+Mes',
                 title: 'Alquileres del Mes',
-                description: `Cantidad: ${alquileresMesActual.length}, Días: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}, Ganancia: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
+                cantidad: `cantidad de alquileres: ${alquileresMesActual.length}`,
+                mas: `${autoMes.name}`,
+                dias: `Días totales de alquiler: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
+                ganancia: `Ganancia total ($): ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`
             },
         ];
 
@@ -108,8 +119,12 @@ export function Estadisticas() {
                                     <p>No image available</p>
                                 </div>
                             )}
-                            <h3>{data.title}</h3>
-                            <p>{data.description}</p>
+                            <h1>{data.mas}</h1>
+                            <h2>{data.title}</h2>
+                            <p>{data.cantidad}</p>
+                            <p>{data.dias}</p>
+                            <p>{data.ganancia}</p>
+                            
                         </div>
                     ))}
                 </Carousel>
@@ -117,7 +132,90 @@ export function Estadisticas() {
                 <h3>Cargando estadísticas...</h3> 
             )}
         </div>
+
+    // <div style={{ maxWidth: '600px', margin: 'auto' }}>
+    // <Carousel showArrows={true} infiniteLoop={true} useKeyboardArrows>
+    //     {datosEstadisticas.map((data, index) => (
+    //         <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
+    //             <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
+    //             <h1>{data.title}</h1>
+    //             <p>{data.cantidad}</p>
+    //             <p>{data.dias}</p>
+    //             <p>{data.ganancia}</p>
+    //             <p>{data.mas}</p>
+    //             <p>{data.description}</p>
+    //         </div>
+    //     ))}
+    // </Carousel>
+    // </div>
     );
 }
 
 export default Estadisticas;
+
+
+
+
+// {alquileresOrdenados.map((alquiler) => (
+//     <Card
+//         key={alquiler.id}
+//         sx={{
+//             mb: 2,
+//             borderRadius: '16px',
+//             backgroundColor: '#B3D0FB',
+//             boxShadow: 3,
+//             display: 'flex',
+//             flexDirection: { xs: 'column', md: 'row' }, // Apila en columna para pantallas pequeñas
+//             alignItems: 'center',
+//             justifyContent: 'space-between',
+//             padding: 2,
+//             textAlign: { xs: 'center', md: 'left' }, // Centramos el texto en pantallas pequeñas
+//         }}
+//     >
+//         {/* Imagen del auto alineada al extremo izquierdo */}
+//         <Box 
+//             sx={{ 
+//                 display: 'flex', 
+//                 justifyContent: { xs: 'center', md: 'flex-start' }, // Centrado en pantallas pequeñas, a la izquierda en pantallas grandes
+//                 flexGrow: 0,
+//                 mb: { xs: 2, md: 0 } // Margin bottom en pantallas pequeñas
+//             }}
+//         >
+//             <img 
+//                 src={alquiler.car.image} // Asegúrate de que la imagen esté disponible en los datos
+//                 alt={alquiler.car.name} 
+//                 style={{ 
+//                     width: '100%', 
+//                     maxWidth: '150px', // Ajuste en pantallas grandes
+//                     height: 'auto', 
+//                     borderRadius: '8px' 
+//                 }} 
+//             />
+//         </Box>
+
+//         {/* Información del alquiler centrada */}
+//         <Box sx={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
+//             <CardContent>
+//                 <Typography variant="h6">
+//                     ID de Alquiler: {alquiler.id}
+//                 </Typography>
+//                 <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+//                     Auto: {alquiler.car.name}{"\n"}
+//                     Cliente: {alquiler.cliente.nombre}, Teléfono: {alquiler.cliente.telefono}{"\n"}
+//                     Fecha de Inicio: {dayjs(alquiler.fechaRetiro).format('DD/MM/YYYY')}{"\n"}
+//                     Fecha de Fin: {dayjs(alquiler.fechaDevolucion).format('DD/MM/YYYY')}{"\n"}
+//                     Importe Total: ${alquiler.precioFinal}{"\n"}
+//                     Importe Pendiente: ${alquiler.saldoPendiente}{"\n"}
+//                     Estado: {compararFechas(alquiler.fechaRetiro, alquiler.fechaDevolucion)}
+//                 </Typography>
+//             </CardContent>
+//         </Box>
+
+//         {/* Botón al extremo derecho */}
+//         <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' }, flexGrow: 0 }}>
+//             <Button variant="contained" color="primary" sx={{ ml: { xs: 0, md: 2 }, mt: { xs: 2, md: 0 } }}>
+//                 Acción
+//             </Button>
+//         </Box>
+//     </Card>
+// ))}

@@ -34,7 +34,7 @@ import placeholderImage from '../assets/car-placeholder.jpg';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
-
+// hola
 
 
 
