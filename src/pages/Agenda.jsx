@@ -11,11 +11,12 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import {
   Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Modal, FormControlLabel, Checkbox, Autocomplete
+  InputLabel, InputAdornment, FormControl, Modal, FormControlLabel, Checkbox, Autocomplete,  List, ListItem, ListItemText 
 } from "@mui/material";
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { red } from '@mui/material/colors';
 import { lugaresFijos } from "../components/Filtros.jsx";
+import { BotonPago } from '../components/BotonPago.jsx';
 
 
 setOptions({
@@ -57,8 +58,6 @@ function AgendaPage() {
   const [appointmentTime, setAppointmentTime] = useState('');
   const [appointmentTimeR, setAppointmentTimeR] = useState('');
   const [appointmentTimeD, setAppointmentTimeD] = useState('');
-  const [buttonText, setButtonText] = useState('');
-  const [buttonType, setButtonType] = useState('');
   const [isTooltipOpen, setTooltipOpen] = useState(false);
   const [isToastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -70,10 +69,58 @@ function AgendaPage() {
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   
 
-  const [formAlquiler, setFormAlquiler] = useState({ lugarRetiro: '', lugarDevolucion: '' });
-  const [lugarDevolucionValido, setLugarDevolucionValido] = useState(true);
+
+
+  const [appointmentHistorialPago, setAppointmentHistorialPago] = useState([]);
+  const [isHistorialModalOpen, setHistorialModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchEventos = async () => {
+      const eventos = await getEventos();
+      // Suponiendo que cada evento tiene una propiedad "alquiler" que contiene "pagos"
+      const pagos = eventos.map(evento => evento.alquiler.pagos).flat(); // Esto aplanará la lista de pagos
+      setAppointmentHistorialPago(pagos);
+    };
+  
+    fetchEventos();
+  }, []);
+
+    
+
+    const abrirHistorialModal = () => {
+    setHistorialModalOpen(true);
+  };
+
+  const cerrarHistorialModal = () => {
+    setHistorialModalOpen(false);
+  };
+
+
+
+
+
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [appointmentPatente, setAppointmentPatente] = useState('null');
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
 
@@ -82,6 +129,10 @@ function AgendaPage() {
  
 
   const [pagoTotal, setAppointmentPagoTotal] = useState(false);
+
+
+  
+  
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
@@ -112,11 +163,26 @@ const handleCheckboxChange = (event) => {
 
   const [montoPago, setMontoPago] = useState(''); 
 
-  const handlePago = async () => {
 
+  useEffect(() => {
+    if (appointmentPago) {
+      // Resetea el campo de monto cuando el modal se abre
+      setMontoPago(''); 
+      // Si es necesario resetear el checkbox también
+      setIsTotalChecked(false);
+  
+      if (appointment && appointment.alquiler) {
+        // Cuando el modal de pago se abre, actualiza el saldo pendiente
+        setAppointmentSaldoP(appointment.alquiler.saldoPendiente);
+      }
+    }
+  }, [appointmentPago, appointment]);
+  
+
+
+  const handlePago = async () => {
     const monto = parseFloat(montoPago);
   
-   
     if (isNaN(monto) || monto <= 0) {
       console.error('El monto debe ser un número positivo.');
       setToastMessage('El monto debe ser un número positivo.');
@@ -124,127 +190,62 @@ const handleCheckboxChange = (event) => {
       return;
     }
   
-    console.log('Realizando pago para el alquiler ID:', appointment.alquiler.id);
-    console.log('Monto del pago:', monto);
-
-      
-  if (montoPago > saldoP) {
-    console.error('El monto a pagar no puede ser mayor que el saldo pendiente.');
-    setToastMessage('El monto a pagar no puede ser mayor que el saldo pendiente.');
-    setToastOpen(true);
-    return;
-  }
+    if (montoPago > saldoP) {
+      console.error('El monto a pagar no puede ser mayor que el saldo pendiente.');
+      setToastMessage('El monto a pagar no puede ser mayor que el saldo pendiente.');
+      setToastOpen(true);
+      return;
+    }
   
     try {
-      
       const response = await registrarPago(appointment.alquiler.id, monto);
-      
-     
+  
       if (response) {
-       
-        setAppointments((appointments) => 
-          appointments.map((item) => 
+        // Actualizar el estado con el nuevo pago agregado
+        setAppointments((appointments) =>
+          appointments.map((item) =>
             item.alquiler.id === appointment.alquiler.id
-              ? { ...item, alquiler: { ...item.alquiler, pagos: [...item.alquiler.pagos, response] } }
+              ? {
+                  ...item,
+                  alquiler: {
+                    ...item.alquiler,
+                    pagos: [...item.alquiler.pagos, response], // Agregar el nuevo pago
+                    saldoPendiente: item.alquiler.saldoPendiente - monto, // Actualizar saldo pendiente
+                  },
+                }
               : item
           )
         );
   
+        // Actualizar el saldo pendiente localmente y en el appointment
+        const nuevoSaldo = saldoP - monto;
+        console.log('Saldo pendiente actualizado:', nuevoSaldo); // Verificar el valor
+        setAppointmentSaldoP(nuevoSaldo);
         
+        // También actualizamos el saldoPendiente del alquiler en el appointment
+        setAppointment((prev) => ({
+          ...prev,
+          alquiler: {
+            ...prev.alquiler,
+            saldoPendiente: nuevoSaldo,
+          },
+        }));
+  
+        // Cerrar el modal de pagos
         setAppointmentPago(false);
   
-        
+        // Mostrar un mensaje de éxito
         setToastMessage('Pago registrado correctamente');
       }
     } catch (error) {
-      
       console.error('Error al registrar el pago:', error);
       setToastMessage('Error al registrar el pago');
     } finally {
-     
       setToastOpen(true);
     }
   };
   
-  
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/*
-
-const handleSavePayment = async () => {
-  console.log('Evento completo', appointment);
-  console.log('Monto a pagar:', montoPago);
-  console.log('Funcionamiento Pagos', appointment.alquiler.pagos)
-
-  const nuevoPago = {
-    fecha: new Date(), 
-    monto: parseFloat(montoPago)
-  };
-  
-  
-  // Modificar el alquiler con el nuevo pago
-  const alquilerModificado = {
-    ...appointment.alquiler,
-    cantidadDias: appointment.alquiler.cantidadDias,
-    pagos: [...appointment.alquiler.pagos, nuevoPago] 
-};
-
-console.log('Pagos antes de guardar:', alquilerModificado.pagos); // Verifica que tenga el nuevo pago
-
-try {
-  const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
-
-  // Verifica si la actualización fue exitosa
-  if (!updateAlquiler) {
-    alert("No se pudo actualizar el alquiler.");
-    return;
-  }
-
-  // Actualiza el estado de las citas
-  setAppointments((appointments) =>
-    appointments.map((item) =>
-      item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
-    )
-  );
-
-  alert("Pago realizado con éxito.");
-} catch (error) {
-  console.error("Error al actualizar el saldo pendiente:", error);
-  alert("Error al realizar el pago.");
-}
-};
-*/}
-
-
-
-
-
-const handleLugarDevolucionChange = (event, newInputValue) => {
-  setFormAlquiler((prev) => ({ ...prev, lugarDevolucion: newInputValue }));
-  
-  // Validación: comprueba si el lugar está en la lista
-  if (newInputValue.trim() === '') {
-    setLugarDevolucionValido(false); // El campo está vacío, no es válido
-  } else {
-    setLugarDevolucionValido(true); // Hay valor, es válido
-  }
-};
-
-
+ 
 
 
   const handleEditDatosCChange = (e) => {
@@ -415,6 +416,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     setAppointmentTimeD(event.alquiler.fechaDevolucion);
     setAppointmentPagoTotal(event.alquiler.precioFinal);
     setAppointmentSaldoP(event.alquiler.saldoPendiente);
+    setAppointmentHistorialPago(event.alquiler.pagos);
 
     {/*setAppointmentPatente(event.data?.car?.patente)*/}
 
@@ -431,6 +433,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     console.log('Fecha Devolucion:', fechaDevolucion);
     console.log('La patente es: ', patenteEs)
     console.log('La persona es:', event.alquiler.cliente)
+    console.log('El historial de pagos es:', event.alquiler.pagos);
     
   
 
@@ -581,28 +584,13 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
             <div className='mds-tooltip-label mbsc-margin'>
               Saldo pendiente: <span className='mbsc-light'> {saldoP}  </span>
             </div>
-            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>
-              Cliente
-            </Button>
-            <Button
-                color="success"
-                className="mds-tooltip-button"
-                onClick={() => {
-                  setTooltipOpen(false);  
-                  setAppointmentPago(true);  
-                  
-                }}
-              >
-              Pago
-            </Button>
 
-            <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>
-              Editar
-            </Button>
+            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>Cliente</Button>
 
-              <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>
-                Eliminar
-              </Button>
+            <BotonPago setTooltipOpen={setTooltipOpen} setAppointmentPago={setAppointmentPago}></BotonPago>
+            
+            <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>Editar</Button>
+            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>Eliminar</Button>
 
           </div>
         </div>
@@ -857,7 +845,7 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
         )}
       />
 
-      {/* Autocomplete para Lugar de Devolución */}
+    
       <Autocomplete
         options={lugaresFijos}
         getOptionLabel={(option) => option}
@@ -948,72 +936,95 @@ const handleLugarDevolucionChange = (event, newInputValue) => {
     boxShadow: 24,
     borderRadius: 1,
   }}>
-    <Typography variant="h6" marginBottom={2}  sx={{ borderBottom: '1px solid #e0e0e0' }} >Pago de Saldo</Typography>
+    <Typography variant="h6" marginBottom={2} sx={{ borderBottom: '1px solid #e0e0e0' }}>
+      Pago de Saldo
+    </Typography>
     
-    <div className="payment-popup-item"
-        style={{
-          padding: '10px',
-        
-          
-        }}
-    >
+    {/* Mostrar saldo original */}
+    <div className="payment-popup-item" style={{ padding: '10px' }}>
       <span className="payment-popup-label">Saldo Original:</span>
-      <span style={{paddingLeft:'10px'}}>{pagoTotal}</span>
+      <span style={{ paddingLeft: '10px' }}>{pagoTotal}</span>
     </div>
     
-    <div className="payment-popup-item"
-     style={{
-      padding: '10px',
-      marginBottom:'20px',
-     
-      
-    }}
-      >
+    {/* Mostrar saldo pendiente actualizado */}
+    <div className="payment-popup-item" style={{ padding: '10px', marginBottom: '20px' }}>
       <span className="payment-popup-label">Saldo Pendiente:</span>
-      <span style={{paddingLeft:'10px'}}>{saldoP}</span>
+      <span style={{ paddingLeft: '10px' }}>{saldoP}</span> {/* saldoP se actualizará automáticamente si está correctamente enlazado */}
     </div>
 
-
-    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, paddingLeft: '10px'}}>
-          <TextField
-            label="Cantidad a Pagar"
-            type="number"
-            variant="outlined"
-            value={montoPago}
-            onChange={(e) => setMontoPago(e.target.value)}
-            style={{ marginRight: 16, width: 225 }}
+    {/* Campo para introducir el monto a pagar */}
+    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, paddingLeft: '10px' }}>
+      <TextField
+        label="Cantidad a Pagar"
+        type="number"
+        variant="outlined"
+        value={montoPago}
+        onChange={(e) => setMontoPago(e.target.value)}
+        style={{ marginRight: 16, width: 225 }}
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={isTotalChecked}
+            onChange={handleCheckboxChange}
+            color="primary"
           />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isTotalChecked}
-                onChange={handleCheckboxChange}
-                color="primary"
-              />
-            }
-            label="Total"
-          />
-        </Box>
+        }
+        label="Total"
+      />
+    </Box>
 
 
-
-    <Box sx={{pading: 20, marginTop:4, paddingLeft: '10px'}}>
-      <Button color="primary" onClick={() => handlePago()} style={{ marginRight: 8 }}>
+    <Box sx={{ pading: 20, marginTop: 4, paddingLeft: '10px' }}>
+      <Button color="primary" onClick={handlePago} style={{ marginRight: 8 }}>
         Realizar Pagos
       </Button>
       <Button color="danger" onClick={() => setAppointmentPago(false)}>
         Cancelar
       </Button>
-      <Button color='info' className="mds-tooltip-button mbsc-pull-right" onClick={()=> setAppointmentPago(false)}>
-          Historial
+      <Button color="info" className="mds-tooltip-button mbsc-pull-right" onClick={abrirHistorialModal}>
+        Historial
       </Button>
     </Box>
-   
-            
-    
-    
   </Box>
 </Modal>
+
+
+
+
+
+<Modal
+  open={isHistorialModalOpen}
+  onClose={cerrarHistorialModal}
+  aria-labelledby="historial-pagos-modal"
+>
+  <Box sx={{
+    width: 400,
+    padding: 2,
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    boxShadow: 24,
+    borderRadius: 1,
+  }}>
+    <Typography variant="h6" marginBottom={2}>Historial de Pagos</Typography>
+    <List>
+      {appointmentHistorialPago.length > 0 ? (
+        appointmentHistorialPago.map((pago, index) => (
+          <ListItem key={index}>
+            <ListItemText primary={`Monto: ${pago.monto}, Fecha: ${new Date(pago.fecha).toLocaleDateString()}`} />
+          </ListItem>
+        ))
+      ) : (
+        <Typography>No hay pagos registrados.</Typography>
+      )}
+    </List>
+    <Button color="secondary" onClick={cerrarHistorialModal}>Cerrar</Button>
+  </Box>
+</Modal>
+
 
 
 
