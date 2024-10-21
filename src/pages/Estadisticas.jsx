@@ -136,6 +136,7 @@
 // }
 
 // export default Estadisticas;
+
 import React from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
 
@@ -148,15 +149,19 @@ const Estadisticas = () => {
       </Typography>
 
       {/* Grid del podio con las 3 tarjetas para Alquileres Totales */}
-      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 4 }}>
+      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
         {/* 1er Puesto */}
         <Grid item xs={12} sm={4} order={{ xs: 1, sm: 2 }}>
           <Card 
             sx={{ 
-              height: 'auto', // Cambiar a auto para que se ajuste
+              height: 'auto',
               backgroundColor: '#f2b925', // Oro para el primer lugar
               textAlign: 'center', 
-              boxShadow: 5 
+              boxShadow: 5,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
             <CardContent>
@@ -174,18 +179,22 @@ const Estadisticas = () => {
         <Grid item xs={12} sm={4} order={{ xs: 2, sm: 1 }}>
           <Card 
             sx={{ 
-              height: 'auto', // Cambiar a auto para que se ajuste
+              height: 'auto',
               backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante B" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">2º Puesto</Typography>
               <Typography variant="body2">Participante B</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante B. Información relevante y estadísticas.
+                Descripción breve sobre el participante B. Información relevante.
               </Typography>
             </CardContent>
           </Card>
@@ -195,18 +204,22 @@ const Estadisticas = () => {
         <Grid item xs={12} sm={4} order={{ xs: 3, sm: 3 }}>
           <Card 
             sx={{ 
-              height: 'auto', // Cambiar a auto para que se ajuste
+              height: 'auto',
               backgroundColor: '#CD7F32', // Bronce para el tercer lugar
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante C" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">3º Puesto</Typography>
               <Typography variant="body2">Participante C</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante C. Información relevante y estadísticas.
+                Descripción breve sobre el participante C. Información relevante.
               </Typography>
             </CardContent>
           </Card>
@@ -219,15 +232,19 @@ const Estadisticas = () => {
       </Typography>
 
       {/* Grid del podio con las 3 tarjetas para Alquileres del Año */}
-      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 4 }}>
+      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
         {/* 1er Puesto */}
         <Grid item xs={12} sm={4} order={{ xs: 1, sm: 2 }}>
           <Card 
             sx={{ 
               height: 'auto', 
-              backgroundColor: '#FFD700', // Oro para el primer lugar
+              backgroundColor: '#f2b925', // Oro para el primer lugar
               textAlign: 'center', 
-              boxShadow: 5 
+              boxShadow: 5,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
             <CardContent>
@@ -248,15 +265,19 @@ const Estadisticas = () => {
               height: 'auto', 
               backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante E" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">2º Puesto</Typography>
               <Typography variant="body2">Participante E</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante E. Información relevante y estadísticas.
+                Descripción breve sobre el participante E. Información relevante.
               </Typography>
             </CardContent>
           </Card>
@@ -269,15 +290,19 @@ const Estadisticas = () => {
               height: 'auto', 
               backgroundColor: '#CD7F32', // Bronce para el tercer lugar
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante F" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">3º Puesto</Typography>
               <Typography variant="body2">Participante F</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante F. Información relevante y estadísticas.
+                Descripción breve sobre el participante F. Información relevante.
               </Typography>
             </CardContent>
           </Card>
@@ -296,9 +321,13 @@ const Estadisticas = () => {
           <Card 
             sx={{ 
               height: 'auto', 
-              backgroundColor: '#FFD700', // Oro para el primer lugar
+              backgroundColor: '#f2b925', // Oro para el primer lugar
               textAlign: 'center', 
-              boxShadow: 5 
+              boxShadow: 5,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
             <CardContent>
@@ -319,15 +348,19 @@ const Estadisticas = () => {
               height: 'auto', 
               backgroundColor: '#8b8b8b', 
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante H" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">2º Puesto</Typography>
               <Typography variant="body2">Participante H</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante H. Información relevante y estadísticas.
+                Descripción breve sobre el participante H. Información relevante.
               </Typography>
             </CardContent>
           </Card>
@@ -340,15 +373,19 @@ const Estadisticas = () => {
               height: 'auto', 
               backgroundColor: '#CD7F32', // Bronce para el tercer lugar
               textAlign: 'center', 
-              boxShadow: 3 
+              boxShadow: 3,
+              transition: 'transform 0.3s ease', // Transición suave
+              '&:hover': {
+                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
+              },
             }}
           >
-            <CardContent>
+            <CardContent sx={{ padding: 2 }}>
               <img src="https://via.placeholder.com/150" alt="Participante I" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
               <Typography variant="h5">3º Puesto</Typography>
               <Typography variant="body2">Participante I</Typography>
               <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante I. Información relevante y estadísticas.
+                Descripción breve sobre el participante I. Información relevante.
               </Typography>
             </CardContent>
           </Card>
