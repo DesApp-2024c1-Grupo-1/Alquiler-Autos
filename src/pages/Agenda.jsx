@@ -67,184 +67,23 @@ function AgendaPage() {
   const [customerData, setCustomerData] = useState({});
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  
-
-
-
-  const [appointmentHistorialPago, setAppointmentHistorialPago] = useState([]);
-  const [isHistorialModalOpen, setHistorialModalOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchEventos = async () => {
-      const eventos = await getEventos();
-      // Suponiendo que cada evento tiene una propiedad "alquiler" que contiene "pagos"
-      const pagos = eventos.map(evento => evento.alquiler.pagos).flat(); // Esto aplanará la lista de pagos
-      setAppointmentHistorialPago(pagos);
-    };
-  
-    fetchEventos();
-  }, []);
-
-    
-
-    const abrirHistorialModal = () => {
-    setHistorialModalOpen(true);
-  };
-
-  const cerrarHistorialModal = () => {
-    setHistorialModalOpen(false);
-  };
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const [appointmentPatente, setAppointmentPatente] = useState('null');
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
 
-  const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
-
- 
-
-  const [pagoTotal, setAppointmentPagoTotal] = useState(false);
-
-
-  
-  
-  const [saldoP, setAppointmentSaldoP] = useState('');
-
-
-
-  
-  
+  const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);  
   const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
- 
+  const [isModalPagoOpen, setModalPagoOpen] = useState(false);
 
 
-
-const handleCheckboxChange = (event) => {
-  setIsTotalChecked(event.target.checked);
-  if (event.target.checked) {
-    setMontoPago(saldoP); // Asigno el saldoPendiente
-  } else {
-    setMontoPago(0); 
-  }
-};
-
-
-  const [appointmentPago, setAppointmentPago] = useState(false);
-
-
-  
-
-  const [isTotalChecked, setIsTotalChecked] = useState(false);
-
-  const [montoPago, setMontoPago] = useState(''); 
-
-
-  useEffect(() => {
-    if (appointmentPago) {
-      // Resetea el campo de monto cuando el modal se abre
-      setMontoPago(''); 
-      // Si es necesario resetear el checkbox también
-      setIsTotalChecked(false);
-  
-      if (appointment && appointment.alquiler) {
-        // Cuando el modal de pago se abre, actualiza el saldo pendiente
-        setAppointmentSaldoP(appointment.alquiler.saldoPendiente);
-      }
-    }
-  }, [appointmentPago, appointment]);
-  
-
-
-  const handlePago = async () => {
-    const monto = parseFloat(montoPago);
-  
-    if (isNaN(monto) || monto <= 0) {
-      console.error('El monto debe ser un número positivo.');
-      setToastMessage('El monto debe ser un número positivo.');
-      setToastOpen(true);
-      return;
-    }
-  
-    if (montoPago > saldoP) {
-      console.error('El monto a pagar no puede ser mayor que el saldo pendiente.');
-      setToastMessage('El monto a pagar no puede ser mayor que el saldo pendiente.');
-      setToastOpen(true);
-      return;
-    }
-  
-    try {
-      const response = await registrarPago(appointment.alquiler.id, monto);
-  
-      if (response) {
-        // Actualizar el estado con el nuevo pago agregado
-        setAppointments((appointments) =>
-          appointments.map((item) =>
-            item.alquiler.id === appointment.alquiler.id
-              ? {
-                  ...item,
-                  alquiler: {
-                    ...item.alquiler,
-                    pagos: [...item.alquiler.pagos, response], // Agregar el nuevo pago
-                    saldoPendiente: item.alquiler.saldoPendiente - monto, // Actualizar saldo pendiente
-                  },
-                }
-              : item
-          )
-        );
-  
-        // Actualizar el saldo pendiente localmente y en el appointment
-        const nuevoSaldo = saldoP - monto;
-        console.log('Saldo pendiente actualizado:', nuevoSaldo); // Verificar el valor
-        setAppointmentSaldoP(nuevoSaldo);
-        
-        // También actualizamos el saldoPendiente del alquiler en el appointment
-        setAppointment((prev) => ({
-          ...prev,
-          alquiler: {
-            ...prev.alquiler,
-            saldoPendiente: nuevoSaldo,
-          },
-        }));
-  
-        // Cerrar el modal de pagos
-        setAppointmentPago(false);
-  
-        // Mostrar un mensaje de éxito
-        setToastMessage('Pago registrado correctamente');
-      }
-    } catch (error) {
-      console.error('Error al registrar el pago:', error);
-      setToastMessage('Error al registrar el pago');
-    } finally {
-      setToastOpen(true);
-    }
+  const abrirModalPago = () =>{
+    setModalPagoOpen(true);
+    setTooltipOpen(false);
+      
   };
-  
+
+  const handlePopupClose = () => {
+    setTooltipOpen(false);
+};
  
 
 
@@ -414,10 +253,7 @@ const handleCheckboxChange = (event) => {
     setTooltipOpen(true);
     setAppointmentTimeR(event.alquiler.fechaRetiro);
     setAppointmentTimeD(event.alquiler.fechaDevolucion);
-    setAppointmentPagoTotal(event.alquiler.precioFinal);
-    setAppointmentSaldoP(event.alquiler.saldoPendiente);
-    setAppointmentHistorialPago(event.alquiler.pagos);
-
+   
     {/*setAppointmentPatente(event.data?.car?.patente)*/}
 
 
@@ -428,13 +264,6 @@ const handleCheckboxChange = (event) => {
     const fechaDevolucion = event.alquiler.fechaDevolucion;
     const saldoOriginal = event.alquiler.precioFinal;
   
-    console.log('Evento completo', event)
-    console.log('Fecha Retiro:', fechaRetiro);
-    console.log('Fecha Devolucion:', fechaDevolucion);
-    console.log('La patente es: ', patenteEs)
-    console.log('La persona es:', event.alquiler.cliente)
-    console.log('El historial de pagos es:', event.alquiler.pagos);
-    
   
 
     setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
@@ -549,54 +378,54 @@ const handleCheckboxChange = (event) => {
 
       />
 
+
+
       <Popup
-        anchor={tooltipAnchor}
-        onClose={() => setTooltipOpen(false)}
-        closeOnOverlayClick={true}
-        contentPadding={false}
-        display="anchored"
-        isOpen={isTooltipOpen}
-        showOverlay={false}
-        touchUi={false}
-        width={350}
-      >
-         <div style={{ height: '100%', width: '100%' }}>
+                anchor={tooltipAnchor}
+                onClose={handlePopupClose}
+                closeOnOverlayClick={true}
+                contentPadding={false}
+                display="anchored"
+                isOpen={isTooltipOpen}
+                showOverlay={false}
+                touchUi={false}
+                width={350}>
+    <div style={{ height: '100%', width: '100%' }}>
         <div className="mds-tooltip" onMouseEnter={() => { }} onMouseLeave={() => { }}>
-          <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor, padding:2 }}>
-            <span style={{marginLeft:'8px'}}>{appointmentInfo}</span>
-            {/*<span className="mbsc-pull-right">{appointmentTime}</span> No tiene utilidad*/}
-          </div>
-
-          <div className="mbsc-padding">
-            <div className="mds-tooltip-label mbsc-margin">
-              Fecha retiro: <span className="mbsc-light">{formattedAppointmentTimeR}</span>
-            </div>
-            <div className="mds-tooltip-label mbsc-margin">
-              Fecha Devolucion: <span className="mbsc-light">{formattedAppointmentTimeD}</span>
-            </div>
-            <div className="mds-tooltip-label mbsc-margin">
-              Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
-            </div>
-            <div className="mds-tooltip-label mbsc-margin">
-              Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
-            </div>
-            
-            <div className='mds-tooltip-label mbsc-margin'>
-              Saldo pendiente: <span className='mbsc-light'> {saldoP}  </span>
+            <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor, padding: 2 }}>
+                <span style={{ marginLeft: '8px' }}>{appointmentInfo}</span>
             </div>
 
-            <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>Cliente</Button>
+            <div className="mbsc-padding">
+                <div className="mds-tooltip-label mbsc-margin">
+                    Fecha retiro: <span className="mbsc-light">{formattedAppointmentTimeR}</span>
+                </div>
+                <div className="mds-tooltip-label mbsc-margin">
+                    Fecha Devolucion: <span className="mbsc-light">{formattedAppointmentTimeD}</span>
+                </div>
+                <div className="mds-tooltip-label mbsc-margin">
+                    Lugar Retiro: <span className="mbsc-light">{appointmentReason}</span>
+                </div>
+                <div className="mds-tooltip-label mbsc-margin">
+                    Lugar Devolucion: <span className="mbsc-light">{appointmentLocation}</span>
+                </div>
 
-            <BotonPago setTooltipOpen={setTooltipOpen} setAppointmentPago={setAppointmentPago}></BotonPago>
-            
-            <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>Editar</Button>
-            <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>Eliminar</Button>
+                <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>Cliente</Button>
 
-          </div>
+
+                <Button onClick={abrirModalPago}>Hola Mundo</Button>
+                
+
+
+                <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>Editar</Button>
+                <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>Eliminar</Button>
+            </div>
         </div>
+    </div>
+</Popup>
 
-        </div>
-      </Popup>
+<BotonPago alquiler={appointmentInfo} prueba={isModalPagoOpen} />
+
 
 
 
@@ -920,110 +749,6 @@ const handleCheckboxChange = (event) => {
 
 
 
-<Modal
-  open={appointmentPago}
-  onClose={() => setAppointmentPago(false)}  
->
-  <Box sx={{
-    width: 400,
-    height: 325,
-    padding: 2,
-    backgroundColor: 'white',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    boxShadow: 24,
-    borderRadius: 1,
-  }}>
-    <Typography variant="h6" marginBottom={2} sx={{ borderBottom: '1px solid #e0e0e0' }}>
-      Pago de Saldo
-    </Typography>
-    
-    {/* Mostrar saldo original */}
-    <div className="payment-popup-item" style={{ padding: '10px' }}>
-      <span className="payment-popup-label">Saldo Original:</span>
-      <span style={{ paddingLeft: '10px' }}>{pagoTotal}</span>
-    </div>
-    
-    {/* Mostrar saldo pendiente actualizado */}
-    <div className="payment-popup-item" style={{ padding: '10px', marginBottom: '20px' }}>
-      <span className="payment-popup-label">Saldo Pendiente:</span>
-      <span style={{ paddingLeft: '10px' }}>{saldoP}</span> {/* saldoP se actualizará automáticamente si está correctamente enlazado */}
-    </div>
-
-    {/* Campo para introducir el monto a pagar */}
-    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, paddingLeft: '10px' }}>
-      <TextField
-        label="Cantidad a Pagar"
-        type="number"
-        variant="outlined"
-        value={montoPago}
-        onChange={(e) => setMontoPago(e.target.value)}
-        style={{ marginRight: 16, width: 225 }}
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={isTotalChecked}
-            onChange={handleCheckboxChange}
-            color="primary"
-          />
-        }
-        label="Total"
-      />
-    </Box>
-
-
-    <Box sx={{ pading: 20, marginTop: 4, paddingLeft: '10px' }}>
-      <Button color="primary" onClick={handlePago} style={{ marginRight: 8 }}>
-        Realizar Pagos
-      </Button>
-      <Button color="danger" onClick={() => setAppointmentPago(false)}>
-        Cancelar
-      </Button>
-      <Button color="info" className="mds-tooltip-button mbsc-pull-right" onClick={abrirHistorialModal}>
-        Historial
-      </Button>
-    </Box>
-  </Box>
-</Modal>
-
-
-
-
-
-<Modal
-  open={isHistorialModalOpen}
-  onClose={cerrarHistorialModal}
-  aria-labelledby="historial-pagos-modal"
->
-  <Box sx={{
-    width: 400,
-    padding: 2,
-    backgroundColor: 'white',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    boxShadow: 24,
-    borderRadius: 1,
-  }}>
-    <Typography variant="h6" marginBottom={2}>Historial de Pagos</Typography>
-    <List>
-      {appointmentHistorialPago.length > 0 ? (
-        appointmentHistorialPago.map((pago, index) => (
-          <ListItem key={index}>
-            <ListItemText primary={`Monto: ${pago.monto}, Fecha: ${new Date(pago.fecha).toLocaleDateString()}`} />
-          </ListItem>
-        ))
-      ) : (
-        <Typography>No hay pagos registrados.</Typography>
-      )}
-    </List>
-    <Button color="secondary" onClick={cerrarHistorialModal}>Cerrar</Button>
-  </Box>
-</Modal>
 
 
 

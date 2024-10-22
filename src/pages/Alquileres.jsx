@@ -82,6 +82,7 @@ import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import dayjs from 'dayjs'; // Para formatear fechas
 
+
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
 
@@ -172,6 +173,7 @@ export function AlquileresPage() {
                                     <Button variant="contained" color="primary" sx={{ ml: { xs: 0, md: 2 }, mt: { xs: 2, md: 0 } }}>
                                         Acción
                                     </Button>
+                                    {/*<BotonPago setTooltipOpen={} setAppointmentPago={}></BotonPago>*/}
                                 </Box>
                             </Card>
                         ))
