@@ -166,13 +166,25 @@ const Estadisticas = () => {
     alquileres.forEach(alquiler => {
       const carId = alquiler.car?.id;
       if (carId) {
-        autosAlquilados[carId] = (autosAlquilados[carId] || 0) + 1;
+        if (!autosAlquilados[carId]) {
+          autosAlquilados[carId] = {
+            cantidad: 0,
+            dias: 0,
+            ganancia: 0
+          };
+        }
+        autosAlquilados[carId].cantidad += 1;
+        autosAlquilados[carId].dias += alquiler.cantidadDias;
+        autosAlquilados[carId].ganancia += alquiler.precioFinal;
       }
     });
 
-    const autosOrdenados = Object.entries(autosAlquilados).sort((a, b) => b[1] - a[1]);
-    const topTres = autosOrdenados.slice(0, 3).map(([carId]) => carId);
-    
+    const autosOrdenados = Object.entries(autosAlquilados).sort((a, b) => b[1].cantidad - a[1].cantidad);
+    const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
+      carId,
+      ...datos
+    }));
+
     return topTres;
   };
 
@@ -190,9 +202,9 @@ const Estadisticas = () => {
       return (fechaAlquiler.getFullYear() === anioActual);
     });
 
-    const topTresAutosTotalIds = obtenerTopTresAutos(alquileres);
-    const topTresAutosMesIds = obtenerTopTresAutos(alquileresMesActual);
-    const topTresAutosAnioIds = obtenerTopTresAutos(alquileresAnioActual);
+    const topTresAutosTotal = obtenerTopTresAutos(alquileres);
+    const topTresAutosMes = obtenerTopTresAutos(alquileresMesActual);
+    const topTresAutosAnio = obtenerTopTresAutos(alquileresAnioActual);
 
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", image: null };
@@ -201,21 +213,33 @@ const Estadisticas = () => {
     };
 
     const [autoTotal1, autoTotal2, autoTotal3, autoAnio1, autoAnio2, autoAnio3, autoMes1, autoMes2, autoMes3] = await Promise.all([
-      getAutoDetails(topTresAutosTotalIds[0]),
-      getAutoDetails(topTresAutosTotalIds[1]),
-      getAutoDetails(topTresAutosTotalIds[2]),
-      getAutoDetails(topTresAutosAnioIds[0]),
-      getAutoDetails(topTresAutosAnioIds[1]),
-      getAutoDetails(topTresAutosAnioIds[2]),
-      getAutoDetails(topTresAutosMesIds[0]),
-      getAutoDetails(topTresAutosMesIds[1]),
-      getAutoDetails(topTresAutosMesIds[2])
+      getAutoDetails(topTresAutosTotal[0]?.carId),
+      getAutoDetails(topTresAutosTotal[1]?.carId),
+      getAutoDetails(topTresAutosTotal[2]?.carId),
+      getAutoDetails(topTresAutosAnio[0]?.carId),
+      getAutoDetails(topTresAutosAnio[1]?.carId),
+      getAutoDetails(topTresAutosAnio[2]?.carId),
+      getAutoDetails(topTresAutosMes[0]?.carId),
+      getAutoDetails(topTresAutosMes[1]?.carId),
+      getAutoDetails(topTresAutosMes[2]?.carId)
     ]);
 
     return {
-      total: [autoTotal1, autoTotal2, autoTotal3],
-      anio: [autoAnio1, autoAnio2, autoAnio3],
-      mes: [autoMes1, autoMes2, autoMes3]
+      total: [
+        { ...autoTotal1, ...topTresAutosTotal[0] },
+        { ...autoTotal2, ...topTresAutosTotal[1] },
+        { ...autoTotal3, ...topTresAutosTotal[2] },
+      ],
+      anio: [
+        { ...autoAnio1, ...topTresAutosAnio[0] },
+        { ...autoAnio2, ...topTresAutosAnio[1] },
+        { ...autoAnio3, ...topTresAutosAnio[2] },
+      ],
+      mes: [
+        { ...autoMes1, ...topTresAutosMes[0] },
+        { ...autoMes2, ...topTresAutosMes[1] },
+        { ...autoMes3, ...topTresAutosMes[2] },
+      ]
     };
   };
 
@@ -246,7 +270,13 @@ const Estadisticas = () => {
                 <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto</Typography>
                 <Typography variant="body2">{auto.name}</Typography>
                 <Typography variant="body2" sx={{ marginTop: 1 }}>
-                  Información relevante y estadísticas.
+                  Cantidad de alquileres: {auto.cantidad}
+                </Typography>
+                <Typography variant="body2">
+                  Días totales de alquiler: {auto.dias}
+                </Typography>
+                <Typography variant="body2">
+                  Ganancia total ($): {auto.ganancia}
                 </Typography>
               </CardContent>
             </Card>
