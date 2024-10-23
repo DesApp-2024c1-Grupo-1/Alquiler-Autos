@@ -137,260 +137,130 @@
 
 // export default Estadisticas;
 
-import React from 'react';
-import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Grid, Card, CardContent } from '@mui/material';
+import axios from 'axios';
+import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 
 const Estadisticas = () => {
+  const allAlquileres = useAlquileres(); // Obtener los alquileres
+  const [estadisticas, setEstadisticas] = useState({
+    total: [],
+    anio: [],
+    mes: []
+  });
+
+  useEffect(() => {
+    async function fetchDatos() {
+      if (allAlquileres.length > 0) {
+        const datos = await procesarDatosEstadisticas(allAlquileres);
+        setEstadisticas(datos);
+      }
+    }
+
+    fetchDatos();
+  }, [allAlquileres]);
+
+  const obtenerTopTresAutos = (alquileres) => {
+    const autosAlquilados = {};
+    alquileres.forEach(alquiler => {
+      const carId = alquiler.car?.id;
+      if (carId) {
+        autosAlquilados[carId] = (autosAlquilados[carId] || 0) + 1;
+      }
+    });
+
+    const autosOrdenados = Object.entries(autosAlquilados).sort((a, b) => b[1] - a[1]);
+    const topTres = autosOrdenados.slice(0, 3).map(([carId]) => carId);
+    
+    return topTres;
+  };
+
+  const procesarDatosEstadisticas = async (alquileres) => {
+    const mesActual = new Date().getMonth() + 1;
+    const anioActual = new Date().getFullYear();
+
+    const alquileresMesActual = alquileres.filter(alquiler => {
+      const fechaAlquiler = new Date(alquiler.fechaRetiro);
+      return (fechaAlquiler.getMonth() + 1 === mesActual && fechaAlquiler.getFullYear() === anioActual);
+    });
+
+    const alquileresAnioActual = alquileres.filter(alquiler => {
+      const fechaAlquiler = new Date(alquiler.fechaRetiro);
+      return (fechaAlquiler.getFullYear() === anioActual);
+    });
+
+    const topTresAutosTotalIds = obtenerTopTresAutos(alquileres);
+    const topTresAutosMesIds = obtenerTopTresAutos(alquileresMesActual);
+    const topTresAutosAnioIds = obtenerTopTresAutos(alquileresAnioActual);
+
+    const getAutoDetails = async (carId) => {
+      if (!carId) return { name: "No disponible", image: null };
+      const response = await axios.get(`http://localhost:3000/car/${carId}`);
+      return { name: response.data.name, image: response.data.image };
+    };
+
+    const [autoTotal1, autoTotal2, autoTotal3, autoAnio1, autoAnio2, autoAnio3, autoMes1, autoMes2, autoMes3] = await Promise.all([
+      getAutoDetails(topTresAutosTotalIds[0]),
+      getAutoDetails(topTresAutosTotalIds[1]),
+      getAutoDetails(topTresAutosTotalIds[2]),
+      getAutoDetails(topTresAutosAnioIds[0]),
+      getAutoDetails(topTresAutosAnioIds[1]),
+      getAutoDetails(topTresAutosAnioIds[2]),
+      getAutoDetails(topTresAutosMesIds[0]),
+      getAutoDetails(topTresAutosMesIds[1]),
+      getAutoDetails(topTresAutosMesIds[2])
+    ]);
+
+    return {
+      total: [autoTotal1, autoTotal2, autoTotal3],
+      anio: [autoAnio1, autoAnio2, autoAnio3],
+      mes: [autoMes1, autoMes2, autoMes3]
+    };
+  };
+
+  const renderPodio = (titulo, autos) => (
+    <>
+      <Typography variant="h3" component="h2" align="center" gutterBottom>
+        {titulo}
+      </Typography>
+      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
+        {autos.map((auto, index) => (
+          <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
+            <Card
+              sx={{
+                height: 'auto',
+                backgroundColor: index === 0 ? '#f2b925' : index === 1 ? '#8b8b8b' : '#CD7F32',
+                textAlign: 'center',
+                boxShadow: index === 0 ? 5 : 3,
+                transition: 'transform 0.3s ease',
+                '&:hover': { transform: 'scale(1.05)' }
+              }}
+            >
+              <CardContent>
+                <img
+                  src={auto.image || 'https://via.placeholder.com/150'}
+                  alt={auto.name}
+                  style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
+                />
+                <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto</Typography>
+                <Typography variant="body2">{auto.name}</Typography>
+                <Typography variant="body2" sx={{ marginTop: 1 }}>
+                  Información relevante y estadísticas.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </>
+  );
+
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
-      {/* Título de Alquileres Totales */}
-      <Typography variant="h3" component="h2" align="center" gutterBottom>
-        Alquileres Totales
-      </Typography>
-
-      {/* Grid del podio con las 3 tarjetas para Alquileres Totales */}
-      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
-        {/* 1er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 1, sm: 2 }}>
-          <Card 
-            sx={{ 
-              height: 'auto',
-              backgroundColor: '#f2b925', // Oro para el primer lugar
-              textAlign: 'center', 
-              boxShadow: 5,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent>
-              <img src="https://via.placeholder.com/150" alt="Participante A" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h4">1º Puesto</Typography>
-              <Typography variant="body2">Participante A</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante A. Información relevante y estadísticas.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 2do Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 2, sm: 1 }}>
-          <Card 
-            sx={{ 
-              height: 'auto',
-              backgroundColor: '#8b8b8b', 
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante B" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">2º Puesto</Typography>
-              <Typography variant="body2">Participante B</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante B. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 3er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 3, sm: 3 }}>
-          <Card 
-            sx={{ 
-              height: 'auto',
-              backgroundColor: '#CD7F32', // Bronce para el tercer lugar
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante C" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">3º Puesto</Typography>
-              <Typography variant="body2">Participante C</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante C. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Título de Alquileres del Año */}
-      <Typography variant="h3" component="h2" align="center" gutterBottom>
-        Alquileres del Año
-      </Typography>
-
-      {/* Grid del podio con las 3 tarjetas para Alquileres del Año */}
-      <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
-        {/* 1er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 1, sm: 2 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#f2b925', // Oro para el primer lugar
-              textAlign: 'center', 
-              boxShadow: 5,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent>
-              <img src="https://via.placeholder.com/150" alt="Participante D" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h4">1º Puesto</Typography>
-              <Typography variant="body2">Participante D</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante D. Información relevante y estadísticas.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 2do Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 2, sm: 1 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#8b8b8b', 
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante E" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">2º Puesto</Typography>
-              <Typography variant="body2">Participante E</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante E. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 3er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 3, sm: 3 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#CD7F32', // Bronce para el tercer lugar
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante F" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">3º Puesto</Typography>
-              <Typography variant="body2">Participante F</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante F. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Título de Alquileres del Mes */}
-      <Typography variant="h3" component="h2" align="center" gutterBottom>
-        Alquileres del Mes
-      </Typography>
-
-      {/* Grid del podio con las 3 tarjetas para Alquileres del Mes */}
-      <Grid container spacing={2} justifyContent="center" alignItems="flex-end">
-        {/* 1er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 1, sm: 2 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#f2b925', // Oro para el primer lugar
-              textAlign: 'center', 
-              boxShadow: 5,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent>
-              <img src="https://via.placeholder.com/150" alt="Participante G" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h4">1º Puesto</Typography>
-              <Typography variant="body2">Participante G</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante G. Información relevante y estadísticas.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 2do Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 2, sm: 1 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#8b8b8b', 
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante H" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">2º Puesto</Typography>
-              <Typography variant="body2">Participante H</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante H. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 3er Puesto */}
-        <Grid item xs={12} sm={4} order={{ xs: 3, sm: 3 }}>
-          <Card 
-            sx={{ 
-              height: 'auto', 
-              backgroundColor: '#CD7F32', // Bronce para el tercer lugar
-              textAlign: 'center', 
-              boxShadow: 3,
-              transition: 'transform 0.3s ease', // Transición suave
-              '&:hover': {
-                transform: 'scale(1.05)', // Aumenta el tamaño al pasar el mouse
-              },
-            }}
-          >
-            <CardContent sx={{ padding: 2 }}>
-              <img src="https://via.placeholder.com/150" alt="Participante I" style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }} />
-              <Typography variant="h5">3º Puesto</Typography>
-              <Typography variant="body2">Participante I</Typography>
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Descripción breve sobre el participante I. Información relevante.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {renderPodio("Alquileres Totales", estadisticas.total)}
+      {renderPodio("Alquileres del Año", estadisticas.anio)}
+      {renderPodio("Alquileres del Mes", estadisticas.mes)}
     </Box>
   );
 };
