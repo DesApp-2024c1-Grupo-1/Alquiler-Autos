@@ -207,9 +207,9 @@ const Estadisticas = () => {
     const topTresAutosAnio = obtenerTopTresAutos(alquileresAnioActual);
 
     const getAutoDetails = async (carId) => {
-      if (!carId) return { name: "No disponible", image: null };
+      if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
       const response = await axios.get(`http://localhost:3000/car/${carId}`);
-      return { name: response.data.name, image: response.data.image };
+      return { name: response.data.name, brand: response.data.brand, image: response.data.image };
     };
 
     const [autoTotal1, autoTotal2, autoTotal3, autoAnio1, autoAnio2, autoAnio3, autoMes1, autoMes2, autoMes3] = await Promise.all([
@@ -245,7 +245,7 @@ const Estadisticas = () => {
 
   const renderPodio = (titulo, autos) => (
     <>
-      <Typography variant="h3" component="h2" align="center" gutterBottom>
+      <Typography variant="h3" component="h2" align="center" gutterBottom sx={{ marginBottom: 8 }}>
         {titulo}
       </Typography>
       <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
@@ -267,15 +267,15 @@ const Estadisticas = () => {
                   alt={auto.name}
                   style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
                 />
-                <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto</Typography>
-                <Typography variant="body2">{auto.name}</Typography>
-                <Typography variant="body2" sx={{ marginTop: 1 }}>
+                <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
+                <Typography variant="h4">{auto.brand} {auto.name}</Typography>
+                <Typography variant="body1" sx={{ marginTop: 1 }}>
                   Cantidad de alquileres: {auto.cantidad}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   Días totales de alquiler: {auto.dias}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   Ganancia total ($): {auto.ganancia}
                 </Typography>
               </CardContent>
