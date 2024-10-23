@@ -86,6 +86,16 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     setAllCars([...allCars, editableCar])
     setOpenSnack(true);
     handleClose();
+    setEditableCar({
+      name: null,
+      brand: null,
+      year: null,
+      km: null,
+      color: null,
+      price: null,
+      image: null,
+      patente: null
+    })
   };
 
   const handleCloseSnack = () => {
