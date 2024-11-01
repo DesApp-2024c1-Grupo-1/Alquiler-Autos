@@ -5,7 +5,7 @@ const url = import.meta.env.VITE_API_URL;
 
 export async function getCarById(id){
   try {
-    const response = await axios.get(url+id);
+    const response = await axios.get(url+ "/" + id);
     // console.log(response.data);
     return response.data;
   } catch (error) {
@@ -27,7 +27,7 @@ export const getAllCarsAxios = async(filtros) =>{
   //Obtiene todos los autos filtrados y que no tienen un alquiler vigende
   export const getAllCarsAvailable = async(filtros) =>{
       try {
-        const response = await axios.post(url + 'available', filtros);
+        const response = await axios.post(url + '/available', filtros);
         console.log("Autos filtrados y disponibles: ",response.data);
         return response.data;
       } catch (error) {
@@ -48,7 +48,7 @@ export const getAllCarsAxios = async(filtros) =>{
     export const putCar = async(car) =>{
       try {
         console.log("ID:",car.id)
-        const response = await axios.put(url+car.id, car);
+        const response = await axios.put(url+ "/" + car.id, car);
         console.log(response.data);
         return response.data;
       } catch (error) {
@@ -58,7 +58,7 @@ export const getAllCarsAxios = async(filtros) =>{
 
     export const deleteCarById = async(id) =>{
       try {
-        const response = await axios.delete(url+id);
+        const response = await axios.delete(url +"/" + id);
         console.log(response.data);
         return response.data;
       } catch (error) {
