@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const url = import.meta.env.VITE_API_URL;
 
-
 export async function getCarById(id){
   try {
     const response = await axios.get(url+ "/" + id);
@@ -27,7 +26,8 @@ export const getAllCarsAxios = async(filtros) =>{
   //Obtiene todos los autos filtrados y que no tienen un alquiler vigende
   export const getAllCarsAvailable = async(filtros) =>{
       try {
-        const response = await axios.post(url + '/available', filtros);
+        console.log("Post", url + '/available', filtros);
+        const response = await axios.post(url + '/car/available', filtros);
         console.log("Autos filtrados y disponibles: ",response.data);
         return response.data;
       } catch (error) {

@@ -46,7 +46,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
   export async function registrarPago(idAlquiler, monto) {
     try {
-      const url = apiUrl `/pago/alquiler/${idAlquiler}`;
+      const url = apiUrl + `/pago/alquiler/${idAlquiler}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {

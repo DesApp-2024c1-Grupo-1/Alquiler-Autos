@@ -5,7 +5,7 @@ const url = import.meta.env.VITE_API_URL;
 //Modifico la URL para que haga la solicitud a la lista completa de alquileres.
 export async function getAllAlquileres() {
     try {
-      const response = await axios.get(url); //Petición a la URL correcta.
+      const response = await axios.get(url+"/alquiler"); //Petición a la URL correcta.
       console.log(response);
       return response.data;
     } catch (error) {
