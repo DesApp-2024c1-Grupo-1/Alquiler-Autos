@@ -4,7 +4,7 @@ const url = import.meta.env.VITE_API_URL;
 
 export async function getCarById(id){
   try {
-    const response = await axios.get(url+ "/" + id);
+    const response = await axios.get(url+ "/car/" + id);
     // console.log(response.data);
     return response.data;
   } catch (error) {
