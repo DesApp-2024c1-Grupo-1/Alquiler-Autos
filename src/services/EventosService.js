@@ -1,15 +1,8 @@
-/*export function getEventos() {
-    console.log("Haciendo fetch")
-    return fetch('http://localhost:3000/evento')
-      .then(response => response.json())
-      .then(data => data)
-      .catch(error => console.error(error));
-  }
-  */
+const apiUrl = import.meta.env.VITE_API_URL;
 
   export function getEventos() {
     console.log("Haciendo fetch")
-    return fetch('http://localhost:3000/evento')
+    return fetch(apiUrl +"/evento")
       .then(response => response.json())
       .then(data => {
                   return data.map(evento => {
@@ -24,7 +17,7 @@
     console.log('Enviando datos de alquiler:', alquilerModificado);
     console.log('Enviando datos de pagos:', alquilerModificado.pagos);
     try {
-      const url = `http://localhost:3000/alquiler/${id}`;
+      const url = apiUrl + `/alquiler/${id}`;
       const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -53,7 +46,7 @@
 
   export async function registrarPago(idAlquiler, monto) {
     try {
-      const url = `http://localhost:3000/pago/alquiler/${idAlquiler}`;
+      const url = apiUrl `/pago/alquiler/${idAlquiler}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -75,7 +68,7 @@
 
   export async function eliminarAlquiler(idAlquiler) {
     try {
-      const url = `http://localhost:3000/alquiler/${idAlquiler}`; // Usar idAlquiler en la URL
+      const url = apiUrl + `/alquiler/${idAlquiler}`; // Usar idAlquiler en la URL
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {

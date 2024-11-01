@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://localhost:3000/car/';
+const url = import.meta.env.VITE_API_URL;
 
 
 export async function getCarById(id){

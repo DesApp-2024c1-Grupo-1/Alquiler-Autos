@@ -189,6 +189,9 @@ const Estadisticas = () => {
   };
 
   const procesarDatosEstadisticas = async (alquileres) => {
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const mesActual = new Date().getMonth() + 1;
     const anioActual = new Date().getFullYear();
 
@@ -208,7 +211,7 @@ const Estadisticas = () => {
 
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
-      const response = await axios.get(`http://localhost:3000/car/${carId}`);
+      const response = await axios.get( apiUrl + `/car/${carId}`);
       return { name: response.data.name, brand: response.data.brand, image: response.data.image };
     };
 

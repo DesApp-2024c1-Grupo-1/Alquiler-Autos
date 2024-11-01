@@ -137,7 +137,7 @@ export function AlquilerList({alquileres}) {
                       }}
                     />
                     <Box sx={{ ml: 2 }}>
-                      <Typography variant="body1">{alquiler.car.name}</Typography>
+                      <Typography variant="body1">{alquiler.car?.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
                         {alquiler.car.patente}
                       </Typography>
@@ -145,9 +145,9 @@ export function AlquilerList({alquileres}) {
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body1">{alquiler.cliente.nombre}</Typography>
+                  <Typography variant="body1">{alquiler.cliente?.nombre}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {alquiler.cliente.documento}
+                    {alquiler.cliente?.documento}
                   </Typography>
                 </TableCell>
                 <TableCell>
