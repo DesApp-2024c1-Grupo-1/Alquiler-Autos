@@ -138,7 +138,7 @@
 // export default Estadisticas;
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip } from '@mui/material'; //Fab y Tooltip para el boton.
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 
@@ -149,6 +149,8 @@ const Estadisticas = () => {
     anio: [],
     mes: []
   });
+
+  const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
 
   useEffect(() => {
     async function fetchDatos() {
