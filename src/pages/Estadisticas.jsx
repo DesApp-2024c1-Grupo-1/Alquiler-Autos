@@ -139,6 +139,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip } from '@mui/material'; //Fab y Tooltip para el boton.
+import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 
@@ -307,6 +308,31 @@ const Estadisticas = () => {
       {renderPodio("Alquileres Totales", estadisticas.total)}
       {renderPodio("Alquileres del Año", estadisticas.anio)}
       {renderPodio("Alquileres del Mes", estadisticas.mes)}
+
+      {/* Botón para hacer scroll hacia arriba con Tooltip */}
+      {showScrollButton && (
+        <Tooltip 
+          title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>} //Tamaño de la leyenda
+          placement="left" 
+          arrow
+        >
+          <Fab
+            color="primary"
+            onClick={scrollToTop}
+            sx={{
+              width: 80, //Ancho del botón
+              height: 80, //Alto del botón
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <KeyboardArrowUp sx={{ fontSize: '2rem' }} /> {/* Tamaño del ícono */}
+          </Fab>
+        </Tooltip>
+      )}
+
     </Box>
   );
 };
