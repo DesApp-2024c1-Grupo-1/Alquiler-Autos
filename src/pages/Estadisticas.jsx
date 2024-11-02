@@ -163,6 +163,15 @@ const Estadisticas = () => {
     fetchDatos();
   }, [allAlquileres]);
 
+  //Effect para controlar la visibilidad del botón de scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const obtenerTopTresAutos = (alquileres) => {
     const autosAlquilados = {};
     alquileres.forEach(alquiler => {
