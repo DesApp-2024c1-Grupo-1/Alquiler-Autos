@@ -172,6 +172,11 @@ const Estadisticas = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  //Función para hacer scroll hacia arriba
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const obtenerTopTresAutos = (alquileres) => {
     const autosAlquilados = {};
     alquileres.forEach(alquiler => {
