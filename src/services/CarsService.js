@@ -12,21 +12,10 @@ export async function getCarById(id){
   }
 };
 
-//Obtiene todos los autos filtrados
-export const getAllCarsAxios = async(filtros) =>{
-    try {
-      const response = await axios.get(url, {params: filtros});
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   //Obtiene todos los autos filtrados y que no tienen un alquiler vigende
   export const getAllCarsAvailable = async(filtros) =>{
       try {
-        console.log("Post", url + '/available', filtros);
         const response = await axios.post(url + '/car/available', filtros);
         console.log("Autos filtrados y disponibles: ",response.data);
         return response.data;
@@ -37,7 +26,7 @@ export const getAllCarsAxios = async(filtros) =>{
 
     export const postCar = async(car) =>{
       try {
-        const response = await axios.post(url, car);
+        const response = await axios.post(url + "/car", car);
         console.log(response.data);
         return response.data;
       } catch (error) {
@@ -48,7 +37,7 @@ export const getAllCarsAxios = async(filtros) =>{
     export const putCar = async(car) =>{
       try {
         console.log("ID:",car.id)
-        const response = await axios.put(url+ "/" + car.id, car);
+        const response = await axios.put(url+ "/car/" + car.id, car);
         console.log(response.data);
         return response.data;
       } catch (error) {
@@ -58,7 +47,7 @@ export const getAllCarsAxios = async(filtros) =>{
 
     export const deleteCarById = async(id) =>{
       try {
-        const response = await axios.delete(url +"/" + id);
+        const response = await axios.delete(url +"/car/" + id);
         console.log(response.data);
         return response.data;
       } catch (error) {
