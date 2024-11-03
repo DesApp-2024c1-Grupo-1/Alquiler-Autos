@@ -22,6 +22,7 @@ export function AppRouter() {
       <Route path='/registrarPago' element={<RegistrarPago />} />
       <Route path='/login' element={<Login />} />
       <Route path='/alquileres' element={<AlquileresPage />} />
+      <Route path='*' element={<HomePage />} />
       
     </Routes>
   );
