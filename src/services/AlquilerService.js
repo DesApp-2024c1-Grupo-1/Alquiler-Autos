@@ -1,10 +1,10 @@
 import axios from "axios"
 
+const apiUrl = import.meta.env.VITE_API_URL;
 
-  
 export const registrarAlquiler = async (alquiler) => {
     try {
-      const url = "http://localhost:3000/alquiler"
+      const url = apiUrl + "/alquiler"
       const response = await axios.post(url, alquiler)    
       console.log(response)
       return response.data;

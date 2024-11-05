@@ -26,6 +26,10 @@ const theme = createTheme({
   },
 })
 
+if (!import.meta.env.VITE_API_URL) {
+  console.error('⚠️ Archivo .env no encontrado o variable VITE_API_URL no definida. Por favor, crea un archivo .env con las variables ejemplificadas en el archivo .env.example');
+}
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
