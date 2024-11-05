@@ -18,6 +18,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +29,7 @@ import {
 } from "../store/alquilerFormSlice.js";
 import { useLocalStorage } from "../config/useLocalStorage.js";
 import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
 export const lugaresFijos = [
@@ -195,9 +197,9 @@ const Filtros = ({ handleFiltros }) => {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => {
@@ -208,6 +210,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 onError={(newError) => {
                   setError(newError);
                 }}
