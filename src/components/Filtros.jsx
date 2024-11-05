@@ -226,9 +226,9 @@ const Filtros = ({ handleFiltros }) => {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) =>
@@ -239,6 +239,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
                   setError(newError);
