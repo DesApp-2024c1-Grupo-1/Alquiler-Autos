@@ -70,7 +70,7 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     return allCars.some(car => car.patente === patente);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     
     if (isPatenteDuplicated(editableCar.patente)) {
@@ -82,8 +82,9 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     setErrorMessage("Auto agregado con éxito");
 
     console.log("Agregando auto: ", editableCar)
-    postCar(editableCar)
-    setAllCars([...allCars, editableCar])
+    const autoAgregado = await postCar(editableCar)
+    console.log("Auto agregado: ", autoAgregado);
+    setAllCars([...allCars, autoAgregado])
     setOpenSnack(true);
     handleClose();
     setEditableCar({
