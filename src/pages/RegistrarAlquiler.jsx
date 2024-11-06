@@ -157,7 +157,10 @@ export function FormAlquiler({ car }) {
                 freeSolo
                 options={lugaresFijos} // Usa la lista de lugares predefinidos
                 value={formAlquiler.lugarRetiro || ''}
-                onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+                onInputChange={(event, newValue) => {
+                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
+                  handleLugarRetiroChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
+                }} 
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -165,6 +168,14 @@ export function FormAlquiler({ car }) {
                     label="Lugar de Retiro"
                     error={!lugarRetiroValido}
                     helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        if (/[0-9]/.test(event.key)) {
+                          event.preventDefault(); // Bloquea números en tiempo real
+                        }
+                      },
+                    }}
                   />
                 )}
               />
@@ -175,7 +186,10 @@ export function FormAlquiler({ car }) {
                 freeSolo
                 options={lugaresFijos} // Usa la misma lista de lugares predefinidos
                 value={formAlquiler.lugarDevolucion || ''}
-                onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+                onInputChange={(event, newValue) => {
+                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
+                  handleLugarDevolucionChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
+                }} 
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -183,6 +197,14 @@ export function FormAlquiler({ car }) {
                     label="Lugar de Devolución"
                     error={!lugarDevolucionValido}
                     helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        if (/[0-9]/.test(event.key)) {
+                          event.preventDefault(); // Bloquea números en tiempo real
+                        }
+                      },
+                    }}
                   />
                 )}
               />
