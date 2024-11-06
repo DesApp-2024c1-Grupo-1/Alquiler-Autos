@@ -158,7 +158,7 @@ const Filtros = ({ handleFiltros }) => {
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
               onInputChange={(event, newValue) => {
-                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, ''); //Elimina caracteres no alfabéticos y no espacio
+                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
                 handleLugarRetiroChange(event, filteredValue); //o handleLugarRetiroChange según el campo
               }} 
               renderInput={(params) => (
@@ -173,8 +173,8 @@ const Filtros = ({ handleFiltros }) => {
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
-                      if (!/^[a-zA-Z\s]$/.test(event.key)) {
-                        event.preventDefault(); //Bloquea la entrada de números
+                      if (/[0-9]/.test(event.key)) {
+                        event.preventDefault(); //Bloquea números en tiempo real
                       }
                     },
                   }}
@@ -189,7 +189,7 @@ const Filtros = ({ handleFiltros }) => {
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
               onInputChange={(event, newValue) => {
-                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, ''); //Elimina caracteres no alfabéticos y no espacio
+                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
                 handleLugarDevolucionChange(event, filteredValue); //o handleLugarDevolucionChange según el campo
               }} 
               renderInput={(params) => (
@@ -204,8 +204,8 @@ const Filtros = ({ handleFiltros }) => {
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
-                      if (!/^[a-zA-Z\s]$/.test(event.key)) {
-                        event.preventDefault(); //Bloquea la entrada de números
+                      if (/[0-9]/.test(event.key)) {
+                        event.preventDefault(); //Bloquea números en tiempo real
                       }
                     },
                   }}
