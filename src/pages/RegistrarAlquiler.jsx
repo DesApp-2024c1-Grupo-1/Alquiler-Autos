@@ -210,7 +210,7 @@ export function FormAlquiler({ car }) {
               />
           </Grid>
           <Grid item xs={12} md={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                   <MobileDateTimePicker
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
@@ -233,7 +233,7 @@ export function FormAlquiler({ car }) {
                 </LocalizationProvider>
           </Grid>
           <Grid item xs={12} md={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                   <MobileDateTimePicker
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
