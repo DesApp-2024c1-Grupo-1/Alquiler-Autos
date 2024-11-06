@@ -268,7 +268,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                     </Select>
                 </FormControl>
                 
-                <TextField
+                {/* <TextField
                   autoFocus
                   required
                   margin="dense"
@@ -280,7 +280,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                   variant="standard"
                   value={formValues.patente}
                   onChange={(e) => setFormValues({...formValues, patente: e.target.value })}
-                />
+                /> */}
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
