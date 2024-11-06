@@ -843,7 +843,14 @@ const handleCheckboxChange = (event) => {
         options={lugaresFijos}
         getOptionLabel={(option) => option}
         value={editData.lugarRetiro}
-        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))}
+        onInputChange={(event, newInputValue) => {
+          // Eliminar números del valor ingresado
+          const filteredInput = newInputValue.replace(/[0-9]/g, '');
+          setEditData((prevData) => ({ ...prevData, lugarRetiro: filteredInput }));
+        }}
+        onChange={(event, newValue) =>
+          setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))
+        }
         renderInput={(params) => (
           <TextField {...params} label="Lugar de Retiro" margin="normal" fullWidth />
         )}
@@ -854,7 +861,14 @@ const handleCheckboxChange = (event) => {
         options={lugaresFijos}
         getOptionLabel={(option) => option}
         value={editData.lugarDevolucion}
-        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))}
+        onInputChange={(event, newInputValue) => {
+          // Eliminar números del valor ingresado
+          const filteredInput = newInputValue.replace(/[0-9]/g, '');
+          setEditData((prevData) => ({ ...prevData, lugarDevolucion: filteredInput }));
+        }}
+        onChange={(event, newValue) =>
+          setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))
+        }
         renderInput={(params) => (
           <TextField {...params} label="Lugar de Devolución" margin="normal" fullWidth />
         )}
