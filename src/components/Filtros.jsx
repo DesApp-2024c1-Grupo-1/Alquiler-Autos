@@ -157,7 +157,10 @@ const Filtros = ({ handleFiltros }) => {
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+              onInputChange={(event, newValue) => {
+                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, ''); //Elimina caracteres no alfabéticos y no espacio
+                handleLugarRetiroChange(event, filteredValue); //o handleLugarRetiroChange según el campo
+              }} 
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -166,6 +169,14 @@ const Filtros = ({ handleFiltros }) => {
                   sx={{
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      if (!/^[a-zA-Z\s]$/.test(event.key)) {
+                        event.preventDefault(); //Bloquea la entrada de números
+                      }
+                    },
                   }}
                 />
               )}
@@ -177,7 +188,10 @@ const Filtros = ({ handleFiltros }) => {
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+              onInputChange={(event, newValue) => {
+                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, ''); //Elimina caracteres no alfabéticos y no espacio
+                handleLugarDevolucionChange(event, filteredValue); //o handleLugarDevolucionChange según el campo
+              }} 
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -186,6 +200,14 @@ const Filtros = ({ handleFiltros }) => {
                   sx={{
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      if (!/^[a-zA-Z\s]$/.test(event.key)) {
+                        event.preventDefault(); //Bloquea la entrada de números
+                      }
+                    },
                   }}
                 />
               )}
