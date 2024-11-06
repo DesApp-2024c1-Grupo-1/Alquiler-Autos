@@ -211,7 +211,11 @@ const Estadisticas = () => {
 
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
-      const response = await axios.get( apiUrl + `/car/${carId}`);
+
+      //FIX TEMPORAL
+      // const response = await axios.get( apiUrl + `/car/${carId}`);
+      const response = await axios.get( apiUrl + `/withdeleted/car/${carId}`);
+
       return { name: response.data.name, brand: response.data.brand, image: response.data.image };
     };
 
