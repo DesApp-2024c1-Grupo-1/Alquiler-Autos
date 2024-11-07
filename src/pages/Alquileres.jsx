@@ -77,18 +77,35 @@
 // export default AlquileresPage;
 
 
-import React, { useMemo } from 'react';
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Box, Card, CardContent, Typography, Button,  Fab, Tooltip } from '@mui/material';
+import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import { AlquilerList } from '../components/AlquilerList/AlquilerList';
 
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
 
+    const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+
     // Ordenar los alquileres solo una vez usando useMemo
     const alquileresOrdenados = useMemo(() => {
         return allAlquileres.sort((a, b) => new Date(a.fechaRetiro) - new Date(b.fechaRetiro));
     }, [allAlquileres]);
+
+    //Effect para controlar la visibilidad del botón de scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollButton(window.scrollY > 200);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    //Función para hacer scroll hacia arriba
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     function compararFechas(fechaRetiro, fechaDevolucion) {
         const actual = new Date();
@@ -114,6 +131,29 @@ export function AlquileresPage() {
                 <AlquilerList alquileres={alquileresOrdenados}/>
             </div>
 
+            {/* Botón para hacer scroll hacia arriba con Tooltip */}
+            {showScrollButton && (
+                <Tooltip 
+                    title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>} //Tamaño de la leyenda
+                    placement="left" 
+                    arrow
+                >
+                    <Fab
+                        color="primary"
+                        onClick={scrollToTop}
+                        sx={{
+                            width: 80, //Ancho del botón
+                            height: 80, //Alto del botón
+                            position: 'fixed',
+                            bottom: 16,
+                            right: 16,
+                            zIndex: 1000,
+                        }}
+                    >
+                        <KeyboardArrowUp sx={{ fontSize: '2rem' }} /> {/* Tamaño del ícono */}
+                    </Fab>
+                </Tooltip>
+            )}
             
         </>
     );
