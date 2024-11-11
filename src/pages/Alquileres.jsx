@@ -77,13 +77,20 @@
 // export default AlquileresPage;
 
 
-import React, { useMemo } from 'react';
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Box, Card, CardContent, Typography, Button, Skeleton } from '@mui/material';
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import { AlquilerList } from '../components/AlquilerList/AlquilerList';
 
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
+    const [isLoading, setIsLoading] = useState(true); // Nuevo estado para manejar el loading
+
+    useEffect(() => {
+        if (allAlquileres.length > 0) {
+            setIsLoading(false); // Desactivar el loading una vez se carguen los datos
+        }
+    }, [allAlquileres]);
 
     // Ordenar los alquileres solo una vez usando useMemo
     const alquileresOrdenados = useMemo(() => {
@@ -111,10 +118,30 @@ export function AlquileresPage() {
             </Typography>
 
             <div>
-                <AlquilerList alquileres={alquileresOrdenados}/>
+                {isLoading ? (
+                    // Mostrar Skeleton mientras se cargan los datos
+                    Array.from({ length: 5 }).map((_, index) => (
+                        <Card
+                            key={index}
+                            sx={{
+                                marginBottom: 2,
+                                padding: 2,
+                                backgroundColor: '#f5f5f5',
+                                boxShadow: 1,
+                            }}
+                        >
+                            <CardContent>
+                                <Skeleton variant="text" width="40%" sx={{ marginBottom: 1 }} />
+                                <Skeleton variant="text" width="70%" sx={{ marginBottom: 1 }} />
+                                <Skeleton variant="rectangular" height={150} sx={{ borderRadius: '8px' }} />
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    // Mostrar la lista de alquileres cuando los datos estén cargados
+                    <AlquilerList alquileres={alquileresOrdenados} />
+                )}
             </div>
-
-            
         </>
     );
 }
