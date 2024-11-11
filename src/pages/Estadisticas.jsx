@@ -275,37 +275,49 @@ const Estadisticas = () => {
               </Grid>
             ))
           : autos.map((auto, index) => (
-              <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
-                <Card
-                  sx={{
-                    height: 'auto',
-                    backgroundColor: index === 0 ? '#f2b925' : index === 1 ? '#8b8b8b' : '#CD7F32',
-                    textAlign: 'center',
-                    boxShadow: index === 0 ? 5 : 3,
-                    transition: 'transform 0.3s ease',
-                    '&:hover': { transform: 'scale(1.05)' }
+            <Grid
+            item
+            xs={12}
+            sm={4}
+            key={index}
+            order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}
+          >
+            <Card
+              sx={{
+                height: 'auto',
+                backgroundColor: index === 0 ? '#f2b925' : index === 1 ? '#8b8b8b' : '#CD7F32',
+                textAlign: 'center',
+                boxShadow: index === 0 ? 5 : 3,
+                transition: 'transform 0.3s ease',
+                '&:hover': { transform: 'scale(1.05)' },
+              }}
+            >
+              <CardContent>
+                <img
+                  src={auto.image || 'https://via.placeholder.com/150'}
+                  alt={auto.name}
+                  style={{
+                    borderRadius: '8px',
+                    marginBottom: '10px',
+                    maxWidth: index === 0 ? '100%' : index === 1 ? '80%' : '60%', // Ajuste de tamaño de la imagen
+                    height: index === 0 ? 'auto' : index === 1 ? 'auto' : 'auto', // Mantener la proporción
+                    objectFit: 'contain', // Para que la imagen mantenga sus proporciones
                   }}
-                >
-                  <CardContent>
-                    <img
-                      src={auto.image || 'https://via.placeholder.com/150'}
-                      alt={auto.name}
-                      style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
-                    />
-                    <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
-                    <Typography variant="h4">{auto.brand} {auto.name}</Typography>
-                    <Typography variant="body1" sx={{ marginTop: 1 }}>
-                      Cantidad de alquileres: {auto.cantidad}
-                    </Typography>
-                    <Typography variant="body1">
-                      Días totales de alquiler: {auto.dias}
-                    </Typography>
-                    <Typography variant="body1">
-                      Ganancia total ($): {auto.ganancia}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+                />
+                <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
+                <Typography variant="h4">{auto.brand} {auto.name}</Typography>
+                <Typography variant="body1" sx={{ marginTop: 1 }}>
+                  Cantidad de alquileres: {auto.cantidad}
+                </Typography>
+                <Typography variant="body1">
+                  Días totales de alquiler: {auto.dias}
+                </Typography>
+                <Typography variant="body1">
+                  Ganancia total ($): {auto.ganancia}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
             ))}
       </Grid>
     </>
