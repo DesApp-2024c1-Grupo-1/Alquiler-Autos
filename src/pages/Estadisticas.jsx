@@ -138,7 +138,7 @@
 // export default Estadisticas;
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Skeleton } from '@mui/material';
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 
@@ -149,12 +149,15 @@ const Estadisticas = () => {
     anio: [],
     mes: []
   });
+  const [isLoading, setIsLoading] = useState(true); // Nuevo estado para controlar el loading
 
   useEffect(() => {
     async function fetchDatos() {
       if (allAlquileres.length > 0) {
+        setIsLoading(true); // Activar estado de carga
         const datos = await procesarDatosEstadisticas(allAlquileres);
         setEstadisticas(datos);
+        setIsLoading(false); // Desactivar estado de carga
       }
     }
 
@@ -189,7 +192,6 @@ const Estadisticas = () => {
   };
 
   const procesarDatosEstadisticas = async (alquileres) => {
-
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const mesActual = new Date().getMonth() + 1;
@@ -211,7 +213,7 @@ const Estadisticas = () => {
 
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
-      const response = await axios.get( apiUrl + `/car/${carId}`);
+      const response = await axios.get(apiUrl + `/car/${carId}`);
       return { name: response.data.name, brand: response.data.brand, image: response.data.image };
     };
 
@@ -252,39 +254,59 @@ const Estadisticas = () => {
         {titulo}
       </Typography>
       <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
-        {autos.map((auto, index) => (
-          <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
-            <Card
-              sx={{
-                height: 'auto',
-                backgroundColor: index === 0 ? '#f2b925' : index === 1 ? '#8b8b8b' : '#CD7F32',
-                textAlign: 'center',
-                boxShadow: index === 0 ? 5 : 3,
-                transition: 'transform 0.3s ease',
-                '&:hover': { transform: 'scale(1.05)' }
-              }}
-            >
-              <CardContent>
-                <img
-                  src={auto.image || 'https://via.placeholder.com/150'}
-                  alt={auto.name}
-                  style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
-                />
-                <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
-                <Typography variant="h4">{auto.brand} {auto.name}</Typography>
-                <Typography variant="body1" sx={{ marginTop: 1 }}>
-                  Cantidad de alquileres: {auto.cantidad}
-                </Typography>
-                <Typography variant="body1">
-                  Días totales de alquiler: {auto.dias}
-                </Typography>
-                <Typography variant="body1">
-                  Ganancia total ($): {auto.ganancia}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Grid item xs={12} sm={4} key={index}>
+                <Card
+                  sx={{
+                    height: 'auto',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    padding: 2,
+                  }}
+                >
+                  <CardContent>
+                    <Skeleton variant="rectangular" height={150} sx={{ borderRadius: '8px', marginBottom: 2 }} />
+                    <Skeleton variant="text" width="60%" />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="70%" />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          : autos.map((auto, index) => (
+              <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
+                <Card
+                  sx={{
+                    height: 'auto',
+                    backgroundColor: index === 0 ? '#f2b925' : index === 1 ? '#8b8b8b' : '#CD7F32',
+                    textAlign: 'center',
+                    boxShadow: index === 0 ? 5 : 3,
+                    transition: 'transform 0.3s ease',
+                    '&:hover': { transform: 'scale(1.05)' }
+                  }}
+                >
+                  <CardContent>
+                    <img
+                      src={auto.image || 'https://via.placeholder.com/150'}
+                      alt={auto.name}
+                      style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
+                    />
+                    <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
+                    <Typography variant="h4">{auto.brand} {auto.name}</Typography>
+                    <Typography variant="body1" sx={{ marginTop: 1 }}>
+                      Cantidad de alquileres: {auto.cantidad}
+                    </Typography>
+                    <Typography variant="body1">
+                      Días totales de alquiler: {auto.dias}
+                    </Typography>
+                    <Typography variant="body1">
+                      Ganancia total ($): {auto.ganancia}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
       </Grid>
     </>
   );
