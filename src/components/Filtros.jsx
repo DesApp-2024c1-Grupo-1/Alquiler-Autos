@@ -13,6 +13,7 @@ import {
   MenuItem,
   Button,
   Autocomplete,
+  CircularProgress,
 } from "@mui/material";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -45,6 +46,7 @@ const Filtros = ({ handleFiltros }) => {
   const [capacitiy, setCapacity] = useState("");
   const [retiro, setRetiro] = useState(null);
   const [devolucion, setDevolucion] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
@@ -76,6 +78,7 @@ const Filtros = ({ handleFiltros }) => {
       retiro,
       devolucion
     );
+    setLoading(true);
     const filtros = {
       ac: selectedAireAcondicionado, 
       combustible: selectedCombustibleType, 
@@ -86,6 +89,8 @@ const Filtros = ({ handleFiltros }) => {
     }
     console.log("Filtros en BuscarButton: ", filtros);
     handleFiltros(filtros);
+
+    setTimeout(() => setLoading(false), 500); // Simula llamada a  la api
   };
 
   const BorrarButton = (event) => {
@@ -356,9 +361,10 @@ const Filtros = ({ handleFiltros }) => {
           variant="outlined"
           color="success"
           sx={{ mr: 3 }}
-          onClick={() => BuscarButton()}
+          onClick={BuscarButton}
+          disabled={loading}
         >
-          Buscar
+          {loading ? <CircularProgress size={24}/> : "Buscar"}
         </Button>
         <Button variant="outlined" color="error" onClick={() => BorrarButton()}>
           Borrar
