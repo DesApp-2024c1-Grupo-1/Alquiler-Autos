@@ -138,7 +138,7 @@
 // export default Estadisticas;
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip } from '@mui/material'; //Fab y Tooltip para el boton.
+import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from '@mui/material'; //Fab y Tooltip para el boton.
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 

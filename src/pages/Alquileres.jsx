@@ -78,7 +78,7 @@
 
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { Box, Card, CardContent, Typography, Button,  Fab, Tooltip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button,  Fab, Tooltip, Skeleton } from '@mui/material';
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import { AlquilerList } from '../components/AlquilerList/AlquilerList';
