@@ -150,14 +150,17 @@ const Estadisticas = () => {
     anio: [],
     mes: []
   });
+  const [isLoading, setIsLoading] = useState(true); // Nuevo estado para controlar el loading
 
   const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
 
   useEffect(() => {
     async function fetchDatos() {
       if (allAlquileres.length > 0) {
+        setIsLoading(true); // Activar estado de carga
         const datos = await procesarDatosEstadisticas(allAlquileres);
         setEstadisticas(datos);
+        setIsLoading(false); // Desactivar estado de carga
       }
     }
 
@@ -206,7 +209,6 @@ const Estadisticas = () => {
   };
 
   const procesarDatosEstadisticas = async (alquileres) => {
-
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const mesActual = new Date().getMonth() + 1;
@@ -273,8 +275,34 @@ const Estadisticas = () => {
         {titulo}
       </Typography>
       <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
-        {autos.map((auto, index) => (
-          <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Grid item xs={12} sm={4} key={index}>
+                <Card
+                  sx={{
+                    height: 'auto',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    padding: 2,
+                  }}
+                >
+                  <CardContent>
+                    <Skeleton variant="rectangular" height={150} sx={{ borderRadius: '8px', marginBottom: 2 }} />
+                    <Skeleton variant="text" width="60%" />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="70%" />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          : autos.map((auto, index) => (
+            <Grid
+            item
+            xs={12}
+            sm={4}
+            key={index}
+            order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}
+          >
             <Card
               sx={{
                 height: 'auto',
@@ -282,14 +310,20 @@ const Estadisticas = () => {
                 textAlign: 'center',
                 boxShadow: index === 0 ? 5 : 3,
                 transition: 'transform 0.3s ease',
-                '&:hover': { transform: 'scale(1.05)' }
+                '&:hover': { transform: 'scale(1.05)' },
               }}
             >
               <CardContent>
                 <img
                   src={auto.image || 'https://via.placeholder.com/150'}
                   alt={auto.name}
-                  style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
+                  style={{
+                    borderRadius: '8px',
+                    marginBottom: '10px',
+                    maxWidth: index === 0 ? '100%' : index === 1 ? '80%' : '60%', // Ajuste de tamaño de la imagen
+                    height: index === 0 ? 'auto' : index === 1 ? 'auto' : 'auto', // Mantener la proporción
+                    objectFit: 'contain', // Para que la imagen mantenga sus proporciones
+                  }}
                 />
                 <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
                 <Typography variant="h4">{auto.brand} {auto.name}</Typography>
@@ -305,7 +339,7 @@ const Estadisticas = () => {
               </CardContent>
             </Card>
           </Grid>
-        ))}
+            ))}
       </Grid>
     </>
   );
