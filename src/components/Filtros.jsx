@@ -18,6 +18,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +29,7 @@ import {
 } from "../store/alquilerFormSlice.js";
 import { useLocalStorage } from "../config/useLocalStorage.js";
 import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
 export const lugaresFijos = [
@@ -155,7 +157,10 @@ const Filtros = ({ handleFiltros }) => {
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+              onInputChange={(event, newValue) => {
+                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
+                handleLugarRetiroChange(event, filteredValue); //o handleLugarRetiroChange según el campo
+              }} 
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -164,6 +169,14 @@ const Filtros = ({ handleFiltros }) => {
                   sx={{
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      if (/[0-9]/.test(event.key)) {
+                        event.preventDefault(); //Bloquea números en tiempo real
+                      }
+                    },
                   }}
                 />
               )}
@@ -175,7 +188,10 @@ const Filtros = ({ handleFiltros }) => {
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
               value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+              onInputChange={(event, newValue) => {
+                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
+                handleLugarDevolucionChange(event, filteredValue); //o handleLugarDevolucionChange según el campo
+              }} 
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -184,6 +200,14 @@ const Filtros = ({ handleFiltros }) => {
                   sx={{
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      if (/[0-9]/.test(event.key)) {
+                        event.preventDefault(); //Bloquea números en tiempo real
+                      }
+                    },
                   }}
                 />
               )}
@@ -195,9 +219,9 @@ const Filtros = ({ handleFiltros }) => {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => {
@@ -208,6 +232,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 onError={(newError) => {
                   setError(newError);
                 }}
@@ -223,9 +248,9 @@ const Filtros = ({ handleFiltros }) => {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) =>
@@ -236,6 +261,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
                   setError(newError);

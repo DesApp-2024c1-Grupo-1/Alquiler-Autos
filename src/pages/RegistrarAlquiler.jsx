@@ -10,10 +10,12 @@ import { useParams } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 
 import { useDispatch, useSelector } from "react-redux";
 import { calculateCantDias, calculatePrecioFinal, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
 import { enGB } from 'date-fns/locale';
+import { es } from 'date-fns/locale';
 
 import AddClientDialog from '../components/AddClientDialog.jsx';
 
@@ -155,7 +157,10 @@ export function FormAlquiler({ car }) {
                 freeSolo
                 options={lugaresFijos} // Usa la lista de lugares predefinidos
                 value={formAlquiler.lugarRetiro || ''}
-                onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+                onInputChange={(event, newValue) => {
+                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
+                  handleLugarRetiroChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
+                }} 
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -163,6 +168,14 @@ export function FormAlquiler({ car }) {
                     label="Lugar de Retiro"
                     error={!lugarRetiroValido}
                     helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        if (/[0-9]/.test(event.key)) {
+                          event.preventDefault(); // Bloquea números en tiempo real
+                        }
+                      },
+                    }}
                   />
                 )}
               />
@@ -173,7 +186,10 @@ export function FormAlquiler({ car }) {
                 freeSolo
                 options={lugaresFijos} // Usa la misma lista de lugares predefinidos
                 value={formAlquiler.lugarDevolucion || ''}
-                onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+                onInputChange={(event, newValue) => {
+                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
+                  handleLugarDevolucionChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
+                }} 
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -181,13 +197,21 @@ export function FormAlquiler({ car }) {
                     label="Lugar de Devolución"
                     error={!lugarDevolucionValido}
                     helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        if (/[0-9]/.test(event.key)) {
+                          event.preventDefault(); // Bloquea números en tiempo real
+                        }
+                      },
+                    }}
                   />
                 )}
               />
           </Grid>
           <Grid item xs={12} md={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-                  <DesktopDateTimePicker
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                  <MobileDateTimePicker
                     label="Retiro"
                     value={new Date(formAlquiler.fechaRetiro)}
                     onChange={(newValue) => {
@@ -195,6 +219,7 @@ export function FormAlquiler({ car }) {
                       dispatch(editFechaRetiro(newValue.toString()))
                     }}
                     disablePast
+                    minutesStep={30} //Horarios cada 30 minutos
                     onError={(newError) => {handleFechasError(newError, 'retiro')}}
                     onAccept={() => {
                       setRetiroValido(true)
@@ -208,8 +233,8 @@ export function FormAlquiler({ car }) {
                 </LocalizationProvider>
           </Grid>
           <Grid item xs={12} md={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-                  <DesktopDateTimePicker
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                  <MobileDateTimePicker
                     label="Devolucion"
                     value={new Date(formAlquiler.fechaDevolucion)}
                     onChange={(newValue) => {
@@ -217,6 +242,7 @@ export function FormAlquiler({ car }) {
                       dispatch(editFechaDevolucion(newValue.toString()))
                     }}
                     disablePast
+                    minutesStep={30} //Horarios cada 30 minutos
                     minDate={new Date(formAlquiler.fechaRetiro)}
                     onError={(newError) => {handleFechasError(newError, 'devolucion')}}
                     slotProps={{

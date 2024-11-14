@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import { getEventos, actualizarAlquiler, registrarPago, eliminarAlquiler   } from '../services/EventosService';
 import { set, update } from 'lodash';
 import { enGB } from 'date-fns/locale';
+import { es } from 'date-fns/locale';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -14,6 +15,7 @@ import {
   InputLabel, InputAdornment, FormControl, Modal, FormControlLabel, Checkbox, Autocomplete,  List, ListItem, ListItemText 
 } from "@mui/material";
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { red } from '@mui/material/colors';
 import { lugaresFijos } from "../components/Filtros.jsx";
 import { BotonPago } from '../components/BotonPago.jsx';
@@ -814,22 +816,24 @@ const handleCheckboxChange = (event) => {
           <Typography variant="h6" marginBottom={1}>Editar Evento</Typography>
           <Box
           >  
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
               <Box sx={{display: 'flex', gap: 2, mb:2 }}>         
               <Box sx={{display: 'flex'}}>
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Fecha de Retiro"
                 value={editData.fechaRetiro ? new Date(editData.fechaRetiro) : null}
                 onChange={(newValue) => setEditData((prevData) => ({ ...prevData, fechaRetiro: newValue }))}
                 renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                minutesStep={30}
               />
               </Box>
               <Box sx={{display: 'flex'}}>
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Fecha de Devolución"
                 value={editData.fechaDevolucion ? new Date(editData.fechaDevolucion) : null}
                 onChange={(newValue) => setEditData((prevData) => ({ ...prevData, fechaDevolucion: newValue }))}
                 renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                minutesStep={30}
               />
               </Box>
               </Box>
@@ -839,7 +843,14 @@ const handleCheckboxChange = (event) => {
         options={lugaresFijos}
         getOptionLabel={(option) => option}
         value={editData.lugarRetiro}
-        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))}
+        onInputChange={(event, newInputValue) => {
+          // Eliminar números del valor ingresado
+          const filteredInput = newInputValue.replace(/[0-9]/g, '');
+          setEditData((prevData) => ({ ...prevData, lugarRetiro: filteredInput }));
+        }}
+        onChange={(event, newValue) =>
+          setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))
+        }
         renderInput={(params) => (
           <TextField {...params} label="Lugar de Retiro" margin="normal" fullWidth />
         )}
@@ -850,7 +861,14 @@ const handleCheckboxChange = (event) => {
         options={lugaresFijos}
         getOptionLabel={(option) => option}
         value={editData.lugarDevolucion}
-        onChange={(event, newValue) => setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))}
+        onInputChange={(event, newInputValue) => {
+          // Eliminar números del valor ingresado
+          const filteredInput = newInputValue.replace(/[0-9]/g, '');
+          setEditData((prevData) => ({ ...prevData, lugarDevolucion: filteredInput }));
+        }}
+        onChange={(event, newValue) =>
+          setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))
+        }
         renderInput={(params) => (
           <TextField {...params} label="Lugar de Devolución" margin="normal" fullWidth />
         )}
