@@ -61,6 +61,7 @@ function AgendaPage() {
   const [appointmentTimeR, setAppointmentTimeR] = useState('');
   const [appointmentTimeD, setAppointmentTimeD] = useState('');
   const [isTooltipOpen, setTooltipOpen] = useState(false);
+  const [isTooltipReparacionOpen, setTooltipReparacionOpen] = useState(false);
   const [isToastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [tooltipAnchor, setTooltipAnchor] = useState(null);
@@ -80,7 +81,13 @@ function AgendaPage() {
     const fetchEventos = async () => {
       const eventos = await getEventos();
       // Suponiendo que cada evento tiene una propiedad "alquiler" que contiene "pagos"
-      const pagos = eventos.map(evento => evento.alquiler.pagos).flat(); // Esto aplanará la lista de pagos
+      const pagos = eventos.reduce((acc, evento) => {
+        if (evento.alquiler && evento.alquiler.pagos) {
+          return acc.concat(evento.alquiler.pagos);
+        }
+        return acc;
+      }, []);
+
       setAppointmentHistorialPago(pagos);
     };
 
@@ -395,45 +402,41 @@ function AgendaPage() {
   const openTooltip = useCallback((args) => {
     const event = args.event;
     const time = formatDate(new Date(event.start)) + ' - ' + formatDate(new Date(event.end));
+    setAppointment(event);
+
     if (timer.current) {
       clearTimeout(timer.current);
     }
 
-    setAppointment(event);
-    setAppointmentInfo(event.alquiler.cliente.nombre);
-    setAppointmentLocation(event.alquiler.lugarDevolucion);
-    setAppointmentTime(time);
-    setAppointmentReason(event.alquiler.lugarRetiro);
-    setTooltipColor(event.color);
-    setTooltipAnchor(args.domEvent.target);
-    setTooltipOpen(true);
-    setAppointmentTimeR(event.alquiler.fechaRetiro);
-    setAppointmentTimeD(event.alquiler.fechaDevolucion);
-    setAppointmentPagoTotal(event.alquiler.precioFinal);
-    setAppointmentSaldoP(event.alquiler.saldoPendiente);
-    setAppointmentHistorialPago(event.alquiler.pagos);
+    //Si el evento es un alquiler setea las variables y abre el tooltip de alquiler
+    if(event.alquiler){
 
-    {/*setAppointmentPatente(event.data?.car?.patente)*/ }
+      //TODO: Esto se puede simplificar llamando en el popup a appointment en lugar de tener una variable por atributo, mirar el popup de EventoReparacion
 
-
-    const patenteEs = event.alquiler.car.patente
-
-
-    const fechaRetiro = event.alquiler.fechaRetiro;
-    const fechaDevolucion = event.alquiler.fechaDevolucion;
-    const saldoOriginal = event.alquiler.precioFinal;
-
-    console.log('Evento completo', event)
-    console.log('Fecha Retiro:', fechaRetiro);
-    console.log('Fecha Devolucion:', fechaDevolucion);
-    console.log('La patente es: ', patenteEs)
-    console.log('La persona es:', event.alquiler.cliente)
-    console.log('El historial de pagos es:', event.alquiler.pagos);
+      setAppointmentInfo(event.alquiler.cliente.nombre);
+      setAppointmentLocation(event.alquiler.lugarDevolucion);
+      setAppointmentTime(time);
+      setAppointmentReason(event.alquiler.lugarRetiro);
+      setTooltipColor(event.color);
+      setTooltipAnchor(args.domEvent.target);
+      setTooltipOpen(true);
+      setAppointmentTimeR(event.alquiler.fechaRetiro);
+      setAppointmentTimeD(event.alquiler.fechaDevolucion);
+      setAppointmentPagoTotal(event.alquiler.precioFinal);
+      setAppointmentSaldoP(event.alquiler.saldoPendiente);
+      setAppointmentHistorialPago(event.alquiler.pagos);
+      
+      const fechaRetiro = event.alquiler.fechaRetiro;
+      const fechaDevolucion = event.alquiler.fechaDevolucion;
+    
+      setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
+      setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
 
 
-
-    setAppointmentTimeR(fechaRetiro ? moment(fechaRetiro).format('DD MMM YYYY HH:mm') : 'N/A');
-    setAppointmentTimeD(fechaDevolucion ? moment(fechaDevolucion).format('DD MMM YYYY HH:mm') : 'N/A');
+    //Si el evento es una reparacion abre el tooltip de reparacion, no setear variables usa las de appointment
+  } else if (event.reparacion) {
+    setTooltipReparacionOpen(true);    
+  }
   }, []);
 
 
@@ -563,6 +566,8 @@ function AgendaPage() {
 
         />
 
+      {/* PopUp de EventoAlquiler */}
+
         <Popup
           anchor={tooltipAnchor}
           onClose={() => setTooltipOpen(false)}
@@ -611,6 +616,41 @@ function AgendaPage() {
 
           </div>
         </Popup>
+
+      {/* PopUp de EventoReparacion */}
+
+      <Popup
+        onClose={() => setTooltipReparacionOpen(false)}
+        closeOnOverlayClick={true}
+        contentPadding={false}
+        display="center"
+        isOpen={isTooltipReparacionOpen}
+        showOverlay={true}
+        touchUi={true}
+        width={350}
+      >
+          <div style={{ height: '100%', width: '100%' }}>
+            <div className="mds-tooltip" onMouseEnter={() => { }} onMouseLeave={() => { }}>
+              <div className="mds-tooltip-header" style={{ backgroundColor: appointment?.color, padding: 2 }}>
+                <span style={{ marginLeft: '8px' }}>{appointment?.momento + " " + appointment?.reparacion?.car?.patente}</span>
+              </div>
+
+              <div className="mbsc-padding">
+                <div className="mds-tooltip-label mbsc-margin">
+                  Fecha ingreso: <span className="mbsc-light">{appointment?.reparacion?.fechaInicio ? moment(appointment?.reparacion?.fechaInicio).format('DD MMM YYYY HH:mm') : 'N/A'}</span>
+                </div>
+                <div className="mds-tooltip-label mbsc-margin">
+                  Fecha salida: <span className="mbsc-light">{appointment?.reparacion?.fechaFin ? moment(appointment?.reparacion?.fechaFin).format('DD MMM YYYY HH:mm') : 'N/A'}</span>
+                </div>
+
+                <div className="mds-tooltip-label mbsc-margin">
+                  Auto: <span className="mbsc-light">{appointment?.reparacion?.car?.brand + " " + appointment?.reparacion?.car?.name}</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+      </Popup>
 
 
 
