@@ -86,14 +86,27 @@ import { AlquilerList } from '../components/AlquilerList/AlquilerList';
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
     const [isLoading, setIsLoading] = useState(true); // Nuevo estado para manejar el loading
+    const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+
+    //Icono de la página en la pestaña del navegador.
+    useEffect(() => {
+        //Cambiar dinámicamente el favicon
+        const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = "https://img.lovepik.com/png/20231015/car-clipart-blue-small-car-wheel-small-scale-transportation_213745_wh1200.png"; //URL del favicon
+        document.head.appendChild(favicon);
+
+        //Limpia el efecto al desmontar el componente, si es necesario
+        return () => {
+            favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+        };
+    }, []); //Solo se ejecuta al montar la página
 
     useEffect(() => {
         if (allAlquileres.length > 0) {
             setIsLoading(false); // Desactivar el loading una vez se carguen los datos
         }
     }, [allAlquileres]);
-
-    const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
 
     // Ordenar los alquileres solo una vez usando useMemo
     const alquileresOrdenados = useMemo(() => {
