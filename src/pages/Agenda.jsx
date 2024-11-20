@@ -334,14 +334,25 @@ const handleCheckboxChange = (event) => {
     return diffDays;
   };
 
+  const calcularPrecioFinal = (cantidadDias, precio) => {
+    const nuevoPrecio = cantidadDias * precio;
+    
+    return nuevoPrecio
+  }
+
 
 
   const handleSaveChanges = async () => {
 
     const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
+    const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
+
+
+
     const alquilerModificado = {
       ...editData,
-      cantidadDias
+      cantidadDias,
+      precioFinal
     };
   
     console.log('Guardar cambios', alquilerModificado);
