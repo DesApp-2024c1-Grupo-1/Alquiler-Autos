@@ -4,6 +4,20 @@ import { getAllCarsAvailable } from "../services/CarsService";
 function Taller() {
     const [cars, setCars] = useState([]); // Estado para almacenar los autos
 
+    //Icono de la página en la pestaña del navegador.
+    useEffect(() => {
+        //Cambiar dinámicamente el favicon
+        const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = "https://c0.klipartz.com/pngpicture/946/650/gratis-png-taller-de-coches-iconos-de-computadora-taller-de-reparacion-de-automoviles-reparacion.png"; //URL del favicon
+        document.head.appendChild(favicon);
+
+        //Limpia el efecto al desmontar el componente, si es necesario
+        return () => {
+            favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+        };
+    }, []); //Solo se ejecuta al montar la página
+
     useEffect(() => {
         getAllCarsAvailable().then((carsData) => {
             console.log("Autos filtrados y disponibles: ", carsData);

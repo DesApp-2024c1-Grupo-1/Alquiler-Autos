@@ -24,17 +24,17 @@ export function HomePage() {
 
   //Icono de la página en la pestaña del navegador.
   useEffect(() => {
-    //Cambiar dinámicamente el favicon
-    const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
-    favicon.rel = 'icon';
-    favicon.href = "https://png.pngtree.com/png-clipart/20190516/original/pngtree-car-icon-sign-png-image_3568162.jpg"; //URL del favicon
-    document.head.appendChild(favicon);
+      //Cambiar dinámicamente el favicon
+      const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = "https://png.pngtree.com/png-clipart/20190516/original/pngtree-car-icon-sign-png-image_3568162.jpg"; //URL del favicon
+      document.head.appendChild(favicon);
 
-    //Limpia el efecto al desmontar el componente, si es necesario
-    return () => {
-        favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
-    };
-}, []); //Solo se ejecuta al montar la página
+      //Limpia el efecto al desmontar el componente, si es necesario
+      return () => {
+          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+      };
+  }, []); //Solo se ejecuta al montar la página
 
   //Effect para controlar la visibilidad del botón de scroll
   useEffect(() => {
