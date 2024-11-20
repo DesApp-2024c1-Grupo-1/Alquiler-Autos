@@ -34,6 +34,20 @@ export function FormAlquiler({ car }) {
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
   const [activeButton, setButton] = useState()
 
+  //Icono de la página en la pestaña del navegador.
+  useEffect(() => {
+    //Cambiar dinámicamente el favicon
+    const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.href = "https://vectorified.com/images/form-icon-png-12.png"; //URL del favicon
+    document.head.appendChild(favicon);
+
+    //Limpia el efecto al desmontar el componente, si es necesario
+    return () => {
+        favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+    };
+}, []); //Solo se ejecuta al montar la página
+
 
   useEffect(() => {
     dispatch(editAuto(car));
