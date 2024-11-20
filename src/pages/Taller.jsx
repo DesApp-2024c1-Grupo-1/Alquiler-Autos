@@ -88,7 +88,7 @@ function Taller() {
                             {/* Información del auto */}
                             <Box sx={{ flex: 1, marginLeft: { md: 2 } }}>
                                 <Typography variant="h6">{car.name}</Typography>
-                                <Typography>Marca: {car.brand}</Typography>
+                                <Typography>Patente: {car.patente}</Typography>
                                 <Typography>Año: {car.year}</Typography>
                                 <Typography>
                                     Reparación Pendiente: {car.enReparacion ? 'Sí' : 'No'}
@@ -108,7 +108,7 @@ function Taller() {
                                     color="primary"
                                     onClick={() => openPopup(index)}
                                 >
-                                    Cambiar Estado
+                                    Taller
                                 </Button>
                             </Box>
                         </Box>
@@ -118,7 +118,7 @@ function Taller() {
 
             {/* Popup para ingresar fechas */}
             <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
-                <DialogTitle sx={{mt: 1}}>Asignar Fechas</DialogTitle>
+                <DialogTitle sx={{mt: 1}}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
