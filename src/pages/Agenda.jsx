@@ -117,54 +117,12 @@ function AgendaPage() {
     setHistorialModalOpen(false);
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const [appointmentPatente, setAppointmentPatente] = useState('null');
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
-
   const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
-
-
-
   const [pagoTotal, setAppointmentPagoTotal] = useState(false);
-
-
-
-
   const [saldoP, setAppointmentSaldoP] = useState('');
-
-
-
-
-
   const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
-
-
-
 
   const handleCheckboxChange = (event) => {
     setIsTotalChecked(event.target.checked);
@@ -175,16 +133,9 @@ function AgendaPage() {
     }
   };
 
-
   const [appointmentPago, setAppointmentPago] = useState(false);
-
-
-
-
   const [isTotalChecked, setIsTotalChecked] = useState(false);
-
   const [montoPago, setMontoPago] = useState('');
-
 
   useEffect(() => {
     if (appointmentPago) {
@@ -398,19 +349,9 @@ function AgendaPage() {
     email: ''
   });
 
-
-
-
-
-
-
-
-
   const timer = useRef(null);
 
   const myView = useMemo(() => ({ agenda: { type: 'day' } }), []);
-
-
 
   const openTooltip = useCallback((args) => {
     const event = args.event;
@@ -451,10 +392,6 @@ function AgendaPage() {
     setTooltipReparacionOpen(true);    
   }
   }, []);
-
-
-
-
 
   const handleEventClick = useCallback(
     (args) => {
@@ -967,7 +904,12 @@ function AgendaPage() {
               label="Nombre"
               name="nombre"
               value={editDatosC.nombre}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]*$/; // Solo letras, espacios y tildes
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); // Permitir el cambio solo si pasa la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
             />
