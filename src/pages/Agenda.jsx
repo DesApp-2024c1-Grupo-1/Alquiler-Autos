@@ -206,6 +206,7 @@ function AgendaPage() {
 
 
   const handlePago = async () => {
+    console.log(appointment);
     const monto = parseFloat(montoPago);
 
     if (isNaN(monto) || monto <= 0) {
@@ -229,7 +230,7 @@ function AgendaPage() {
         // Actualizar el estado con el nuevo pago agregado
         setAppointments((appointments) =>
           appointments.map((item) =>
-            item.alquiler.id === appointment.alquiler.id
+            item.alquiler && item.alquiler.id === appointment.alquiler.id
               ? {
                 ...item,
                 alquiler: {
@@ -241,7 +242,6 @@ function AgendaPage() {
               : item
           )
         );
-
         // Actualizar el saldo pendiente localmente y en el appointment
         const nuevoSaldo = saldoP - monto;
         console.log('Saldo pendiente actualizado:', nuevoSaldo); // Verificar el valor
@@ -341,7 +341,7 @@ function AgendaPage() {
       const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
       setAppointments((appointments) =>
         appointments.map((item) =>
-          item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
+          item.alquiler && item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
         )
       );
 
@@ -372,7 +372,7 @@ function AgendaPage() {
       setToastOpen(true);
 
       setAppointments((appointments) =>
-        appointments.filter((item) => item.alquiler.id !== appointment.alquiler.id)
+        appointments.filter((item) => item.alquiler && item.alquiler.id !== appointment.alquiler.id)
       );
     } catch (error) {
       console.error('Error al eliminar el alquiler:', error);
