@@ -245,7 +245,7 @@ function AgendaPage() {
       const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
       setAppointments((appointments) =>
         appointments.map((item) =>
-          item.alquiler.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
+          item.alquiler?.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
         )
       );
 
@@ -889,7 +889,7 @@ function AgendaPage() {
         >
           <Box sx={{
             width: 500,
-            height: 485,
+            height: 530,
             padding: 2,
             backgroundColor: 'white',
             position: 'absolute',
@@ -912,6 +912,8 @@ function AgendaPage() {
               }}
               fullWidth
               sx={{ padding: 2 }}
+              error={editDatosC.nombre.length === 0} //Error si está vacío
+              helperText={editDatosC.nombre.length === 0 ? "El nombre no puede estar vacío" : ""} //Mostrar mensaje de error si está vacío
             />
             <TextField
               label="Documento"
@@ -925,12 +927,14 @@ function AgendaPage() {
               }}
               fullWidth
               sx={{ padding: 2 }}
-              error={editDatosC.documento.length > 0 && editDatosC.documento.length < 7} //Error si tiene menos de 7 caracteres
+              error={editDatosC.documento.length === 0 || (editDatosC.documento.length > 0 && editDatosC.documento.length < 7)} //Error si está vacío o tiene menos de 7 caracteres
               helperText={
-                editDatosC.documento.length > 0 && editDatosC.documento.length < 7
+                editDatosC.documento.length === 0
+                  ? "El documento no puede estar vacío"
+                  : editDatosC.documento.length < 7
                   ? "El documento debe tener al menos 7 caracteres"
                   : ""
-              } //Mostrar mensaje de ayuda solo si hay error
+              } //Mostrar mensaje según el error
             />
             <TextField
               label="Teléfono"
