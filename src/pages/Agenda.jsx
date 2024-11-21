@@ -905,9 +905,9 @@ function AgendaPage() {
               name="nombre"
               value={editDatosC.nombre}
               onChange={(e) => {
-                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]*$/; // Solo letras, espacios y tildes
+                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]*$/; //Solo letras, espacios y tildes
                 if (regex.test(e.target.value)) {
-                  handleEditDatosCChange(e); // Permitir el cambio solo si pasa la validación
+                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
                 }
               }}
               fullWidth
@@ -918,27 +918,38 @@ function AgendaPage() {
               name="documento"
               value={editDatosC.documento}
               onChange={(e) => {
-                const regex = /^[a-zA-Z0-9]*$/; // Permitir solo números y letras
+                const regex = /^[a-zA-Z0-9]*$/; //Permitir solo números y letras
                 if (regex.test(e.target.value)) {
-                  handleEditDatosCChange(e); // Permitir el cambio solo si pasa la validación
+                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
                 }
               }}
               fullWidth
               sx={{ padding: 2 }}
-              error={editDatosC.documento.length > 0 && editDatosC.documento.length < 7} // Error si tiene menos de 7 caracteres
+              error={editDatosC.documento.length > 0 && editDatosC.documento.length < 7} //Error si tiene menos de 7 caracteres
               helperText={
                 editDatosC.documento.length > 0 && editDatosC.documento.length < 7
                   ? "El documento debe tener al menos 7 caracteres"
                   : ""
-              } // Mostrar mensaje de ayuda solo si hay error
+              } //Mostrar mensaje de ayuda solo si hay error
             />
             <TextField
               label="Teléfono"
               name="telefono"
               value={editDatosC.telefono}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[0-9+]*$/; //Solo números y el símbolo "+"
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); //Permitir solo si cumple con la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
+              error={!editDatosC.telefono} //Error si el campo está vacío
+              helperText={
+                !editDatosC.telefono
+                  ? "El número de teléfono no puede estar vacío"
+                  : ""
+              } //Mensaje de advertencia si está vacío
             />
             <TextField
               label="Email"
