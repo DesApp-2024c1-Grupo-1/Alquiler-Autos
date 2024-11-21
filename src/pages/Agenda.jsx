@@ -943,8 +943,14 @@ function AgendaPage() {
               }}
               fullWidth
               sx={{ padding: 2 }}
-              error={editDatosC.nombre.length === 0} //Error si está vacío
-              helperText={editDatosC.nombre.length === 0 ? "El nombre no puede estar vacío" : ""} //Mostrar mensaje de error si está vacío
+              error={editDatosC.nombre.length === 0 || editDatosC.nombre.length < 4} //Error si está vacío o tiene menos de 4 caracteres
+              helperText={
+                editDatosC.nombre.length === 0
+                  ? "El nombre no puede estar vacío"
+                  : editDatosC.nombre.length < 4
+                  ? "El nombre debe tener al menos 4 caracteres"
+                  : ""
+              } //Mensaje dinámico según la validación
             />
             <TextField
               label="Documento"
@@ -979,12 +985,14 @@ function AgendaPage() {
               }}
               fullWidth
               sx={{ padding: 2 }}
-              error={!editDatosC.telefono} //Error si el campo está vacío
+              error={!editDatosC.telefono || editDatosC.telefono.replace(/\D/g, '').length < 7} //Error si está vacío o tiene menos de 7 números
               helperText={
                 !editDatosC.telefono
                   ? "El número de teléfono no puede estar vacío"
+                  : editDatosC.telefono.replace(/\D/g, '').length < 7
+                  ? "El número de teléfono debe tener al menos 7 caracteres"
                   : ""
-              } //Mensaje de advertencia si está vacío
+              } //Mensaje dinámico según la validación
             />
             <TextField
               label="Email"
