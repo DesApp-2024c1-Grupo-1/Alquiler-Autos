@@ -38,7 +38,6 @@ function AgendaPage() {
 
     const obtainedEvents = await getEventos();
 
-
     console.log('Eventos obtenidos:', obtainedEvents);
 
     setAppointments(obtainedEvents);
@@ -52,6 +51,11 @@ function AgendaPage() {
   useEffect(() => {
     fetchAllEvents()
   }, [fetchAllEvents]);
+
+
+
+
+  
 
   const [appointment, setAppointment] = useState();
   const [appointmentInfo, setAppointmentInfo] = useState('');
@@ -70,12 +74,26 @@ function AgendaPage() {
   const [customerData, setCustomerData] = useState({});
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [cargando, setCargando] = useState(false);
+  const scrollableRef = useRef(null);
+  const [pagosCargados, setPagosCargados] = useState([]);
 
 
 
 
   const [appointmentHistorialPago, setAppointmentHistorialPago] = useState([]);
   const [isHistorialModalOpen, setHistorialModalOpen] = useState(false);
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     const fetchEventos = async () => {
@@ -109,7 +127,7 @@ function AgendaPage() {
 
 
 
-
+  
 
 
 
@@ -132,22 +150,21 @@ function AgendaPage() {
 
   const [appointmentPatente, setAppointmentPatente] = useState('null');
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
-
   const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
 
-
+ 
 
   const [pagoTotal, setAppointmentPagoTotal] = useState(false);
 
 
-
-
+  
+  
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
 
-
-
+  
+  
   const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
 
 
@@ -166,11 +183,10 @@ function AgendaPage() {
   const [appointmentPago, setAppointmentPago] = useState(false);
 
 
-
+  
 
   const [isTotalChecked, setIsTotalChecked] = useState(false);
-
-  const [montoPago, setMontoPago] = useState('');
+  const [montoPago, setMontoPago] = useState(''); 
 
 
   useEffect(() => {
@@ -253,8 +269,52 @@ function AgendaPage() {
       setToastOpen(true);
     }
   };
+  
+
+  // Función para cargar pagos por página
+  const cargarPagos = async (pagina) => {
+    setCargando(true);
+    const itemsPorPagina = 10; // Define cuántos elementos cargar por página
+    const inicio = (pagina - 1) * itemsPorPagina;
+    const nuevosPagos = appointmentHistorialPago.slice(
+      inicio,
+      inicio + itemsPorPagina
+    );
+
+    // Simula la carga desde un backend si tienes uno:
+    // const nuevosPagos = await getPagosPaginados(pagina, itemsPorPagina);
+
+    setPagosCargados((prev) => [...prev, ...nuevosPagos]);
+    setCargando(false);
+  };
+
+  // Efecto para cargar la primera página de pagos cuando el modal abre
+  useEffect(() => {
+    if (isHistorialModalOpen) {
+      setPagosCargados([]); // Limpia los pagos cargados previamente
+      setPaginaActual(1); // Reinicia la paginación
+      cargarPagos(1); // Carga la primera página
+    }
+  }, [isHistorialModalOpen]);
+
+  // Detectar scroll infinito
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+
+    if (scrollHeight - scrollTop === clientHeight && !cargando) {
+      setPaginaActual((prevPagina) => prevPagina + 1);
+    }
+  };
+
+  // Cargar más pagos cuando cambia la página actual
+  useEffect(() => {
+    if (paginaActual > 1) {
+      cargarPagos(paginaActual);
+    }
+  }, [paginaActual]);
 
 
+ 
 
 
   const handleEditDatosCChange = (e) => {
@@ -337,10 +397,25 @@ function AgendaPage() {
     return diffDays;
   };
 
+  const calcularPrecioFinal = (cantidadDias, precio) => {
+    const nuevoPrecio = cantidadDias * precio;
+    
+    return nuevoPrecio
+  }
+
+
 
   const handleSaveChanges = async () => {
     const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
-    const alquilerModificado = { ...editData, cantidadDias };
+    const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
+
+
+
+    const alquilerModificado = {
+      ...editData,
+      cantidadDias,
+      precioFinal
+    };
   
     console.log('Guardar cambios', alquilerModificado);
   
@@ -1062,47 +1137,53 @@ function AgendaPage() {
 
 
 
-        <Modal
-          open={isHistorialModalOpen}
-          onClose={cerrarHistorialModal}
-          aria-labelledby="historial-pagos-modal"
-        >
-          <Box sx={{
+<Modal
+        open={isHistorialModalOpen}
+        onClose={cerrarHistorialModal}
+        aria-labelledby="historial-pagos-modal"
+      >
+        <Box
+          sx={{
             width: 400,
             padding: 2,
-            backgroundColor: 'white',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            backgroundColor: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             boxShadow: 24,
             borderRadius: 1,
-          }}>
-            <Typography variant="h6" marginBottom={2}>Historial de Pagos</Typography>
-            <List>
-              {appointmentHistorialPago.length > 0 ? (
-                appointmentHistorialPago.map((pago, index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={`Monto: ${pago.monto}, Fecha: ${new Date(pago.fecha).toLocaleDateString()}`} />
-                  </ListItem>
-                ))
-              ) : (
-                <Typography>No hay pagos registrados.</Typography>
-              )}
-            </List>
-            <Button color="secondary" onClick={cerrarHistorialModal}>Cerrar</Button>
-          </Box>
-        </Modal>
+          }}
+        >
+          <Typography variant="h6" marginBottom={2}>
+            Historial de Pagos
+          </Typography>
+          <List
+            sx={{
+              maxHeight: 300, // Limita la altura para scroll
+              overflowY: "auto", // Habilita el scroll vertical
+            }}
+            onScroll={handleScroll}
+            ref={scrollableRef}
+          >
+            {pagosCargados.length > 0 ? (
+              pagosCargados.map((pago, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={`Monto: ${pago.monto} pesos, Fecha: ${new Date(pago.fecha).toLocaleDateString()}`}/></ListItem>))) : (
+              <Typography>No hay pagos registrados.</Typography>
+            )}
+          </List>
+          <Button color="secondary" onClick={cerrarHistorialModal}>
+            Cerrar
+          </Button>
+        </Box>
+      </Modal>
 
 
 
 
-
-      </Box>
-
-
-
-
+      
+    </Box>
     </>
   );
 
