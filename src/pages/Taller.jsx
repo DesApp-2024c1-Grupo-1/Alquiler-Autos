@@ -4,11 +4,12 @@ import {
     DialogActions, TextField 
 } from '@mui/material';
 import { getAllCarsAvailable } from "../services/CarsService";
+import {registrarReparacion} from "../services/tallerService";
 
 function Taller() {
     const [cars, setCars] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
-    const [selectedCarIndex, setSelectedCarIndex] = useState(null);
+    const [selectedCar, setSelectedCar] = useState(null);
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
 
@@ -23,8 +24,8 @@ function Taller() {
             });
     }, []);
 
-    const openPopup = (index) => {
-        setSelectedCarIndex(index);
+    const openPopup = (car, index) => {
+        setSelectedCar(car);
         setEntryDate('');
         setExitDate('');
         setOpenDialog(true);
@@ -32,28 +33,59 @@ function Taller() {
 
     const closePopup = () => {
         setOpenDialog(false);
-        setSelectedCarIndex(null);
+        setSelectedCar(null);
         setEntryDate('');
         setExitDate('');
     };
 
+    const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
+        const retiro = new Date(fechaRetiro);
+        const devolucion = new Date(fechaDevolucion);
+        
+        
+        const diffTime = Math.abs(devolucion - retiro);
+        
+       
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDays;
+      };
+
     const confirmIngreso = () => {
-        if (selectedCarIndex !== null) {
-            setCars((prevCars) =>
+        if (selectedCar !== null) {
+          // Crear una nueva reparación
+            const reparacion = {
+                fechaInicio: entryDate, // Fecha actual en formato ISO
+                fechaFin: exitDate, // La reparación aún no finaliza
+                razon: 'se sentia mal',
+                cantidadDias: calcularCantidadDias(entryDate, exitDate), // Se calculará al finalizar
+                car: selectedCar, // selectedCar debe contener el objeto del auto
+            };
+            registrarReparacion(reparacion);
+            console.log('reparacion', reparacion)
+            } else {
+                console.error("No se seleccionó ningún auto.");
+            }
+    };
+
+
+
+          /*  setCars((prevCars) =>
                 prevCars.map((car, i) =>
-                    i === selectedCarIndex
+                    i === selectedCar
                         ? { ...car, enReparacion: true, entryDate, exitDate }
                         : car
                 )
             );
 
-            console.log(`Auto: ${cars[selectedCarIndex].name}`);
+            console.log(`Auto: ${cars[selectedCar].name}`); 
             console.log(`Fecha de Entrada: ${entryDate}`);
             console.log(`Fecha de Salida: ${exitDate}`);
+            
         }
         closePopup();
     };
-
+*/
     return (
         <Box sx={{ padding: 2 }}>
             <Typography variant="h4" gutterBottom>
@@ -106,7 +138,7 @@ function Taller() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => openPopup(index)}
+                                    onClick={() => openPopup(car, index)}
                                 >
                                     Taller
                                 </Button>
