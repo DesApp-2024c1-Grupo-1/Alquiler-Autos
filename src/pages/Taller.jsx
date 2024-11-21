@@ -66,6 +66,7 @@ function Taller() {
             } else {
                 console.error("No se seleccionó ningún auto.");
             }
+            closePopup();
     };
 
 
