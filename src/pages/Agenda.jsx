@@ -19,6 +19,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { red } from '@mui/material/colors';
 import { lugaresFijos } from "../components/Filtros.jsx";
 import { BotonPago } from '../components/BotonPago.jsx';
+import faviconAgenda from '../assets/faviconAgenda.png';
 
 
 setOptions({
@@ -53,7 +54,7 @@ function AgendaPage() {
       //Cambiar dinámicamente el favicon
       const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
       favicon.rel = 'icon';
-      favicon.href = "https://w7.pngwing.com/pngs/137/929/png-transparent-calendar-icon-calendar-date-computer-icons-calendar-miscellaneous-blue-text.png"; //URL del favicon
+      favicon.href = faviconAgenda;
       document.head.appendChild(favicon);
 
       //Limpia el efecto al desmontar el componente, si es necesario

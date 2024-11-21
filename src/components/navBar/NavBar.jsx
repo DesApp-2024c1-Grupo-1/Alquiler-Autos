@@ -6,7 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import {NavLink} from 'react-router-dom'
-import LogoApp from '../../assets/LogoApp2.png';
+import LogoApp from '../../assets/LogoApp.png';
 
 
 

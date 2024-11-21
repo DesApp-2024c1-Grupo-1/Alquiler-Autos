@@ -142,6 +142,7 @@ import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
+import faviconEstadisticas from '../assets/faviconEstadisticas.png';
 
 const Estadisticas = () => {
   const allAlquileres = useAlquileres(); // Obtener los alquileres
@@ -159,7 +160,7 @@ const Estadisticas = () => {
       //Cambiar dinámicamente el favicon
       const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
       favicon.rel = 'icon';
-      favicon.href = "https://w7.pngwing.com/pngs/938/179/png-transparent-statistics-icon.png"; //URL del favicon
+      favicon.href = faviconEstadisticas;
       document.head.appendChild(favicon);
 
       //Limpia el efecto al desmontar el componente, si es necesario

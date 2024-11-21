@@ -22,6 +22,7 @@ import AddClientDialog from '../components/AddClientDialog.jsx';
 import { CarCard } from "../components/CarCard.jsx";
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
 import { lugaresFijos } from "../components/Filtros.jsx";
+import faviconRegistrarAlquiler from '../assets/faviconRegistrarAlquiler.png';
 
 export function FormAlquiler({ car }) {
 
@@ -39,7 +40,7 @@ export function FormAlquiler({ car }) {
     //Cambiar dinámicamente el favicon
     const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
     favicon.rel = 'icon';
-    favicon.href = "https://vectorified.com/images/form-icon-png-12.png"; //URL del favicon
+    favicon.href = faviconRegistrarAlquiler; 
     document.head.appendChild(favicon);
 
     //Limpia el efecto al desmontar el componente, si es necesario

@@ -82,6 +82,7 @@ import { Box, Card, CardContent, Typography, Button,  Fab, Tooltip, Skeleton } f
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import { AlquilerList } from '../components/AlquilerList/AlquilerList';
+import faviconAlquileres from '../assets/faviconAlquileres.png';
 
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
@@ -93,7 +94,7 @@ export function AlquileresPage() {
         //Cambiar dinámicamente el favicon
         const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
         favicon.rel = 'icon';
-        favicon.href = "https://img.lovepik.com/png/20231015/car-clipart-blue-small-car-wheel-small-scale-transportation_213745_wh1200.png"; //URL del favicon
+        favicon.href = faviconAlquileres;
         document.head.appendChild(favicon);
 
         //Limpia el efecto al desmontar el componente, si es necesario
