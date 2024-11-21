@@ -510,7 +510,8 @@ function AgendaPage() {
 
     //Si el evento es una reparacion abre el tooltip de reparacion, no setear variables usa las de appointment
   } else if (event.reparacion) {
-    setTooltipReparacionOpen(true);    
+    setTooltipReparacionOpen(true);   
+    setTooltipAnchor(args.domEvent.target); 
   }
   }, []);
 
@@ -691,13 +692,14 @@ function AgendaPage() {
       {/* PopUp de EventoReparacion */}
 
       <Popup
+        anchor={tooltipAnchor}
         onClose={() => setTooltipReparacionOpen(false)}
         closeOnOverlayClick={true}
         contentPadding={false}
-        display="center"
+        display="anchored"
         isOpen={isTooltipReparacionOpen}
-        showOverlay={true}
-        touchUi={true}
+        showOverlay={false}
+        touchUi={false}
         width={350}
       >
           <div style={{ height: '100%', width: '100%' }}>
