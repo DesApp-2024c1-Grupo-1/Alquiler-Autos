@@ -156,16 +156,18 @@ const Filtros = ({ handleFiltros }) => {
       sx={{ backgroundColor: "#B3D0FB", height: "100%", p: 3, borderRadius: 5 }}
     >
       <Box>
-        <Grid container spacing={2}>
+      <Grid container spacing={2}>
+          {/* Lugar de Retiro */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
+              value={formAlquiler.lugarRetiro || ''} //Maneja el valor actual
               onInputChange={(event, newValue) => {
-                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
-                handleLugarRetiroChange(event, filteredValue); //o handleLugarRetiroChange según el campo
-              }} 
+                //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
+                handleLugarRetiroChange(event, filteredValue); //Actualiza el valor del lugar de retiro
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -178,8 +180,9 @@ const Filtros = ({ handleFiltros }) => {
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
-                      if (/[0-9]/.test(event.key)) {
-                        event.preventDefault(); //Bloquea números en tiempo real
+                      //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
                       }
                     },
                   }}
@@ -188,15 +191,17 @@ const Filtros = ({ handleFiltros }) => {
             />
           </Grid>
 
+          {/* Lugar de Devolución */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
+              value={formAlquiler.lugarDevolucion || ''} //Maneja el valor actual
               onInputChange={(event, newValue) => {
-                const filteredValue = newValue.replace(/[0-9]/g, ''); //Elimina números
-                handleLugarDevolucionChange(event, filteredValue); //o handleLugarDevolucionChange según el campo
-              }} 
+                //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
+                handleLugarDevolucionChange(event, filteredValue); //Actualiza el valor del lugar de devolución
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -209,8 +214,9 @@ const Filtros = ({ handleFiltros }) => {
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
-                      if (/[0-9]/.test(event.key)) {
-                        event.preventDefault(); //Bloquea números en tiempo real
+                      //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
                       }
                     },
                   }}
@@ -219,7 +225,6 @@ const Filtros = ({ handleFiltros }) => {
             />
           </Grid>
         </Grid>
-
         <Grid container spacing={2} my={2}>
           <Grid item xs={12} sm={6}>
             <LocalizationProvider

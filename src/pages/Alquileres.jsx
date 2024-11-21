@@ -82,18 +82,32 @@ import { Box, Card, CardContent, Typography, Button,  Fab, Tooltip, Skeleton } f
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import { useAlquileres } from '../services/ListaDeAlquileresService';
 import { AlquilerList } from '../components/AlquilerList/AlquilerList';
+import faviconAlquileres from '../assets/faviconAlquileres.png';
 
 export function AlquileresPage() {
     const allAlquileres = useAlquileres();
     const [isLoading, setIsLoading] = useState(true); // Nuevo estado para manejar el loading
+    const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+
+    //Icono de la página en la pestaña del navegador.
+    useEffect(() => {
+        //Cambiar dinámicamente el favicon
+        const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = faviconAlquileres;
+        document.head.appendChild(favicon);
+
+        //Limpia el efecto al desmontar el componente, si es necesario
+        return () => {
+            favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+        };
+    }, []); //Solo se ejecuta al montar la página
 
     useEffect(() => {
         if (allAlquileres.length > 0) {
             setIsLoading(false); // Desactivar el loading una vez se carguen los datos
         }
     }, [allAlquileres]);
-
-    const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
 
     // Ordenar los alquileres solo una vez usando useMemo
     const alquileresOrdenados = useMemo(() => {

@@ -142,6 +142,7 @@ import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from
 import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
+import faviconEstadisticas from '../assets/faviconEstadisticas.png';
 
 const Estadisticas = () => {
   const allAlquileres = useAlquileres(); // Obtener los alquileres
@@ -153,6 +154,20 @@ const Estadisticas = () => {
   const [isLoading, setIsLoading] = useState(true); // Nuevo estado para controlar el loading
 
   const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+
+  //Icono de la página en la pestaña del navegador.
+  useEffect(() => {
+      //Cambiar dinámicamente el favicon
+      const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = faviconEstadisticas;
+      document.head.appendChild(favicon);
+
+      //Limpia el efecto al desmontar el componente, si es necesario
+      return () => {
+          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+      };
+  }, []); //Solo se ejecuta al montar la página
 
   useEffect(() => {
     async function fetchDatos() {

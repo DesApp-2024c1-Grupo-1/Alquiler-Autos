@@ -22,6 +22,7 @@ import AddClientDialog from '../components/AddClientDialog.jsx';
 import { CarCard } from "../components/CarCard.jsx";
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
 import { lugaresFijos } from "../components/Filtros.jsx";
+import faviconRegistrarAlquiler from '../assets/faviconRegistrarAlquiler.png';
 
 export function FormAlquiler({ car }) {
 
@@ -33,6 +34,20 @@ export function FormAlquiler({ car }) {
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
   const [activeButton, setButton] = useState()
+
+  //Icono de la página en la pestaña del navegador.
+  useEffect(() => {
+    //Cambiar dinámicamente el favicon
+    const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.href = faviconRegistrarAlquiler; 
+    document.head.appendChild(favicon);
+
+    //Limpia el efecto al desmontar el componente, si es necesario
+    return () => {
+        favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+    };
+}, []); //Solo se ejecuta al montar la página
 
 
   useEffect(() => {
@@ -156,60 +171,65 @@ export function FormAlquiler({ car }) {
         <Grid container spacing={6} sx={{ p: 0 }}>
           <Grid item xs={12} md={6}>
           <Autocomplete
-                freeSolo
-                options={lugaresFijos} // Usa la lista de lugares predefinidos
-                value={formAlquiler.lugarRetiro || ''}
-                onInputChange={(event, newValue) => {
-                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
-                  handleLugarRetiroChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
-                }} 
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    label="Lugar de Retiro"
-                    error={!lugarRetiroValido}
-                    helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
-                    inputProps={{
-                      ...params.inputProps,
-                      onKeyPress: (event) => {
-                        if (/[0-9]/.test(event.key)) {
-                          event.preventDefault(); // Bloquea números en tiempo real
-                        }
-                      },
-                    }}
-                  />
-                )}
-              />
+              freeSolo
+              options={lugaresFijos} //Usa la lista de lugares predefinidos
+              value={formAlquiler.lugarRetiro || ''}
+              onInputChange={(event, newValue) => {
+                //Filtra los caracteres permitidos: letras, números, tildes, y espacios
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier cosa que no sea letras, números, tildes o espacios
+                handleLugarRetiroChange(event, filteredValue); //Almacena el lugar de retiro
+              }} 
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de Retiro"
+                  error={!lugarRetiroValido}
+                  helperText={!lugarRetiroValido ? "El lugar de retiro es obligatorio" : ""}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                      }
+                    },
+                  }}
+                />
+              )}
+            />
 
           </Grid>
+
           <Grid item xs={12} md={6}>
-          <Autocomplete
-                freeSolo
-                options={lugaresFijos} // Usa la misma lista de lugares predefinidos
-                value={formAlquiler.lugarDevolucion || ''}
-                onInputChange={(event, newValue) => {
-                  const filteredValue = newValue.replace(/[0-9]/g, ''); // Elimina números
-                  handleLugarDevolucionChange(event, filteredValue); //Almacena el lugar incluso si no está en la lista.
-                }} 
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    label="Lugar de Devolución"
-                    error={!lugarDevolucionValido}
-                    helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
-                    inputProps={{
-                      ...params.inputProps,
-                      onKeyPress: (event) => {
-                        if (/[0-9]/.test(event.key)) {
-                          event.preventDefault(); // Bloquea números en tiempo real
-                        }
-                      },
-                    }}
-                  />
-                )}
-              />
+            <Autocomplete
+              freeSolo
+              options={lugaresFijos} //Usa la lista de lugares predefinidos
+              value={formAlquiler.lugarDevolucion || ''}
+              onInputChange={(event, newValue) => {
+                //Filtra los caracteres permitidos: letras, números, tildes, y espacios
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier cosa que no sea letras, números, tildes o espacios
+                handleLugarDevolucionChange(event, filteredValue); //Almacena el lugar de devolución
+              }} 
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Lugar de Devolución"
+                  error={!lugarDevolucionValido}
+                  helperText={!lugarDevolucionValido ? "El lugar de devolución es obligatorio" : ""}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                      }
+                    },
+                  }}
+                />
+              )}
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>

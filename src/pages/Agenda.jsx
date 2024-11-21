@@ -19,6 +19,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { red } from '@mui/material/colors';
 import { lugaresFijos } from "../components/Filtros.jsx";
 import { BotonPago } from '../components/BotonPago.jsx';
+import faviconAgenda from '../assets/faviconAgenda.png';
 
 
 setOptions({
@@ -47,6 +48,19 @@ function AgendaPage() {
     setSelectedDate(newDate);
   };
 
+  //Icono de la página en la pestaña del navegador.
+  useEffect(() => {
+      //Cambiar dinámicamente el favicon
+      const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = faviconAgenda;
+      document.head.appendChild(favicon);
+
+      //Limpia el efecto al desmontar el componente, si es necesario
+      return () => {
+          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+      };
+  }, []); //Solo se ejecuta al montar la página
 
   useEffect(() => {
     fetchAllEvents()
@@ -127,7 +141,6 @@ function AgendaPage() {
 
 
 
-  
 
 
 
@@ -152,23 +165,20 @@ function AgendaPage() {
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
   const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
 
- 
+
 
   const [pagoTotal, setAppointmentPagoTotal] = useState(false);
 
 
-  
-  
+
+
   const [saldoP, setAppointmentSaldoP] = useState('');
 
 
 
-  
-  
+
+
   const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
-
-
-
 
   const handleCheckboxChange = (event) => {
     setIsTotalChecked(event.target.checked);
@@ -179,14 +189,14 @@ function AgendaPage() {
     }
   };
 
-
   const [appointmentPago, setAppointmentPago] = useState(false);
 
 
-  
+
 
   const [isTotalChecked, setIsTotalChecked] = useState(false);
-  const [montoPago, setMontoPago] = useState(''); 
+
+  const [montoPago, setMontoPago] = useState('');
 
 
   useEffect(() => {
@@ -460,19 +470,9 @@ function AgendaPage() {
     email: ''
   });
 
-
-
-
-
-
-
-
-
   const timer = useRef(null);
 
   const myView = useMemo(() => ({ agenda: { type: 'day' } }), []);
-
-
 
   const openTooltip = useCallback((args) => {
     const event = args.event;
@@ -513,10 +513,6 @@ function AgendaPage() {
     setTooltipReparacionOpen(true);    
   }
   }, []);
-
-
-
-
 
   const handleEventClick = useCallback(
     (args) => {
@@ -930,7 +926,7 @@ function AgendaPage() {
           <Box
             sx={{
               width: 500,
-              height: 350,
+              height: 380,
               padding: 2,
               backgroundColor: 'white',
               position: 'absolute',
@@ -966,39 +962,70 @@ function AgendaPage() {
                   </Box>
                 </Box>
               </LocalizationProvider>
-
+              
               <Autocomplete
                 options={lugaresFijos}
                 getOptionLabel={(option) => option}
                 value={editData.lugarRetiro}
                 onInputChange={(event, newInputValue) => {
-                  // Eliminar números del valor ingresado
-                  const filteredInput = newInputValue.replace(/[0-9]/g, '');
+                  //Filtra los caracteres permitidos (letras, números, tildes, espacios)
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
                   setEditData((prevData) => ({ ...prevData, lugarRetiro: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
-                  setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))
+                  setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue || "" }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Lugar de Retiro" margin="normal" fullWidth />
+                  <TextField
+                    {...params}
+                    label="Lugar de Retiro"
+                    margin="normal"
+                    fullWidth
+                    error={editData.lugarRetiro.length === 0} //Error si está vacío
+                    helperText={editData.lugarRetiro.length === 0 ? "El lugar de retiro es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                        if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        }
+                      },
+                    }}
+                  />
                 )}
               />
-
 
               <Autocomplete
                 options={lugaresFijos}
                 getOptionLabel={(option) => option}
                 value={editData.lugarDevolucion}
                 onInputChange={(event, newInputValue) => {
-                  // Eliminar números del valor ingresado
-                  const filteredInput = newInputValue.replace(/[0-9]/g, '');
+                  //Filtra los caracteres permitidos (letras, números, tildes, espacios)
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
                   setEditData((prevData) => ({ ...prevData, lugarDevolucion: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
-                  setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))
+                  setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue || "" }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Lugar de Devolución" margin="normal" fullWidth />
+                  <TextField
+                    {...params}
+                    label="Lugar de Devolución"
+                    margin="normal"
+                    fullWidth
+                    error={editData.lugarDevolucion.length === 0} //Error si está vacío
+                    helperText={editData.lugarDevolucion.length === 0 ? "El lugar de devolución es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                        if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        }
+                      },
+                    }}
+                  />
                 )}
               />
             </Box>
@@ -1014,7 +1041,7 @@ function AgendaPage() {
         >
           <Box sx={{
             width: 500,
-            height: 475,
+            height: 530,
             padding: 2,
             backgroundColor: 'white',
             position: 'absolute',
@@ -1029,25 +1056,64 @@ function AgendaPage() {
               label="Nombre"
               name="nombre"
               value={editDatosC.nombre}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]*$/; //Solo letras, espacios y tildes
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
+              error={editDatosC.nombre.length === 0 || editDatosC.nombre.length < 4} //Error si está vacío o tiene menos de 4 caracteres
+              helperText={
+                editDatosC.nombre.length === 0
+                  ? "El nombre no puede estar vacío"
+                  : editDatosC.nombre.length < 4
+                  ? "El nombre debe tener al menos 4 caracteres"
+                  : ""
+              } //Mensaje dinámico según la validación
             />
             <TextField
               label="Documento"
               name="documento"
               value={editDatosC.documento}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[a-zA-Z0-9]*$/; //Permitir solo números y letras
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
+              error={editDatosC.documento.length === 0 || (editDatosC.documento.length > 0 && editDatosC.documento.length < 7)} //Error si está vacío o tiene menos de 7 caracteres
+              helperText={
+                editDatosC.documento.length === 0
+                  ? "El documento no puede estar vacío"
+                  : editDatosC.documento.length < 7
+                  ? "El documento debe tener al menos 7 caracteres"
+                  : ""
+              } //Mostrar mensaje según el error
             />
             <TextField
               label="Teléfono"
               name="telefono"
               value={editDatosC.telefono}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[0-9+]*$/; //Solo números y el símbolo "+"
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); //Permitir solo si cumple con la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
+              error={!editDatosC.telefono || editDatosC.telefono.replace(/\D/g, '').length < 7} //Error si está vacío o tiene menos de 7 números
+              helperText={
+                !editDatosC.telefono
+                  ? "El número de teléfono no puede estar vacío"
+                  : editDatosC.telefono.replace(/\D/g, '').length < 7
+                  ? "El número de teléfono debe tener al menos 7 caracteres"
+                  : ""
+              } //Mensaje dinámico según la validación
             />
             <TextField
               label="Email"

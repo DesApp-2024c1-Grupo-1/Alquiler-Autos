@@ -6,6 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import {NavLink} from 'react-router-dom'
+import LogoApp from '../../assets/LogoApp.png';
 
 
 
@@ -28,14 +29,25 @@ const navArrayLinksShort = navArrayLinks.slice(0, -2); //corto los 2 ultimos ele
                         >
                         <MenuIcon />
                    </IconButton>
-                   <Icon sx={{pr: 4, pb:4.2}}>
-                        <DirectionsCarIcon />
+                   {/* <Icon sx={{ pr: 4, pb: 4.2 }}> */}
+                   <Icon sx={{ width: 190, height: 95 }}>
+                        {/* <DirectionsCarIcon /> */}
+                        <img 
+                            //src=""  //URL de la imagen
+                            src={LogoApp}
+                            alt="Car Icon"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                objectFit: 'contain', // Asegura que la imagen se vea completa
+                              }}
+                        />
                    </Icon>
                    <Typography 
                         variant="h6" 
                         sx={{flexGrow: 1}}
                         >
-                        Alquiler de Autos
+                        {/* Alquiler de Autos */}
                     </Typography>
                     <Box sx={{ display:{xs:"none",sm:"block"}  }}>
                         {
