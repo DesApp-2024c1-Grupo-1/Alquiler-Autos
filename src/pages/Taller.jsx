@@ -14,19 +14,28 @@ function Taller() {
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
 
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes comienza desde 0
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const todayDate = getTodayDate();
+
     //Icono de la página en la pestaña del navegador.
     useEffect(() => {
-        //Cambiar dinámicamente el favicon
         const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
         favicon.rel = 'icon';
         favicon.href = faviconTaller;
         document.head.appendChild(favicon);
 
-        //Limpia el efecto al desmontar el componente, si es necesario
         return () => {
-            favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+            favicon.href = '/favicon.ico';
         };
-    }, []); //Solo se ejecuta al montar la página
+    }, []);
 
     useEffect(() => {
         getAllCarsAvailable()
@@ -39,7 +48,7 @@ function Taller() {
             });
     }, []);
 
-    const openPopup = (car, index) => {
+    const openPopup = (car) => {
         setSelectedCar(car);
         setEntryDate('');
         setExitDate('');
@@ -56,52 +65,28 @@ function Taller() {
     const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
         const retiro = new Date(fechaRetiro);
         const devolucion = new Date(fechaDevolucion);
-        
-        
         const diffTime = Math.abs(devolucion - retiro);
-        
-       
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
         return diffDays;
-      };
+    };
 
     const confirmIngreso = () => {
         if (selectedCar !== null) {
-          // Crear una nueva reparación
             const reparacion = {
-                fechaInicio: entryDate, // Fecha actual en formato ISO
-                fechaFin: exitDate, // La reparación aún no finaliza
+                fechaInicio: entryDate,
+                fechaFin: exitDate,
                 razon: 'se sentia mal',
-                cantidadDias: calcularCantidadDias(entryDate, exitDate), // Se calculará al finalizar
-                car: selectedCar, // selectedCar debe contener el objeto del auto
+                cantidadDias: calcularCantidadDias(entryDate, exitDate),
+                car: selectedCar,
             };
             registrarReparacion(reparacion);
-            console.log('reparacion', reparacion)
-            } else {
-                console.error("No se seleccionó ningún auto.");
-            }
-            closePopup();
-    };
-
-
-
-          /*  setCars((prevCars) =>
-                prevCars.map((car, i) =>
-                    i === selectedCar
-                        ? { ...car, enReparacion: true, entryDate, exitDate }
-                        : car
-                )
-            );
-
-            console.log(`Auto: ${cars[selectedCar].name}`); 
-            console.log(`Fecha de Entrada: ${entryDate}`);
-            console.log(`Fecha de Salida: ${exitDate}`);
-            
+            console.log('Reparación', reparacion);
+        } else {
+            console.error("No se seleccionó ningún auto.");
         }
         closePopup();
     };
-*/
+
     return (
         <Box sx={{ padding: 2 }}>
             <Typography variant="h4" gutterBottom>
@@ -121,7 +106,6 @@ function Taller() {
                                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                             }}
                         >
-                            {/* Imagen del auto */}
                             <img
                                 src={car.image}
                                 alt={`${car.name} image`}
@@ -133,7 +117,6 @@ function Taller() {
                                     marginBottom: '10px',
                                 }}
                             />
-                            {/* Información del auto */}
                             <Box sx={{ flex: 1, marginLeft: { md: 2 } }}>
                                 <Typography variant="h6">{car.name}</Typography>
                                 <Typography>Patente: {car.patente}</Typography>
@@ -142,7 +125,6 @@ function Taller() {
                                     Reparación Pendiente: {car.enReparacion ? 'Sí' : 'No'}
                                 </Typography>
                             </Box>
-                            {/* Botón */}
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -154,7 +136,7 @@ function Taller() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => openPopup(car, index)}
+                                    onClick={() => openPopup(car)}
                                 >
                                     Taller
                                 </Button>
@@ -164,9 +146,8 @@ function Taller() {
                 ))}
             </Grid>
 
-            {/* Popup para ingresar fechas */}
             <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
-                <DialogTitle sx={{mt: 1}}>Mantenimiento Programado</DialogTitle>
+                <DialogTitle sx={{ mt: 1 }}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
@@ -176,6 +157,7 @@ function Taller() {
                         onChange={(e) => setEntryDate(e.target.value)}
                         sx={{ mb: 2, mt: 2 }}
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{ min: todayDate }} // Validación para no permitir fechas pasadas
                     />
                     <TextField
                         fullWidth
@@ -184,6 +166,7 @@ function Taller() {
                         value={exitDate}
                         onChange={(e) => setExitDate(e.target.value)}
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{ min: entryDate || todayDate }} // No permitir fechas antes de la fecha de entrada
                     />
                 </DialogContent>
                 <DialogActions>
