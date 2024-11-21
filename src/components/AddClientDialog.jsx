@@ -40,7 +40,7 @@ function AddClientDialog({validated}) {
     }
 
     const validarNombre = (value = "") => {
-        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]+$/; // Solo letras, espacios y tildes (obligatorio al menos un carácter)
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]+$/; //Solo letras, espacios y tildes (obligatorio al menos un carácter)
         if (!value) {
           setErrorNombre({ error: true, message: "El nombre no puede estar vacío" });
           return false;
@@ -57,7 +57,7 @@ function AddClientDialog({validated}) {
     };
   
     const validarDocumento = (value = "") => {
-        const regex = /^[a-zA-Z0-9]+$/; // Solo letras y números (obligatorio al menos un carácter)
+        const regex = /^[a-zA-Z0-9]+$/; //Solo letras y números (obligatorio al menos un carácter)
         if (!value) {
           setErrorDocumento({ error: true, message: "El documento no puede estar vacío" });
           return false;
@@ -74,7 +74,7 @@ function AddClientDialog({validated}) {
     };
   
     const validarTelefono = (value = "") => {
-        const regex = /^[0-9+]+$/; // Solo números y el símbolo "+"
+        const regex = /^[0-9+]+$/; //Solo números y el símbolo "+"
         if (!value) {
           setErrorTelefono({ error: true, message: "El teléfono no puede estar vacío" });
           return false;
@@ -89,11 +89,11 @@ function AddClientDialog({validated}) {
           return true;
         }
     };
-    // Validar todos los campos antes de enviar
+    //Validar todos los campos antes de enviar
     function validarCampos() {
-        const nombreValido = validarNombre(nombre); // Usar el estado `nombre`
-        const documentoValido = validarDocumento(documento); // Usar el estado `documento`
-        const telefonoValido = validarTelefono(telefono); // Usar el estado `telefono`
+        const nombreValido = validarNombre(nombre); //Usar el estado `nombre`
+        const documentoValido = validarDocumento(documento); //Usar el estado `documento`
+        const telefonoValido = validarTelefono(telefono); //Usar el estado `telefono`
   
         return nombreValido && documentoValido && telefonoValido;
     }  
@@ -209,8 +209,8 @@ function AddClientDialog({validated}) {
                         error={errorDocumento.error} //Mostrar error si aplica
                         helperText={errorDocumento.message} //Mostrar mensaje de error dinámico
                         onChange={(e) => {
-                            setDocumento(e.target.value); // Actualiza el estado del documento
-                            validarDocumento(e.target.value); // Valida el documento en tiempo real
+                            setDocumento(e.target.value); //Actualiza el estado del documento
+                            validarDocumento(e.target.value); //Valida el documento en tiempo real
                         }}
                         fullWidth
                         variant
@@ -227,8 +227,8 @@ function AddClientDialog({validated}) {
                         error={errorTelefono.error} //Mostrar mensaje de error dinámico
                         helperText={errorTelefono.message} //Mostrar mensaje de error dinámico
                         onChange={(e) => {
-                            setTelefono(e.target.value); // Actualiza el estado del teléfono
-                            validarTelefono(e.target.value); // Valida el teléfono en tiempo real
+                            setTelefono(e.target.value); //Actualiza el estado del teléfono
+                            validarTelefono(e.target.value); //Valida el teléfono en tiempo real
                         }}
                         fullWidth
                         variant
