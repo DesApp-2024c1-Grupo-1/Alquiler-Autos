@@ -805,7 +805,7 @@ function AgendaPage() {
           <Box
             sx={{
               width: 500,
-              height: 350,
+              height: 380,
               padding: 2,
               backgroundColor: 'white',
               position: 'absolute',
@@ -841,39 +841,70 @@ function AgendaPage() {
                   </Box>
                 </Box>
               </LocalizationProvider>
-
+              
               <Autocomplete
                 options={lugaresFijos}
                 getOptionLabel={(option) => option}
                 value={editData.lugarRetiro}
                 onInputChange={(event, newInputValue) => {
-                  // Eliminar números del valor ingresado
-                  const filteredInput = newInputValue.replace(/[0-9]/g, '');
+                  //Filtra los caracteres permitidos (letras, números, tildes, espacios)
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
                   setEditData((prevData) => ({ ...prevData, lugarRetiro: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
-                  setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue }))
+                  setEditData((prevData) => ({ ...prevData, lugarRetiro: newValue || "" }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Lugar de Retiro" margin="normal" fullWidth />
+                  <TextField
+                    {...params}
+                    label="Lugar de Retiro"
+                    margin="normal"
+                    fullWidth
+                    error={editData.lugarRetiro.length === 0} //Error si está vacío
+                    helperText={editData.lugarRetiro.length === 0 ? "El lugar de retiro es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                        if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        }
+                      },
+                    }}
+                  />
                 )}
               />
-
 
               <Autocomplete
                 options={lugaresFijos}
                 getOptionLabel={(option) => option}
                 value={editData.lugarDevolucion}
                 onInputChange={(event, newInputValue) => {
-                  // Eliminar números del valor ingresado
-                  const filteredInput = newInputValue.replace(/[0-9]/g, '');
+                  //Filtra los caracteres permitidos (letras, números, tildes, espacios)
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
                   setEditData((prevData) => ({ ...prevData, lugarDevolucion: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
-                  setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue }))
+                  setEditData((prevData) => ({ ...prevData, lugarDevolucion: newValue || "" }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Lugar de Devolución" margin="normal" fullWidth />
+                  <TextField
+                    {...params}
+                    label="Lugar de Devolución"
+                    margin="normal"
+                    fullWidth
+                    error={editData.lugarDevolucion.length === 0} //Error si está vacío
+                    helperText={editData.lugarDevolucion.length === 0 ? "El lugar de devolución es obligatorio" : ""}
+                    inputProps={{
+                      ...params.inputProps,
+                      onKeyPress: (event) => {
+                        //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                        if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        }
+                      },
+                    }}
+                  />
                 )}
               />
             </Box>
