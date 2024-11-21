@@ -720,6 +720,10 @@ function AgendaPage() {
                   Auto: <span className="mbsc-light">{appointment?.reparacion?.car?.brand + " " + appointment?.reparacion?.car?.name}</span>
                 </div>
 
+                <div className="mds-tooltip-label mbsc-margin">
+                  Razon: <span className="mbsc-light">{appointment?.reparacion?.razon}</span>
+                </div>
+
               </div>
             </div>
           </div>

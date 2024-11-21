@@ -13,6 +13,7 @@ function Taller() {
     const [selectedCar, setSelectedCar] = useState(null);
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
+    const [razon, setRazon] = useState('');
 
     // Obtener la fecha actual en formato YYYY-MM-DD
     const getTodayDate = () => {
@@ -75,7 +76,7 @@ function Taller() {
             const reparacion = {
                 fechaInicio: entryDate,
                 fechaFin: exitDate,
-                razon: 'se sentia mal',
+                razon: reason,
                 cantidadDias: calcularCantidadDias(entryDate, exitDate),
                 car: selectedCar,
             };
@@ -121,9 +122,9 @@ function Taller() {
                                 <Typography variant="h6">{car.name}</Typography>
                                 <Typography>Patente: {car.patente}</Typography>
                                 <Typography>Año: {car.year}</Typography>
-                                <Typography>
+                                {/* <Typography>
                                     Reparación Pendiente: {car.enReparacion ? 'Sí' : 'No'}
-                                </Typography>
+                                </Typography> */}
                             </Box>
                             <Box
                                 sx={{
@@ -167,6 +168,16 @@ function Taller() {
                         onChange={(e) => setExitDate(e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ min: entryDate || todayDate }} // No permitir fechas antes de la fecha de entrada
+                    />
+                    <TextField
+                        fullWidth
+                        label="Razón del Mantenimiento"
+                        value={razon}
+                        onChange={(e) => setRazon(e.target.value)}
+                        multiline
+                        rows={3}
+                        placeholder="Escribe la razón del mantenimiento..."
+                        sx={{ mb: 2 ,mt:2}}
                     />
                 </DialogContent>
                 <DialogActions>
