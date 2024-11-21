@@ -416,15 +416,29 @@ function AgendaPage() {
 
 
   const handleSaveChanges = async () => {
+    //Validar los campos Lugar de Retiro y Lugar de Devolución
+    const isLugarRetiroValid = editData.lugarRetiro.trim().length > 0;
+    const isLugarDevolucionValid = editData.lugarDevolucion.trim().length > 0;
+  
+    //Si alguno de los campos es vacío, evitar el guardado y retornar
+    if (!isLugarRetiroValid || !isLugarDevolucionValid) {
+      //Si el lugar de retiro está vacío, asignar el error
+      setEditData((prevData) => ({
+        ...prevData,
+        lugarRetiro: prevData.lugarRetiro.trim(),
+        lugarDevolucion: prevData.lugarDevolucion.trim(),
+      }));
+      return; //Detener la ejecución si algún campo está vacío
+    }
+  
+    //Calcular la cantidad de días y el precio final solo si ambos lugares son válidos
     const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
     const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
-
-
-
+  
     const alquilerModificado = {
       ...editData,
       cantidadDias,
-      precioFinal
+      precioFinal,
     };
   
     console.log('Guardar cambios', alquilerModificado);
@@ -983,8 +997,12 @@ function AgendaPage() {
                     label="Lugar de Retiro"
                     margin="normal"
                     fullWidth
-                    error={editData.lugarRetiro.length === 0} //Error si está vacío
-                    helperText={editData.lugarRetiro.length === 0 ? "El lugar de retiro es obligatorio" : ""}
+                    error={editData.lugarRetiro.trim().length === 0} // Error si lugarRetiro está vacío
+                    helperText={
+                      editData.lugarRetiro.trim().length === 0
+                        ? "El lugar de retiro es obligatorio"
+                        : "" // Mensaje específico para lugarRetiro
+                    }
                     inputProps={{
                       ...params.inputProps,
                       onKeyPress: (event) => {
@@ -1016,8 +1034,12 @@ function AgendaPage() {
                     label="Lugar de Devolución"
                     margin="normal"
                     fullWidth
-                    error={editData.lugarDevolucion.length === 0} //Error si está vacío
-                    helperText={editData.lugarDevolucion.length === 0 ? "El lugar de devolución es obligatorio" : ""}
+                    error={editData.lugarDevolucion.trim().length === 0} // Error si lugarDevolucion está vacío
+                    helperText={
+                      editData.lugarDevolucion.trim().length === 0
+                        ? "El lugar de devolución no puede estar vacío"
+                        : "" // Mensaje específico para lugarDevolucion
+                    }
                     inputProps={{
                       ...params.inputProps,
                       onKeyPress: (event) => {
