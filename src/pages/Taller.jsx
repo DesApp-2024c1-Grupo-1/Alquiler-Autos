@@ -76,7 +76,7 @@ function Taller() {
             const reparacion = {
                 fechaInicio: entryDate,
                 fechaFin: exitDate,
-                razon: reason,
+                razon: razon,
                 cantidadDias: calcularCantidadDias(entryDate, exitDate),
                 car: selectedCar,
             };
