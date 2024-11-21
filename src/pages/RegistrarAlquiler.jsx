@@ -146,12 +146,14 @@ export function FormAlquiler({ car }) {
       <Box
         component="form"
         sx={{
-          '& .MuiTextField-root': { m: 0, width: '100%' },
+          '& .MuiTextField-root': { m: 0, width: '100%', height: '30%' },
+          ml: 0, 
+          p: 5, 
         }}
         noValidate
         autoComplete="off"
       >
-        <Grid container spacing={'8%'} sx={{ p: 2 }}>
+        <Grid container spacing={6} sx={{ p: 0 }}>
           <Grid item xs={12} md={6}>
           <Autocomplete
                 freeSolo

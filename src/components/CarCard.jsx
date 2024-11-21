@@ -47,7 +47,7 @@ export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome })
           <CarCardContent car={car} />
           {car.reservado && <h2 style={{ margin: 0, textAlign: "center" }}>RESERVADO</h2>}
           {car.enReparacion && (
-            <h2 style={{ margin: 0, textAlign: "center", color: "red" }}>TALLER</h2>
+            <h2 style={{ margin: 0, textAlign: "center", color: "darkred" }}>EN TALLER</h2>
           )}
         </Box>
       )}
