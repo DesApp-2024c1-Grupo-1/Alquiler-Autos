@@ -143,6 +143,7 @@ import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 import faviconEstadisticas from '../assets/faviconEstadisticas.png';
+import { orderBy } from 'lodash';
 
 const Estadisticas = () => {
   const allAlquileres = useAlquileres(); // Obtener los alquileres
@@ -214,14 +215,19 @@ const Estadisticas = () => {
       }
     });
 
-    const autosOrdenados = Object.entries(autosAlquilados).sort((a, b) => b[1].cantidad - a[1].cantidad);
-    const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
-      carId,
-      ...datos
-    }));
+ // Ordenar los autos por ganancia en orden descendente
+ const autosOrdenados = Object.entries(autosAlquilados).sort(
+  (a, b) => b[1].ganancia - a[1].ganancia
+);
 
-    return topTres;
-  };
+// Tomar los tres primeros autos del ranking
+const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
+  carId,
+  ...datos,
+}));
+
+return topTres;
+};
 
   const procesarDatosEstadisticas = async (alquileres) => {
     const apiUrl = import.meta.env.VITE_API_URL;
