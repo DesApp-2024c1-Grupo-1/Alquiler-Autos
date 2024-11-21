@@ -889,7 +889,7 @@ function AgendaPage() {
         >
           <Box sx={{
             width: 500,
-            height: 475,
+            height: 485,
             padding: 2,
             backgroundColor: 'white',
             position: 'absolute',
@@ -917,9 +917,20 @@ function AgendaPage() {
               label="Documento"
               name="documento"
               value={editDatosC.documento}
-              onChange={handleEditDatosCChange}
+              onChange={(e) => {
+                const regex = /^[a-zA-Z0-9]*$/; // Permitir solo números y letras
+                if (regex.test(e.target.value)) {
+                  handleEditDatosCChange(e); // Permitir el cambio solo si pasa la validación
+                }
+              }}
               fullWidth
               sx={{ padding: 2 }}
+              error={editDatosC.documento.length > 0 && editDatosC.documento.length < 7} // Error si tiene menos de 7 caracteres
+              helperText={
+                editDatosC.documento.length > 0 && editDatosC.documento.length < 7
+                  ? "El documento debe tener al menos 7 caracteres"
+                  : ""
+              } // Mostrar mensaje de ayuda solo si hay error
             />
             <TextField
               label="Teléfono"
