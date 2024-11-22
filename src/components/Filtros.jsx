@@ -92,7 +92,7 @@ const Filtros = ({ handleFiltros }) => {
     console.log("Filtros en BuscarButton: ", filtros);
     handleFiltros(filtros);
 
-    setTimeout(() => setLoading(false), 500); // Simula llamada a  la api
+    setTimeout(() => setLoading(false), 1380); // Simula llamada a  la api
   };
 
   const BorrarButton = (event) => {
