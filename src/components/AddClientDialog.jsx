@@ -39,37 +39,64 @@ function AddClientDialog({validated}) {
         return validarNombre() && validarDocumento() & validarTelefono()
     }
 
-    async function validarNombre() {
-        if (nombre.length > 3) {
-            setErrorNombre({ error: false, message: "" })
-            return true;
+    const validarNombre = (value = "") => {
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]+$/; //Solo letras, espacios y tildes (obligatorio al menos un carácter)
+        if (!value) {
+          setErrorNombre({ error: true, message: "El nombre no puede estar vacío" });
+          return false;
+        } else if (!regex.test(value)) {
+          setErrorNombre({ error: true, message: "El nombre solo puede contener letras y tildes" });
+          return false;
+        } else if (value.length < 4) {
+          setErrorNombre({ error: true, message: "El nombre debe tener al menos 4 caracteres" });
+          return false;
         } else {
-            setErrorNombre({ error: true, message: "El nombre debe tener al menos 4 caracteres" });
-            return false;
+          setErrorNombre({ error: false, message: "" });
+          return true;
         }
-    }
-
-    function validarDocumento() {
-        if (documento.length >= 7) {
-            setErrorDocumento({ error: false, message: "" })
-            return true;
+    };
+  
+    const validarDocumento = (value = "") => {
+        const regex = /^[a-zA-Z0-9]+$/; //Solo letras y números (obligatorio al menos un carácter)
+        if (!value) {
+          setErrorDocumento({ error: true, message: "El documento no puede estar vacío" });
+          return false;
+        } else if (!regex.test(value)) {
+          setErrorDocumento({ error: true, message: "El documento solo puede contener letras y números" });
+          return false;
+        } else if (value.length < 7) {
+          setErrorDocumento({ error: true, message: "El documento debe tener al menos 7 caracteres" });
+          return false;
         } else {
-            setErrorDocumento({ error: true, message: "El documento debe tener al menos 7 caracteres" });
-            console.log("errorDocumento", errorDocumento)
-            return false;
+          setErrorDocumento({ error: false, message: "" });
+          return true;
         }
-    }
-
-    function validarTelefono() {
-        if (telefono.length >= 7) {
-            setErrorTelefono({ error: false, message: "" })
-            return true;
+    };
+  
+    const validarTelefono = (value = "") => {
+        const regex = /^[0-9+]+$/; //Solo números y el símbolo "+"
+        if (!value) {
+          setErrorTelefono({ error: true, message: "El teléfono no puede estar vacío" });
+          return false;
+        } else if (!regex.test(value)) {
+          setErrorTelefono({ error: true, message: "El teléfono solo puede contener números y el símbolo +" });
+          return false;
+        } else if (value.length < 7) {
+          setErrorTelefono({ error: true, message: "El teléfono debe tener al menos 7 caracteres" });
+          return false;
         } else {
-            setErrorTelefono({ error: true, message: "El telefono debe tener al menos 7 caracteres" });
-            console.log("errorTelefono", errorTelefono)
-            return false;
+          setErrorTelefono({ error: false, message: "" });
+          return true;
         }
-    }
+    };
+    //Validar todos los campos antes de enviar
+    function validarCampos() {
+        const nombreValido = validarNombre(nombre); //Usar el estado `nombre`
+        const documentoValido = validarDocumento(documento); //Usar el estado `documento`
+        const telefonoValido = validarTelefono(telefono); //Usar el estado `telefono`
+  
+        return nombreValido && documentoValido && telefonoValido;
+    }  
 
     const handleClickOpen = () => {
         console.log("Validated: " + validated)
@@ -93,17 +120,16 @@ function AddClientDialog({validated}) {
     const sumbit = async (e) => {
         e.preventDefault();
         if (validarCampos()) {
-            await editarCliente();
-            setSuccess(true);
-            setTimeout(() => {
-                setOpen(false);
-                navigate("/agenda") 
-             }, 2000);
-           
+          await editarCliente();
+          setSuccess(true);
+          setTimeout(() => {
+            setOpen(false);
+            navigate("/agenda");
+          }, 2000);
         } else {
-            console.log("No validado")
+          console.log("No validado");
         }
-    };
+      };
     
     const editarCliente = async () => {
         const nuevoCliente = {
@@ -162,9 +188,12 @@ function AddClientDialog({validated}) {
                         name="nombre"
                         label="Nombre y Apellido"
                         type="text"
-                        error={errorNombre.error}
-                        helperText={errorNombre.message}
-                        onChange={(e) => { setNombre(e.target.value) }}
+                        error={errorNombre.error} //Mostrar error si aplica
+                        helperText={errorNombre.message} //Mostrar mensaje de error dinámico
+                        onChange={(e) => {
+                            setNombre(e.target.value); //Actualiza el estado del nombre
+                            validarNombre(e.target.value); //Valida el nombre en tiempo real
+                        }}
                         fullWidth
                         variant="outlined"
                     />
@@ -176,10 +205,13 @@ function AddClientDialog({validated}) {
                         id="documento"
                         name="documento"
                         label="Documento"
-                        type="number"
-                        error={errorDocumento.error}
-                        helperText={errorDocumento.message}
-                        onChange={(e) => { setDocumento(e.target.value) }}
+                        type="text"
+                        error={errorDocumento.error} //Mostrar error si aplica
+                        helperText={errorDocumento.message} //Mostrar mensaje de error dinámico
+                        onChange={(e) => {
+                            setDocumento(e.target.value); //Actualiza el estado del documento
+                            validarDocumento(e.target.value); //Valida el documento en tiempo real
+                        }}
                         fullWidth
                         variant
                         ="outlined"
@@ -191,10 +223,13 @@ function AddClientDialog({validated}) {
                         id="telefono"
                         name="telefono"
                         label="Telefono"
-                        type="number"
-                        error={errorTelefono.error}
-                        helperText={errorTelefono.message}
-                        onChange={(e) => { setTelefono(e.target.value) }}
+                        type="text"
+                        error={errorTelefono.error} //Mostrar mensaje de error dinámico
+                        helperText={errorTelefono.message} //Mostrar mensaje de error dinámico
+                        onChange={(e) => {
+                            setTelefono(e.target.value); //Actualiza el estado del teléfono
+                            validarTelefono(e.target.value); //Valida el teléfono en tiempo real
+                        }}
                         fullWidth
                         variant
                         ="outlined"

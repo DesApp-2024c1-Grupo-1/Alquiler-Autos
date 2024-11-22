@@ -13,11 +13,13 @@ import {
   MenuItem,
   Button,
   Autocomplete,
+  CircularProgress,
 } from "@mui/material";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +30,7 @@ import {
 } from "../store/alquilerFormSlice.js";
 import { useLocalStorage } from "../config/useLocalStorage.js";
 import { enGB } from "date-fns/locale";
+import { es } from "date-fns/locale";
 
 // Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución"
 export const lugaresFijos = [
@@ -45,6 +48,7 @@ const Filtros = ({ handleFiltros }) => {
   const [capacitiy, setCapacity] = useState("");
   const [retiro, setRetiro] = useState(null);
   const [devolucion, setDevolucion] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const AireAcondicionadoTypeChange = (event) => {
     setAireAcondicionado(event.target.value);
@@ -76,6 +80,7 @@ const Filtros = ({ handleFiltros }) => {
       retiro,
       devolucion
     );
+    setLoading(true);
     const filtros = {
       ac: selectedAireAcondicionado, 
       combustible: selectedCombustibleType, 
@@ -86,6 +91,8 @@ const Filtros = ({ handleFiltros }) => {
     }
     console.log("Filtros en BuscarButton: ", filtros);
     handleFiltros(filtros);
+
+    setTimeout(() => setLoading(false), 500); // Simula llamada a  la api
   };
 
   const BorrarButton = (event) => {
@@ -149,13 +156,18 @@ const Filtros = ({ handleFiltros }) => {
       sx={{ backgroundColor: "#B3D0FB", height: "100%", p: 3, borderRadius: 5 }}
     >
       <Box>
-        <Grid container spacing={2}>
+      <Grid container spacing={2}>
+          {/* Lugar de Retiro */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarRetiro || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarRetiroChange} //Almacena el lugar incluso si no está en la lista.
+              value={formAlquiler.lugarRetiro || ''} //Maneja el valor actual
+              onInputChange={(event, newValue) => {
+                //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
+                handleLugarRetiroChange(event, filteredValue); //Actualiza el valor del lugar de retiro
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -165,17 +177,31 @@ const Filtros = ({ handleFiltros }) => {
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
                   }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                      }
+                    },
+                  }}
                 />
               )}
             />
           </Grid>
 
+          {/* Lugar de Devolución */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
               options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarDevolucion || ''} //Aca Maneja el valor actual
-              onInputChange={handleLugarDevolucionChange} //Almacena el lugar incluso si no está en la lista.
+              value={formAlquiler.lugarDevolucion || ''} //Maneja el valor actual
+              onInputChange={(event, newValue) => {
+                //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
+                handleLugarDevolucionChange(event, filteredValue); //Actualiza el valor del lugar de devolución
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -185,19 +211,27 @@ const Filtros = ({ handleFiltros }) => {
                     backgroundColor: "#B3D0FB",
                     width: "100%", //Asegura que ocupe todo el ancho del Grid item
                   }}
+                  inputProps={{
+                    ...params.inputProps,
+                    onKeyPress: (event) => {
+                      //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
+                      if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
+                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                      }
+                    },
+                  }}
                 />
               )}
             />
           </Grid>
         </Grid>
-
         <Grid container spacing={2} my={2}>
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Retiro"
                 value={new Date(formAlquiler.fechaRetiro)}
                 onChange={(newValue) => {
@@ -208,6 +242,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 onError={(newError) => {
                   setError(newError);
                 }}
@@ -223,9 +258,9 @@ const Filtros = ({ handleFiltros }) => {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={enGB}
+              adapterLocale={es}
             >
-              <DesktopDateTimePicker
+              <MobileDateTimePicker
                 label="Devolucion"
                 value={new Date(formAlquiler.fechaDevolucion)}
                 onChange={(newValue) =>
@@ -236,6 +271,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
+                minutesStep={30} //Horarios cada 30 minutos
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
                   setError(newError);
@@ -339,6 +375,11 @@ const Filtros = ({ handleFiltros }) => {
             <MenuItem value={3}>3</MenuItem>
             <MenuItem value={4}>4</MenuItem>
             <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={7}>7</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+            <MenuItem value={9}>9</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -355,9 +396,10 @@ const Filtros = ({ handleFiltros }) => {
           variant="outlined"
           color="success"
           sx={{ mr: 3 }}
-          onClick={() => BuscarButton()}
+          onClick={BuscarButton}
+          disabled={loading}
         >
-          Buscar
+          {loading ? <CircularProgress size={24}/> : "Buscar"}
         </Button>
         <Button variant="outlined" color="error" onClick={() => BorrarButton()}>
           Borrar

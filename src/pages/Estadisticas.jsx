@@ -138,9 +138,12 @@
 // export default Estadisticas;
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from '@mui/material'; //Fab y Tooltip para el boton.
+import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
+import faviconEstadisticas from '../assets/faviconEstadisticas.png';
+import { orderBy } from 'lodash';
 
 const Estadisticas = () => {
   const allAlquileres = useAlquileres(); // Obtener los alquileres
@@ -149,17 +152,50 @@ const Estadisticas = () => {
     anio: [],
     mes: []
   });
+  const [isLoading, setIsLoading] = useState(true); // Nuevo estado para controlar el loading
+
+  const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+
+  //Icono de la página en la pestaña del navegador.
+  useEffect(() => {
+      //Cambiar dinámicamente el favicon
+      const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = faviconEstadisticas;
+      document.head.appendChild(favicon);
+
+      //Limpia el efecto al desmontar el componente, si es necesario
+      return () => {
+          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+      };
+  }, []); //Solo se ejecuta al montar la página
 
   useEffect(() => {
     async function fetchDatos() {
       if (allAlquileres.length > 0) {
+        setIsLoading(true); // Activar estado de carga
         const datos = await procesarDatosEstadisticas(allAlquileres);
         setEstadisticas(datos);
+        setIsLoading(false); // Desactivar estado de carga
       }
     }
 
     fetchDatos();
   }, [allAlquileres]);
+
+  //Effect para controlar la visibilidad del botón de scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  //Función para hacer scroll hacia arriba
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const obtenerTopTresAutos = (alquileres) => {
     const autosAlquilados = {};
@@ -179,17 +215,21 @@ const Estadisticas = () => {
       }
     });
 
-    const autosOrdenados = Object.entries(autosAlquilados).sort((a, b) => b[1].cantidad - a[1].cantidad);
-    const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
-      carId,
-      ...datos
-    }));
+ // Ordenar los autos por ganancia en orden descendente
+ const autosOrdenados = Object.entries(autosAlquilados).sort(
+  (a, b) => b[1].ganancia - a[1].ganancia
+);
 
-    return topTres;
-  };
+// Tomar los tres primeros autos del ranking
+const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
+  carId,
+  ...datos,
+}));
+
+return topTres;
+};
 
   const procesarDatosEstadisticas = async (alquileres) => {
-
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const mesActual = new Date().getMonth() + 1;
@@ -211,7 +251,11 @@ const Estadisticas = () => {
 
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
-      const response = await axios.get( apiUrl + `/car/${carId}`);
+
+      //FIX TEMPORAL
+      // const response = await axios.get( apiUrl + `/car/${carId}`);
+      const response = await axios.get( apiUrl + `/withdeleted/car/${carId}`);
+
       return { name: response.data.name, brand: response.data.brand, image: response.data.image };
     };
 
@@ -252,8 +296,34 @@ const Estadisticas = () => {
         {titulo}
       </Typography>
       <Grid container spacing={2} justifyContent="center" alignItems="flex-end" sx={{ marginBottom: 6 }}>
-        {autos.map((auto, index) => (
-          <Grid item xs={12} sm={4} key={index} order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}>
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Grid item xs={12} sm={4} key={index}>
+                <Card
+                  sx={{
+                    height: 'auto',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    padding: 2,
+                  }}
+                >
+                  <CardContent>
+                    <Skeleton variant="rectangular" height={150} sx={{ borderRadius: '8px', marginBottom: 2 }} />
+                    <Skeleton variant="text" width="60%" />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="70%" />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          : autos.map((auto, index) => (
+            <Grid
+            item
+            xs={12}
+            sm={4}
+            key={index}
+            order={{ xs: index + 1, sm: index === 0 ? 2 : index === 1 ? 1 : 3 }}
+          >
             <Card
               sx={{
                 height: 'auto',
@@ -261,14 +331,20 @@ const Estadisticas = () => {
                 textAlign: 'center',
                 boxShadow: index === 0 ? 5 : 3,
                 transition: 'transform 0.3s ease',
-                '&:hover': { transform: 'scale(1.05)' }
+                '&:hover': { transform: 'scale(1.05)' },
               }}
             >
               <CardContent>
                 <img
                   src={auto.image || 'https://via.placeholder.com/150'}
                   alt={auto.name}
-                  style={{ borderRadius: '8px', marginBottom: '10px', maxWidth: '100%' }}
+                  style={{
+                    borderRadius: '8px',
+                    marginBottom: '10px',
+                    maxWidth: index === 0 ? '100%' : index === 1 ? '80%' : '60%', // Ajuste de tamaño de la imagen
+                    height: index === 0 ? 'auto' : index === 1 ? 'auto' : 'auto', // Mantener la proporción
+                    objectFit: 'contain', // Para que la imagen mantenga sus proporciones
+                  }}
                 />
                 <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
                 <Typography variant="h4">{auto.brand} {auto.name}</Typography>
@@ -284,7 +360,7 @@ const Estadisticas = () => {
               </CardContent>
             </Card>
           </Grid>
-        ))}
+            ))}
       </Grid>
     </>
   );
@@ -294,6 +370,31 @@ const Estadisticas = () => {
       {renderPodio("Alquileres Totales", estadisticas.total)}
       {renderPodio("Alquileres del Año", estadisticas.anio)}
       {renderPodio("Alquileres del Mes", estadisticas.mes)}
+
+      {/* Botón para hacer scroll hacia arriba con Tooltip */}
+      {showScrollButton && (
+        <Tooltip 
+          title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>} //Tamaño de la leyenda
+          placement="left" 
+          arrow
+        >
+          <Fab
+            color="primary"
+            onClick={scrollToTop}
+            sx={{
+              width: 80, //Ancho del botón
+              height: 80, //Alto del botón
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <KeyboardArrowUp sx={{ fontSize: '2rem' }} /> {/* Tamaño del ícono */}
+          </Fab>
+        </Tooltip>
+      )}
+
     </Box>
   );
 };

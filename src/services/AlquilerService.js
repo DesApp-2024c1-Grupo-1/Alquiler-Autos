@@ -8,7 +8,9 @@ export const registrarAlquiler = async (alquiler) => {
       const response = await axios.post(url, alquiler)    
       console.log(response)
       return response.data;
+      
     } catch (error) {
       console.error(error.response.data)
+
     }
   }

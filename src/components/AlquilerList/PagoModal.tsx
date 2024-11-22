@@ -11,7 +11,7 @@ import {
   Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 import { registrarPago } from '../../services/EventosService';
 
 interface PaymentModalProps {
@@ -21,15 +21,46 @@ interface PaymentModalProps {
 }
 
 export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("0");
+  const [rawAmount, setRawAmount] = useState<string>("0"); // Para manejar la entrada sin formateo
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    setAmount(alquiler.saldoPendiente);
+    const initialAmount = alquiler.saldoPendiente.toFixed(2).replace(".", ","); // Inicializa con el saldo pendiente formateado como string
+    setAmount(formatCurrency(alquiler.saldoPendiente));
+    setRawAmount(initialAmount);
   }, [isOpen]);
+
+  const parseToNumber = (value: string): number => {
+    return parseFloat(value.replace(/\./g, "").replace(",", ".").replace(/[^\d.-]/g, ""));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/[^\d.,]/g, ""); // Permitir solo números, comas y puntos
+    setRawAmount(rawValue);
+
+    const numericValue = parseToNumber(rawValue);
+
+    if (!isNaN(numericValue)) {
+      if (numericValue > alquiler.saldoPendiente) {
+        setError(true);
+      } else {
+        setError(false);
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    // Formatear al salir del campo de texto
+    const numericValue = parseToNumber(rawAmount);
+    setAmount(formatCurrency(numericValue));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nuevoPago = await registrarPago(alquiler.id, amount);
+
+    const numericAmount = parseToNumber(rawAmount); // Convierte el valor formateado a número
+    const nuevoPago = await registrarPago(alquiler.id, numericAmount);
     alquiler.pagos.push(nuevoPago);
     alquiler.saldoPendiente -= nuevoPago.monto;
     onClose();
@@ -52,11 +83,9 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
             <Typography variant="body2" color="text.secondary">
               Monto total
             </Typography>
-            <Typography variant="h6">
-              {formatCurrency(alquiler.precioFinal)}
-            </Typography>
+            <Typography variant="h6">{formatCurrency(alquiler.precioFinal)}</Typography>
           </Box>
-          
+
           <Box sx={{ mb: 3 }}>
             <Typography variant="body2" color="text.secondary">
               Saldo pendiente
@@ -69,17 +98,18 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
           <TextField
             fullWidth
             label="Monto a pagar"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            inputProps={{ max: alquiler.saldoPendiente }}
+            value={rawAmount}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={error}
+            helperText={error ? `El monto no puede exceder ${formatCurrency(alquiler.saldoPendiente)}` : ""}
             required
           />
         </DialogContent>
 
         <DialogActions>
           <Button onClick={onClose}>Cancelar</Button>
-          <Button type="submit" variant="contained" disabled={amount <= 0}>
+          <Button type="submit" variant="contained" disabled={error || parseToNumber(rawAmount) <= 0}>
             Confirmar Pago
           </Button>
         </DialogActions>

@@ -265,10 +265,15 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                         <MenuItem value="3">3</MenuItem>
                         <MenuItem value="4">4</MenuItem>
                         <MenuItem value="5">5</MenuItem>
+                        <MenuItem value="6">6</MenuItem>
+                        <MenuItem value="7">7</MenuItem>
+                        <MenuItem value="8">8</MenuItem>
+                        <MenuItem value="9">9</MenuItem>
+                        <MenuItem value="10">10</MenuItem>
                     </Select>
                 </FormControl>
                 
-                <TextField
+                {/* <TextField
                   autoFocus
                   required
                   margin="dense"
@@ -280,7 +285,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                   variant="standard"
                   value={formValues.patente}
                   onChange={(e) => setFormValues({...formValues, patente: e.target.value })}
-                />
+                /> */}
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>

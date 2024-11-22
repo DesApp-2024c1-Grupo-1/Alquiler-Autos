@@ -15,17 +15,22 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 
 //Componente principal con la logica de la Card
-export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome}) {
+export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome }) {
+  const configCard = isHomePage
+    ? { justifyContent: 'space-between', height: '100%' }
+    : {
+        backgroundColor: "#e4e9f0",
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+      };
 
-  const configCard = isHomePage ?
-    { justifyContent: 'space-between', height: '100%' } :
-    { backgroundColor: "#e4e9f0", display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' };
-
-  const cardReservedStyle = car.reservado ? { opacity: 0.5, color: "black" } : {};
+  const cardOverlayStyle = car.reservado || car.enReparacion ? { opacity: 0.5, color: "black" } : {};
 
   return (
     <Card sx={configCard}>
-      {isHomePage && !car.reservado ? (
+      {isHomePage && !car.reservado && !car.enReparacion ? (
         <>
           <Box style={{ textDecoration: 'none' }}>
             <CardActionArea sx={{ color: 'blue' }}>
@@ -35,17 +40,19 @@ export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome}) 
             </CardActionArea>
           </Box>
 
-          <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} editCarFromHome={editCarFromHome}/>
+          <CarCardBotones car={car} deleteCarFromHome={deleteCarFromHome} editCarFromHome={editCarFromHome} />
         </>
       ) : (
-        <Box style={cardReservedStyle}>
+        <Box style={cardOverlayStyle}>
           <CarCardContent car={car} />
           {car.reservado && <h2 style={{ margin: 0, textAlign: "center" }}>RESERVADO</h2>}
+          {car.enReparacion && (
+            <h2 style={{ margin: 0, textAlign: "center", color: "darkred" }}>EN TALLER</h2>
+          )}
         </Box>
-
       )}
     </Card>
-  )
+  );
 }
 
 //Contenido de la card comun para todas las apariciones de la Card

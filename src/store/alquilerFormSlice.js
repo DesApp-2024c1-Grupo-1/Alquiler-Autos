@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  fechaRetiro: new Date().toString(),
+  fechaRetiro: new Date(new Date().setDate(new Date().getDate() + 1)).setHours(new Date().getHours() + 1, 0, 0, 0),
   lugarRetiro: "",
-  fechaDevolucion: new Date().toString(),
+  fechaDevolucion: new Date(new Date().setDate(new Date().getDate() + 2)).setHours(new Date().getHours() + 1, 0, 0, 0),
   lugarDevolucion: "",
   precioFinal: "",
   car: "",
