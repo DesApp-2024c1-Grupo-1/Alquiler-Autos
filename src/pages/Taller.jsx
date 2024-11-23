@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Button, Typography, Box, Grid, Dialog, DialogTitle, DialogContent, 
-    DialogActions, TextField 
+import {
+    Button, Typography, Box, Grid, Dialog, DialogTitle, DialogContent,
+    DialogActions, TextField
 } from '@mui/material';
 import { getAllCarsAvailable } from "../services/CarsService";
-import {registrarReparacion} from "../services/tallerService";
+import { registrarReparacion } from "../services/tallerService";
 import faviconTaller from '../assets/faviconTaller.png';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { es } from "date-fns/locale";
 
 function Taller() {
     const [cars, setCars] = useState([]);
@@ -14,17 +18,6 @@ function Taller() {
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
     const [razon, setRazon] = useState('');
-
-    // Obtener la fecha actual en formato YYYY-MM-DD
-    const getTodayDate = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes comienza desde 0
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const todayDate = getTodayDate();
 
     //Icono de la página en la pestaña del navegador.
     useEffect(() => {
@@ -150,25 +143,37 @@ function Taller() {
             <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ mt: 1 }}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        fullWidth
-                        label="Fecha de Entrada"
-                        type="date"
-                        value={entryDate}
-                        onChange={(e) => setEntryDate(e.target.value)}
-                        sx={{ mb: 2, mt: 2 }}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ min: todayDate }} // Validación para no permitir fechas pasadas
-                    />
-                    <TextField
-                        fullWidth
-                        label="Fecha de Salida"
-                        type="date"
-                        value={exitDate}
-                        onChange={(e) => setExitDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ min: entryDate || todayDate }} // No permitir fechas antes de la fecha de entrada
-                    />
+                    <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        adapterLocale={es}
+                    >
+                        <MobileDateTimePicker
+                            label="Fecha de Entrada"
+                            value={entryDate}
+                            onChange={(newEntryDate) => setEntryDate(newEntryDate)}
+                            sx={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                marginTop: "10px",
+                            }}
+                            disablePast
+                            minutesStep={30}
+                        />
+
+                    <MobileDateTimePicker
+                            label="Fecha de Entrada"
+                            value={exitDate}
+                            onChange={(newExitDate) => setExitDate(newExitDate)}
+                            sx={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                marginTop: "10px",
+                            }}
+                            disablePast
+                            minutesStep={30}
+                        />
+                    </LocalizationProvider>
+
                     <TextField
                         fullWidth
                         label="Razón del Mantenimiento"
@@ -177,7 +182,7 @@ function Taller() {
                         multiline
                         rows={3}
                         placeholder="Escribe la razón del mantenimiento..."
-                        sx={{ mb: 2 ,mt:2}}
+                        sx={{ mb: 2, mt: 2 }}
                     />
                 </DialogContent>
                 <DialogActions>
