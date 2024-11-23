@@ -1199,6 +1199,9 @@ function AgendaPage() {
                 value={montoPago}
                 onChange={(e) => setMontoPago(e.target.value)}
                 style={{ marginRight: 16, width: 225 }}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                }}
               />
               <FormControlLabel
                 control={
