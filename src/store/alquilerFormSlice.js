@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  fechaRetiro: new Date(new Date().setDate(new Date().getDate() + 1)).setHours(new Date().getHours() + 1, 0, 0, 0),
+  fechaRetiro: fechaActualDiaSiguienteHoraSiguiente(),
   lugarRetiro: "",
-  fechaDevolucion: new Date(new Date().setDate(new Date().getDate() + 2)).setHours(new Date().getHours() + 1, 0, 0, 0),
+  fechaDevolucion: fechaActualDiaSiguienteHoraSiguiente(),
   lugarDevolucion: "",
   precioFinal: "",
   car: "",
@@ -69,6 +69,14 @@ function diffDeDias(fecha1, fecha2) {
 
   return Math.max(1, dias);
 
+}
+
+function fechaActualDiaSiguienteHoraSiguiente(){
+  const dia = new Date();
+  dia.setDate(dia.getDate() + 1);
+  dia.setHours(dia.getHours() + 1, 0, 0, 0);
+
+  return dia;
 }
 
 export const { calculateCantDias, calculatePrecioFinal, editCliente, newAlquiler, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } = alquilerFormSlice.actions;
