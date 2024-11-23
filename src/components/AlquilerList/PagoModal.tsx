@@ -8,7 +8,8 @@ import {
   IconButton,
   Typography,
   TextField,
-  Box
+  Box,
+  InputAdornment
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { formatCurrency } from '../../utils/formatters';
@@ -104,6 +105,9 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
             error={error}
             helperText={error ? `El monto no puede exceder ${formatCurrency(alquiler.saldoPendiente)}` : ""}
             required
+            InputProps={{
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+            }}
           />
         </DialogContent>
 
