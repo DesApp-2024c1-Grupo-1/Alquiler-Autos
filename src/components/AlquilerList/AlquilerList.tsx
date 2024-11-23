@@ -28,7 +28,7 @@ import { PaymentModal } from './PagoModal';
 import { PaymentHistoryModal } from './PagoHistoryModal';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 
-export function AlquilerList({alquileres}) {
+export function AlquilerList({ alquileres }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'car' | 'client'>('all');
   const [selectedAlquiler, setSelectedAlquiler] = useState(null);
@@ -39,14 +39,18 @@ export function AlquilerList({alquileres}) {
 
   const filteredAlquilers = alquileresOrdenados.filter((alquiler) => {
     if (searchTerm === '') return true;
-    
+
     switch (filterType) {
       case 'car':
-        return alquiler.car?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               alquiler.car?.patente.toLowerCase().includes(searchTerm.toLowerCase());
+        return (
+          alquiler.car?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          alquiler.car?.patente.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       case 'client':
-        return alquiler.cliente?.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               alquiler.cliente?.documento.includes(searchTerm);
+        return (
+          alquiler.cliente?.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          alquiler.cliente?.documento.includes(searchTerm)
+        );
       default:
         return true;
     }
@@ -55,7 +59,6 @@ export function AlquilerList({alquileres}) {
   return (
     <Container sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
-        
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
             fullWidth
@@ -69,8 +72,9 @@ export function AlquilerList({alquileres}) {
                 </InputAdornment>
               ),
             }}
+            disabled={filterType === 'all'} // Deshabilitar si el filtro es "Todos"
           />
-          
+
           <Select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as 'all' | 'car' | 'client')}
