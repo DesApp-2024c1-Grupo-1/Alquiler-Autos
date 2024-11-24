@@ -209,7 +209,7 @@ function Taller() {
                         rows={3}
                         placeholder="Escribe la razón del mantenimiento..."
                         sx={{ mb: 2, mt: 2 }}
-                        sx={{ mb: 2, mt: 2 }}
+                        
                     />
                 </DialogContent>
                 <DialogActions>
