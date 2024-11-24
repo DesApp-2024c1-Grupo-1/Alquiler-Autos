@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'; 
-import { 
-    Button, Typography, Box, Grid, Dialog, DialogTitle, DialogContent, 
-    DialogActions, TextField, Skeleton 
+import {
+    Button, Typography, Box, Grid, Dialog, DialogTitle, DialogContent,
+    DialogActions, TextField, Skeleton
 } from '@mui/material';
 import { getAllCarsAvailable } from "../services/CarsService";
-import { registrarReparacion } from "../services/tallerService";
+import {  registrarReparacion  } from "../services/tallerService";
 import faviconTaller from '../assets/faviconTaller.png';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { es } from "date-fns/locale";
 
 function Taller() {
     const [cars, setCars] = useState([]);
@@ -204,6 +208,7 @@ function Taller() {
                         multiline
                         rows={3}
                         placeholder="Escribe la razón del mantenimiento..."
+                        sx={{ mb: 2, mt: 2 }}
                         sx={{ mb: 2, mt: 2 }}
                     />
                 </DialogContent>
