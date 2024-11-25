@@ -109,7 +109,6 @@ function Taller() {
                       });
                     closePopup();
                 } else {
-                    closePopup();
                     const fechasConflictivas = availability.events
                     .map(e => formatearDateTime(e.start) + " - " + e.momento)
                     .join("<br>");
@@ -210,7 +209,7 @@ function Taller() {
                 )}
             </Grid>
 
-            <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
+            <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth style={{ zIndex: 1000 }}>
                 <DialogTitle sx={{ mt: 1 }}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
