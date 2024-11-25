@@ -1,53 +1,52 @@
-import React, { useCallback, useEffect, useState } from "react";
 import {
-  Box, Card, Grid, Stack, Typography, TextField,
-   InputAdornment, Button, Autocomplete
+  Autocomplete,
+  Box,
+  Button,
+  Card, Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography
 } from "@mui/material";
-import { getCarById } from "../services/CarsService.js";
 import { blueGrey } from "@mui/material/colors";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
+import { getCarById } from "../services/CarsService.js";
 
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import { useDispatch, useSelector } from "react-redux";
-import { calculateCantDias, calculatePrecioFinal, editFechaRetiro, editLugarRetiro, editFechaDevolucion, editLugarDevolucion, editPrecioFinal, editAuto } from "../store/alquilerFormSlice.js";
-import { enGB } from 'date-fns/locale';
 import { es } from 'date-fns/locale';
+import { useDispatch, useSelector } from "react-redux";
+import { calculateCantDias, calculatePrecioFinal, editAuto, editFechaDevolucion, editFechaRetiro, editLugarDevolucion, editLugarRetiro, editPrecioFinal } from "../store/alquilerFormSlice.js";
 
 import AddClientDialog from '../components/AddClientDialog.jsx';
 
-import { CarCard } from "../components/CarCard.jsx";
-// Lista de lugares predefinidos para los campos "Lugar de Retiro" y "Lugar de Devolución".
-import { lugaresFijos } from "../components/Filtros.jsx";
 import faviconRegistrarAlquiler from '../assets/faviconRegistrarAlquiler.png';
+import { CarCard } from "../components/CarCard.jsx";
+import { lugaresFijos } from "../components/Filtros.jsx";
 
 export function FormAlquiler({ car }) {
 
   const dispatch = useDispatch();
   const formAlquiler = useSelector(state => state.alquiler);
-
   const [retiroValido, setRetiroValido] = useState(!!formAlquiler.fechaRetiro);
   const [devolucionValido, setDevolucionValido] = useState(!!formAlquiler.fechaDevolucion);
   const [lugarRetiroValido, setLugarRetiroValido] = useState(!!formAlquiler.lugarRetiro);
   const [lugarDevolucionValido, setLugarDevolucionValido] = useState(!!formAlquiler.lugarDevolucion);
   const [activeButton, setButton] = useState()
 
-  //Icono de la página en la pestaña del navegador.
   useEffect(() => {
-    //Cambiar dinámicamente el favicon
     const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
     favicon.rel = 'icon';
     favicon.href = faviconRegistrarAlquiler; 
     document.head.appendChild(favicon);
 
-    //Limpia el efecto al desmontar el componente, si es necesario
     return () => {
-        favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+        favicon.href = '/favicon.ico';
     };
-}, []); //Solo se ejecuta al montar la página
+}, []);
 
 
   useEffect(() => {
@@ -59,7 +58,6 @@ export function FormAlquiler({ car }) {
 
 
   useEffect(() => {
-    // Actualiza el estado del botón considerando los campos de lugar
     setButton(retiroValido && devolucionValido && lugarRetiroValido && lugarDevolucionValido);
   }, [retiroValido, devolucionValido, lugarRetiroValido, lugarDevolucionValido]);
 
@@ -108,8 +106,6 @@ export function FormAlquiler({ car }) {
     }
   }, [errorDevolucion]);
 
-
-  //Manteniene los valores ingresados por el usuario
   const handleLugarRetiroChange = (event, newValue) => {
     dispatch(editLugarRetiro(newValue));
     setLugarRetiroValido(!!newValue);
@@ -172,12 +168,11 @@ export function FormAlquiler({ car }) {
           <Grid item xs={12} md={6}>
           <Autocomplete
               freeSolo
-              options={lugaresFijos} //Usa la lista de lugares predefinidos
+              options={lugaresFijos}
               value={formAlquiler.lugarRetiro || ''}
               onInputChange={(event, newValue) => {
-                //Filtra los caracteres permitidos: letras, números, tildes, y espacios
-                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier cosa que no sea letras, números, tildes o espacios
-                handleLugarRetiroChange(event, filteredValue); //Almacena el lugar de retiro
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, '');
+                handleLugarRetiroChange(event, filteredValue);
               }} 
               renderInput={(params) => (
                 <TextField
@@ -191,7 +186,7 @@ export function FormAlquiler({ car }) {
                     onKeyPress: (event) => {
                       //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
                       if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        event.preventDefault();
                       }
                     },
                   }}
@@ -204,12 +199,12 @@ export function FormAlquiler({ car }) {
           <Grid item xs={12} md={6}>
             <Autocomplete
               freeSolo
-              options={lugaresFijos} //Usa la lista de lugares predefinidos
+              options={lugaresFijos}
               value={formAlquiler.lugarDevolucion || ''}
               onInputChange={(event, newValue) => {
                 //Filtra los caracteres permitidos: letras, números, tildes, y espacios
-                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier cosa que no sea letras, números, tildes o espacios
-                handleLugarDevolucionChange(event, filteredValue); //Almacena el lugar de devolución
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, '');
+                handleLugarDevolucionChange(event, filteredValue);
               }} 
               renderInput={(params) => (
                 <TextField
@@ -223,7 +218,7 @@ export function FormAlquiler({ car }) {
                     onKeyPress: (event) => {
                       //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
                       if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        event.preventDefault();
                       }
                     },
                   }}
@@ -241,7 +236,7 @@ export function FormAlquiler({ car }) {
                       dispatch(editFechaRetiro(newValue.toString()))
                     }}
                     disablePast
-                    minutesStep={30} //Horarios cada 30 minutos
+                    minutesStep={30}
                     onError={(newError) => {handleFechasError(newError, 'retiro')}}
                     onAccept={() => {
                       setRetiroValido(true)
@@ -264,7 +259,7 @@ export function FormAlquiler({ car }) {
                       dispatch(editFechaDevolucion(newValue.toString()))
                     }}
                     disablePast
-                    minutesStep={30} //Horarios cada 30 minutos
+                    minutesStep={30}
                     minDate={new Date(formAlquiler.fechaRetiro)}
                     onError={(newError) => {handleFechasError(newError, 'devolucion')}}
                     slotProps={{

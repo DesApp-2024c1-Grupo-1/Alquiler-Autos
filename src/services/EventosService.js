@@ -68,7 +68,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
   export async function eliminarAlquiler(idAlquiler) {
     try {
-      const url = apiUrl + `/alquiler/${idAlquiler}`; // Usar idAlquiler en la URL
+      const url = apiUrl + `/alquiler/${idAlquiler}`;
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -76,14 +76,13 @@ const apiUrl = import.meta.env.VITE_API_URL;
         },
       });
   
-      // Verificar si la respuesta fue exitosa
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Error: ${response.status} - ${errorText}`);
       }
   
       console.log('Alquiler eliminado con éxito.');
-      return true; // Retornar true en caso de éxito
+      return true;
     } catch (error) {
       console.error('Error al eliminar el alquiler:', error);
       throw error;

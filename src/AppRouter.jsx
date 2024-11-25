@@ -14,14 +14,11 @@ export function AppRouter() {
     <Routes>
       <Route path='/reserve/*' element={<PageAlquiler />} />
       <Route path='/home' element={<HomePage />} />
-      <Route path='/' element={<HomePage />} />
-      <Route path='/home' element={<HomePage />} />
       <Route path='/taller' element={<Taller />} />
       <Route path='/agenda' element={<Agenda />} />
       <Route path='/estadisticas' element={<Estadisticas />} />
-      <Route path='/registrarPago' element={<RegistrarPago />} />
-      <Route path='/login' element={<Login />} />
       <Route path='/alquileres' element={<AlquileresPage />} />
+      <Route path='/' element={<HomePage />} />
       <Route path='*' element={<HomePage />} />
       
     </Routes>

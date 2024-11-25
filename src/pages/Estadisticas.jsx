@@ -1,189 +1,45 @@
-// import React, { useState, useEffect, useCallback } from 'react';
-// import axios from 'axios';
-// import { Carousel } from 'react-responsive-carousel';
-// import "react-responsive-carousel/lib/styles/carousel.min.css"; // Importa los estilos
-// import { useAlquileres } from '../services/ListaDeAlquileresService'; 
-
-// export function Estadisticas() {
-//     const allAlquileres = useAlquileres(); //Usa la funcion para obtener los alquileres
-//     const [datosEstadisticas, setDatosEstadisticas] = useState([]);
-
-//     useEffect(() => {
-//         async function fetchDatos() {
-//             if (allAlquileres.length > 0) { //Solo procesar si hay datos
-//                 const datos = await procesarDatosEstadisticas(allAlquileres);
-//                 console.log("Datos procesados:", datos);
-//                 setDatosEstadisticas(datos);
-//             }
-//         }
-
-//         fetchDatos();
-//     }, [allAlquileres]); //Ejecutar efecto cuando se actualicen los alquileres
-
-    
-//     const obtenerAutoMasAlquilado = (alquileres) => {
-//         const autosAlquilados = {};
-//         alquileres.forEach(alquiler => {
-//             const carId = alquiler.car?.id;
-//             if (carId) {
-//                 autosAlquilados[carId] = (autosAlquilados[carId] || 0) + 1;
-//             }
-//         });
-
-//         let autoMasAlquiladoId = null;
-//         let maxVecesAlquilado = 0;
-//         Object.keys(autosAlquilados).forEach((carId) => {
-//             if (autosAlquilados[carId] > maxVecesAlquilado) {
-//                 maxVecesAlquilado = autosAlquilados[carId];
-//                 autoMasAlquiladoId = carId;
-//             }
-//         });
-
-//         return autoMasAlquiladoId;
-//     };
-
-//     const procesarDatosEstadisticas = async (alquileres) => {
-//         const mesActual = new Date().getMonth() + 1;
-//         const anioActual = new Date().getFullYear();
-
-//         const alquileresMesActual = alquileres.filter(alquiler => {
-//             const fechaAlquiler = new Date(alquiler.fechaRetiro);
-//             return (fechaAlquiler.getMonth() + 1 === mesActual && fechaAlquiler.getFullYear() === anioActual);
-//         });
-
-//         const alquileresAnioActual = alquileres.filter(alquiler => {
-//             const fechaAlquiler = new Date(alquiler.fechaRetiro);
-//             return (fechaAlquiler.getFullYear() === anioActual);
-//         });
-
-//         const autoMasAlquiladoTotalId = obtenerAutoMasAlquilado(alquileres);
-//         const autoMasAlquiladoMesId = obtenerAutoMasAlquilado(alquileresMesActual);
-//         const autoMasAlquiladoAnioId = obtenerAutoMasAlquilado(alquileresAnioActual);
-
-//         // Obtener detalles de los autos más alquilados
-//         const getAutoDetails = async (carId) => {
-//             if (!carId) return { name: "No disponible", image: null };
-//             const response = await axios.get(`http://localhost:3000/car/${carId}`); // Cambia la URL según tu API
-//             return { name: response.data.name, image: response.data.image };
-//         };
-
-//         const [autoTotal, autoMes, autoAnio] = await Promise.all([
-//             getAutoDetails(autoMasAlquiladoTotalId),
-//             getAutoDetails(autoMasAlquiladoMesId),
-//             getAutoDetails(autoMasAlquiladoAnioId)
-//         ]);
-
-
-
-//         const datos = [
-//             {
-//                 image: autoTotal.image || 'https://via.placeholder.com/400/FF5733/FFFFFF?text=Total+Alquileres',
-//                 title: 'Alquileres Totales',
-//                 cantidad: `Cantidad de alquileres: ${alquileres.length}`,
-//                 mas: `${autoTotal.name}`,
-//                 dias: `Días totales de alquiler: ${alquileres.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
-//                 ganancia: `Ganancia total ($): ${alquileres.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
-//             },
-//             {
-//                 image: autoAnio.image || 'https://via.placeholder.com/400/33FF57/FFFFFF?text=Alquileres+del+Año',
-//                 title: 'Alquileres del Año',
-//                 cantidad: `Cantidad de alquileres: ${alquileresAnioActual.length}`,
-//                 mas: `${autoAnio.name}`,
-//                 dias: `Días totales de alquiler: ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
-//                 ganancia: `Ganancia total ($): ${alquileresAnioActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`,
-//             },
-//             {
-//                 image: autoMes.image || 'https://via.placeholder.com/400/3357FF/FFFFFF?text=Alquileres+del+Mes',
-//                 title: 'Alquileres del Mes',
-//                 cantidad: `cantidad de alquileres: ${alquileresMesActual.length}`,
-//                 mas: `${autoMes.name}`,
-//                 dias: `Días totales de alquiler: ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.cantidadDias, 0)}`,
-//                 ganancia: `Ganancia total ($): ${alquileresMesActual.reduce((total, alquiler) => total + alquiler.precioFinal, 0)}`
-//             },
-//         ];
-
-//         setDatosEstadisticas(datos);
-//         return datos;
-//     };
-
-//     return (
-//         <div style={{ maxWidth: '600px', margin: 'auto' }}>
-//             {datosEstadisticas.length > 0 ? (
-//                 <Carousel showThumbs={false} showArrows={true} infiniteLoop={true} useKeyboardArrows>
-//                     {datosEstadisticas.map((data, index) => (
-//                         <div key={index} style={{ padding: '20px', textAlign: 'center' }}>
-//                             {data.image ? (
-//                                 <img src={data.image} alt={data.title} style={{ width: '100%', borderRadius: '8px' }} />
-//                             ) : (
-//                                 <div style={{ height: '200px', backgroundColor: '#ccc', borderRadius: '8px' }}>
-//                                     <p>No image available</p>
-//                                 </div>
-//                             )}
-//                             <h1>{data.mas}</h1>
-//                             <h2>{data.title}</h2>
-//                             <p>{data.cantidad}</p>
-//                             <p>{data.dias}</p>
-//                             <p>{data.ganancia}</p>
-                            
-//                         </div>
-//                     ))}
-//                 </Carousel>
-//             ) : (
-//                 <h3>Cargando estadísticas...</h3> 
-//             )}
-//         </div>
-//     );
-// }
-
-// export default Estadisticas;
-
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from '@mui/material'; //Fab y Tooltip para el boton.
-import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
+import { Box, Typography, Grid, Card, CardContent, Fab, Tooltip, Skeleton } from '@mui/material';
+import { KeyboardArrowUp } from '@mui/icons-material';
 import axios from 'axios';
 import { useAlquileres } from '../services/ListaDeAlquileresService'; 
 import faviconEstadisticas from '../assets/faviconEstadisticas.png';
-import { orderBy } from 'lodash';
 
 const Estadisticas = () => {
-  const allAlquileres = useAlquileres(); // Obtener los alquileres
+  const allAlquileres = useAlquileres();
   const [estadisticas, setEstadisticas] = useState({
     total: [],
     anio: [],
     mes: []
   });
-  const [isLoading, setIsLoading] = useState(true); // Nuevo estado para controlar el loading
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  //Icono de la página en la pestaña del navegador.
   useEffect(() => {
-      //Cambiar dinámicamente el favicon
       const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
       favicon.rel = 'icon';
       favicon.href = faviconEstadisticas;
       document.head.appendChild(favicon);
 
-      //Limpia el efecto al desmontar el componente, si es necesario
       return () => {
-          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+          favicon.href = '/favicon.ico';
       };
-  }, []); //Solo se ejecuta al montar la página
+  }, []);
 
   useEffect(() => {
     async function fetchDatos() {
       if (allAlquileres.length > 0) {
-        setIsLoading(true); // Activar estado de carga
+        setIsLoading(true);
         const datos = await procesarDatosEstadisticas(allAlquileres);
         setEstadisticas(datos);
-        setIsLoading(false); // Desactivar estado de carga
+        setIsLoading(false);
       }
     }
 
     fetchDatos();
   }, [allAlquileres]);
 
-  //Effect para controlar la visibilidad del botón de scroll
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.scrollY > 200);
@@ -192,7 +48,6 @@ const Estadisticas = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //Función para hacer scroll hacia arriba
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -215,12 +70,10 @@ const Estadisticas = () => {
       }
     });
 
- // Ordenar los autos por ganancia en orden descendente
  const autosOrdenados = Object.entries(autosAlquilados).sort(
   (a, b) => b[1].ganancia - a[1].ganancia
 );
 
-// Tomar los tres primeros autos del ranking
 const topTres = autosOrdenados.slice(0, 3).map(([carId, datos]) => ({
   carId,
   ...datos,
@@ -252,8 +105,6 @@ return topTres;
     const getAutoDetails = async (carId) => {
       if (!carId) return { name: "No disponible", brand: "No disponible", image: null };
 
-      //FIX TEMPORAL
-      // const response = await axios.get( apiUrl + `/car/${carId}`);
       const response = await axios.get( apiUrl + `/withdeleted/car/${carId}`);
 
       return { name: response.data.name, brand: response.data.brand, image: response.data.image };
@@ -341,9 +192,9 @@ return topTres;
                   style={{
                     borderRadius: '8px',
                     marginBottom: '10px',
-                    maxWidth: index === 0 ? '100%' : index === 1 ? '80%' : '60%', // Ajuste de tamaño de la imagen
-                    height: index === 0 ? 'auto' : index === 1 ? 'auto' : 'auto', // Mantener la proporción
-                    objectFit: 'contain', // Para que la imagen mantenga sus proporciones
+                    maxWidth: index === 0 ? '100%' : index === 1 ? '80%' : '60%',
+                    height: index === 0 ? 'auto' : index === 1 ? 'auto' : 'auto',
+                    objectFit: 'contain',
                   }}
                 />
                 <Typography variant={index === 0 ? 'h4' : 'h5'}>{index + 1}º Puesto </Typography>
@@ -371,10 +222,9 @@ return topTres;
       {renderPodio("Alquileres del Año", estadisticas.anio)}
       {renderPodio("Alquileres del Mes", estadisticas.mes)}
 
-      {/* Botón para hacer scroll hacia arriba con Tooltip */}
       {showScrollButton && (
         <Tooltip 
-          title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>} //Tamaño de la leyenda
+          title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>}
           placement="left" 
           arrow
         >
@@ -382,15 +232,15 @@ return topTres;
             color="primary"
             onClick={scrollToTop}
             sx={{
-              width: 80, //Ancho del botón
-              height: 80, //Alto del botón
+              width: 80,
+              height: 80,
               position: 'fixed',
               bottom: 16,
               right: 16,
               zIndex: 1000,
             }}
           >
-            <KeyboardArrowUp sx={{ fontSize: '2rem' }} /> {/* Tamaño del ícono */}
+            <KeyboardArrowUp sx={{ fontSize: '2rem' }} />
           </Fab>
         </Tooltip>
       )}

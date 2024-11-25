@@ -1,39 +1,34 @@
-//import React from 'react'
-
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import * as React from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import * as React from 'react';
 
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { postCar } from '../services/CarsService';
-import Snackbar from '@mui/material/Snackbar';
-import { Alert } from "@mui/material";
-import { useState } from 'react';
-import { Box, CardContent, CardMedia, Grid, Icon, Typography } from "@mui/material";
-import { esNuevo } from "../services/Estadisticas";
-import { blueGrey } from "@mui/material/colors";
-import BuildIcon from '@mui/icons-material/Build';
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import { set } from 'lodash';
-import placeholderImage from '../assets/car-placeholder.jpg';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import BuildIcon from '@mui/icons-material/Build';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import { Alert, Box, CardContent, CardMedia, Grid, Icon, Typography } from "@mui/material";
+import { blueGrey } from "@mui/material/colors";
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import { useState } from 'react';
+import placeholderImage from '../assets/car-placeholder.jpg';
+import { postCar } from '../services/CarsService';
 
 
 
@@ -43,7 +38,7 @@ export default function ButtonAddCar({setAllCars, allCars}) {
 
   const [open, setOpen] = React.useState(false)
   const [openSnack, setOpenSnack] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // Para mostrar mensaje de error
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const [editableCar, setEditableCar] = useState({
@@ -65,7 +60,6 @@ export default function ButtonAddCar({setAllCars, allCars}) {
     setOpen(false);
   };
 
-  // Función que valida si la patente ya existe
   const isPatenteDuplicated = (patente) => {
     return allCars.some(car => car.patente === patente);
   };
@@ -113,8 +107,8 @@ export default function ButtonAddCar({setAllCars, allCars}) {
       </Button>
       <Dialog open={open} onClose={handleClose} PaperProps={{
         sx: {
-          width: '650px', // Ajusta el ancho según sea necesario
-          maxWidth: '90%', // Asegura que no exceda el 90% del ancho de la pantalla
+          width: '650px', 
+          maxWidth: '90%',
         },
       }}>
         <form onSubmit={handleSubmit}>

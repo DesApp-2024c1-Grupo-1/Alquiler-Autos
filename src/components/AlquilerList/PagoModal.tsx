@@ -23,11 +23,11 @@ interface PaymentModalProps {
 
 export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
   const [amount, setAmount] = useState<string>("0");
-  const [rawAmount, setRawAmount] = useState<string>("0"); // Para manejar la entrada sin formateo
+  const [rawAmount, setRawAmount] = useState<string>("0");
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const initialAmount = alquiler.saldoPendiente.toFixed(2).replace(".", ","); // Inicializa con el saldo pendiente formateado como string
+    const initialAmount = alquiler.saldoPendiente.toFixed(2).replace(".", ",");
     setAmount(formatCurrency(alquiler.saldoPendiente));
     setRawAmount(initialAmount);
   }, [isOpen]);
@@ -37,7 +37,7 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^\d.,]/g, ""); // Permitir solo números, comas y puntos
+    const rawValue = e.target.value.replace(/[^\d.,]/g, "");
     setRawAmount(rawValue);
 
     const numericValue = parseToNumber(rawValue);
@@ -52,7 +52,6 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
   };
 
   const handleBlur = () => {
-    // Formatear al salir del campo de texto
     const numericValue = parseToNumber(rawAmount);
     setAmount(formatCurrency(numericValue));
   };
@@ -60,7 +59,7 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const numericAmount = parseToNumber(rawAmount); // Convierte el valor formateado a número
+    const numericAmount = parseToNumber(rawAmount);
     const nuevoPago = await registrarPago(alquiler.id, numericAmount);
     alquiler.pagos.push(nuevoPago);
     alquiler.saldoPendiente -= nuevoPago.monto;

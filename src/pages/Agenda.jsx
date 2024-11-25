@@ -1,25 +1,26 @@
+import { Button, Eventcalendar, formatDate, localeEs, momentTimezone, Popup, setOptions, Toast } from '@mobiscroll/react';
 import '@mobiscroll/react/dist/css/mobiscroll.min.css';
-import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs } from '@mobiscroll/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { momentTimezone } from '@mobiscroll/react';
-import moment from 'moment-timezone';
-import { getEventos, actualizarAlquiler, registrarPago, eliminarAlquiler } from '../services/EventosService';
-import { set, update } from 'lodash';
-import { enGB } from 'date-fns/locale';
-import { es } from 'date-fns/locale';
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import {
-  Box, Card, CardMedia, Grid, Stack, Typography, TextField, OutlinedInput,
-  InputLabel, InputAdornment, FormControl, Modal, FormControlLabel, Checkbox, Autocomplete, List, ListItem, ListItemText
+  Autocomplete,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  List, ListItem, ListItemText,
+  Modal,
+  TextField,
+  Typography
 } from "@mui/material";
-import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
-import { red } from '@mui/material/colors';
-import { lugaresFijos } from "../components/Filtros.jsx";
-import { BotonPago } from '../components/BotonPago.jsx';
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { es } from 'date-fns/locale';
+import moment from 'moment-timezone';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import faviconAgenda from '../assets/faviconAgenda.png';
+import { BotonPago } from '../components/BotonPago.jsx';
+import { lugaresFijos } from "../components/Filtros.jsx";
+import { actualizarAlquiler, eliminarAlquiler, getEventos, registrarPago } from '../services/EventosService';
 
 
 setOptions({
@@ -48,7 +49,6 @@ function AgendaPage() {
     setSelectedDate(newDate);
   };
 
-  //Icono de la página en la pestaña del navegador.
   useEffect(() => {
       //Cambiar dinámicamente el favicon
       const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
@@ -56,20 +56,14 @@ function AgendaPage() {
       favicon.href = faviconAgenda;
       document.head.appendChild(favicon);
 
-      //Limpia el efecto al desmontar el componente, si es necesario
       return () => {
-          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+          favicon.href = '/favicon.ico';
       };
-  }, []); //Solo se ejecuta al montar la página
+  }, []);
 
   useEffect(() => {
     fetchAllEvents()
   }, [fetchAllEvents]);
-
-
-
-
-  
 
   const [appointment, setAppointment] = useState();
   const [appointmentInfo, setAppointmentInfo] = useState('');
@@ -92,27 +86,13 @@ function AgendaPage() {
   const [cargando, setCargando] = useState(false);
   const scrollableRef = useRef(null);
   const [pagosCargados, setPagosCargados] = useState([]);
-
-
-
-
   const [appointmentHistorialPago, setAppointmentHistorialPago] = useState([]);
   const [isHistorialModalOpen, setHistorialModalOpen] = useState(false);
-
-
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     const fetchEventos = async () => {
       const eventos = await getEventos();
-      // Suponiendo que cada evento tiene una propiedad "alquiler" que contiene "pagos"
+      //Verifica si el evento es de tipo alquiler y si tiene pagos
       const pagos = eventos.reduce((acc, evento) => {
         if (evento.alquiler && evento.alquiler.pagos) {
           return acc.concat(evento.alquiler.pagos);
@@ -126,8 +106,6 @@ function AgendaPage() {
     fetchEventos();
   }, []);
 
-
-
   const abrirHistorialModal = () => {
     setHistorialModalOpen(true);
   };
@@ -137,83 +115,36 @@ function AgendaPage() {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const [appointmentPatente, setAppointmentPatente] = useState('null');
   const [isEditDatosCOpen, setEditDatosCOpen] = useState(false);
   const [isEditCustomerModalOpen, setEditCustomerModalOpen] = useState(false);
-
-
-
   const [pagoTotal, setAppointmentPagoTotal] = useState(false);
-
-
-
-
   const [saldoP, setAppointmentSaldoP] = useState('');
-
-
-
-
-
-  const [alquiler, setAlquiler] = useState(null); // Estado para manejar los datos del alquiler
-
+  const [alquiler, setAlquiler] = useState(null);
+  
   const handleCheckboxChange = (event) => {
     setIsTotalChecked(event.target.checked);
     if (event.target.checked) {
-      setMontoPago(saldoP); // Asigno el saldoPendiente
+      setMontoPago(saldoP);
     } else {
       setMontoPago(0);
     }
   };
 
   const [appointmentPago, setAppointmentPago] = useState(false);
-
-
-
-
   const [isTotalChecked, setIsTotalChecked] = useState(false);
-
   const [montoPago, setMontoPago] = useState('');
-
 
   useEffect(() => {
     if (appointmentPago) {
-      // Resetea el campo de monto cuando el modal se abre
       setMontoPago('');
-      // Si es necesario resetear el checkbox también
       setIsTotalChecked(false);
 
       if (appointment && appointment.alquiler) {
-        // Cuando el modal de pago se abre, actualiza el saldo pendiente
         setAppointmentSaldoP(appointment.alquiler.saldoPendiente);
       }
     }
   }, [appointmentPago, appointment]);
-
-
 
   const handlePago = async () => {
     console.log(appointment);
@@ -237,7 +168,6 @@ function AgendaPage() {
       const response = await registrarPago(appointment.alquiler.id, monto);
 
       if (response) {
-        // Actualizar el estado con el nuevo pago agregado
         setAppointments((appointments) =>
           appointments.map((item) =>
             item.alquiler && item.alquiler.id === appointment.alquiler.id
@@ -245,19 +175,17 @@ function AgendaPage() {
                 ...item,
                 alquiler: {
                   ...item.alquiler,
-                  pagos: [...item.alquiler.pagos, response], // Agregar el nuevo pago
-                  saldoPendiente: item.alquiler.saldoPendiente - monto, // Actualizar saldo pendiente
+                  pagos: [...item.alquiler.pagos, response], 
+                  saldoPendiente: item.alquiler.saldoPendiente - monto,
                 },
               }
               : item
           )
         );
-        // Actualizar el saldo pendiente localmente y en el appointment
         const nuevoSaldo = saldoP - monto;
-        console.log('Saldo pendiente actualizado:', nuevoSaldo); // Verificar el valor
-        setAppointmentSaldoP(nuevoSaldo);
+        console.log('Saldo pendiente actualizado:', nuevoSaldo); 
 
-        // También actualizamos el saldoPendiente del alquiler en el appointment
+        setAppointmentSaldoP(nuevoSaldo);
         setAppointment((prev) => ({
           ...prev,
           alquiler: {
@@ -266,10 +194,7 @@ function AgendaPage() {
           },
         }));
 
-        // Cerrar el modal de pagos
         setAppointmentPago(false);
-
-        // Mostrar un mensaje de éxito
         setToastMessage('Pago registrado correctamente');
       }
     } catch (error) {
@@ -280,34 +205,27 @@ function AgendaPage() {
     }
   };
   
-
-  // Función para cargar pagos por página
   const cargarPagos = async (pagina) => {
     setCargando(true);
-    const itemsPorPagina = 10; // Define cuántos elementos cargar por página
+    const itemsPorPagina = 10;
     const inicio = (pagina - 1) * itemsPorPagina;
     const nuevosPagos = appointmentHistorialPago.slice(
       inicio,
       inicio + itemsPorPagina
     );
 
-    // Simula la carga desde un backend si tienes uno:
-    // const nuevosPagos = await getPagosPaginados(pagina, itemsPorPagina);
-
     setPagosCargados((prev) => [...prev, ...nuevosPagos]);
     setCargando(false);
   };
 
-  // Efecto para cargar la primera página de pagos cuando el modal abre
   useEffect(() => {
     if (isHistorialModalOpen) {
-      setPagosCargados([]); // Limpia los pagos cargados previamente
-      setPaginaActual(1); // Reinicia la paginación
-      cargarPagos(1); // Carga la primera página
+      setPagosCargados([]);
+      setPaginaActual(1);
+      cargarPagos(1);
     }
   }, [isHistorialModalOpen]);
 
-  // Detectar scroll infinito
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
 
@@ -316,7 +234,6 @@ function AgendaPage() {
     }
   };
 
-  // Cargar más pagos cuando cambia la página actual
   useEffect(() => {
     if (paginaActual > 1) {
       cargarPagos(paginaActual);
@@ -340,10 +257,10 @@ function AgendaPage() {
     console.log('ID de Alquiler.cliente.id: ', appointment.alquiler.cliente.id);
 
     const alquilerModificado = {
-      ...appointment.alquiler, // Trae todos los datos del alquiler actual
+      ...appointment.alquiler,
       cliente: {
-        ...appointment.alquiler.cliente, // Mantiene los datos del cliente actual
-        ...editDatosC, // Sobrescribe con los nuevos datos del cliente
+        ...appointment.alquiler.cliente,
+        ...editDatosC,
       },
     };
 
@@ -395,9 +312,6 @@ function AgendaPage() {
     setDeleteConfirmOpen(false);
   };
 
-
-
-
   const calcularCantidadDias = (fechaRetiro, fechaDevolucion) => {
     const retiro = new Date(fechaRetiro);
     const devolucion = new Date(fechaDevolucion);
@@ -416,22 +330,18 @@ function AgendaPage() {
 
 
   const handleSaveChanges = async () => {
-    //Validar los campos Lugar de Retiro y Lugar de Devolución
     const isLugarRetiroValid = editData.lugarRetiro.trim().length > 0;
     const isLugarDevolucionValid = editData.lugarDevolucion.trim().length > 0;
-  
-    //Si alguno de los campos es vacío, evitar el guardado y retornar
+
     if (!isLugarRetiroValid || !isLugarDevolucionValid) {
-      //Si el lugar de retiro está vacío, asignar el error
       setEditData((prevData) => ({
         ...prevData,
         lugarRetiro: prevData.lugarRetiro.trim(),
         lugarDevolucion: prevData.lugarDevolucion.trim(),
       }));
-      return; //Detener la ejecución si algún campo está vacío
+      return; 
     }
   
-    //Calcular la cantidad de días y el precio final solo si ambos lugares son válidos
     const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
     const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
   
@@ -456,16 +366,10 @@ function AgendaPage() {
       console.error('Hubo un error al actualizar el alquiler:', error);
     }
   };
-  
-  
-
-
-
 
   const handleCloseEditPopup = () => {
     setEditPopupOpen(false);
   };
-
 
   const [editData, setEditData] = useState({
 
@@ -473,9 +377,8 @@ function AgendaPage() {
     lugarDevolucion: '',
     fechaRetiro: '',
     fechaDevolucion: '',
-    cantidadDias: 0 // Inicialmente en 0, pero se actualizará antes de enviar los datos.
+    cantidadDias: 0
   });
-
 
   const [editDatosC, setEditDatosC] = useState({
     nombre: '',
@@ -558,18 +461,12 @@ function AgendaPage() {
     }
   }, []);
 
-
-
   const handleToastClose = useCallback(() => {
     setToastOpen(false);
   }, []);
 
-
-
   const formattedAppointmentTimeR = appointmentTimeR ? moment(appointmentTimeR).format('DD MMM YYYY HH:mm') : 'N/A';
   const formattedAppointmentTimeD = appointmentTimeD ? moment(appointmentTimeD).format('DD MMM YYYY HH:mm') : 'N/A';
-
-
   const deleteAppointment = useCallback(() => {
     setAppointments((appointments) =>
       appointments.filter((item) => item.data?.car?.patente !== appointmentPatente)
@@ -595,7 +492,6 @@ function AgendaPage() {
     setEditPopupOpen(true);
   }, [appointment]);
   
-
   const AlquilerList = ({ appointments, onEdit, onDelete }) => {
     return (
       <div>
@@ -603,7 +499,6 @@ function AgendaPage() {
           <div key={appointment.id}>
             <p>{appointment.lugarRetiro} - {appointment.lugarDevolucion}</p>
             <p>{appointment.fechaRetiro} - {appointment.fechaDevolucion}</p>
-            {/* Otros detalles del alquiler */}
             <button onClick={() => onEdit(appointment)}>Editar</button>
             <button onClick={() => onDelete(appointment.alquiler.car.patente)}>Eliminar</button>
           </div>
@@ -652,8 +547,6 @@ function AgendaPage() {
 
         />
 
-      {/* PopUp de EventoAlquiler */}
-
         <Popup
           anchor={tooltipAnchor}
           onClose={() => setTooltipOpen(false)}
@@ -669,7 +562,6 @@ function AgendaPage() {
             <div className="mds-tooltip" onMouseEnter={() => { }} onMouseLeave={() => { }}>
               <div className="mds-tooltip-header" style={{ backgroundColor: tooltipColor, padding: 2 }}>
                 <span style={{ marginLeft: '8px' }}>{appointmentInfo}</span>
-                {/*<span className="mbsc-pull-right">{appointmentTime}</span> No tiene utilidad*/}
               </div>
 
               <div className="mbsc-padding">
@@ -691,9 +583,7 @@ function AgendaPage() {
                 </div>
 
                 <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>Cliente</Button>
-
                 <BotonPago setTooltipOpen={setTooltipOpen} setAppointmentPago={setAppointmentPago}></BotonPago>
-
                 <Button color="primary" className="mds-tooltip-button" onClick={editAppointment}>Editar</Button>
                 <Button color="danger" variant="outline" className="mds-tooltip-button mbsc-pull-right" onClick={handleDeleteClick}>Eliminar</Button>
 
@@ -702,8 +592,6 @@ function AgendaPage() {
 
           </div>
         </Popup>
-
-      {/* PopUp de EventoReparacion */}
 
       <Popup
         anchor={tooltipAnchor}
@@ -743,9 +631,6 @@ function AgendaPage() {
           </div>
       </Popup>
 
-
-
-
         <Popup
           isOpen={isDeleteConfirmOpen}
           onClose={handleCancelDelete}
@@ -770,10 +655,6 @@ function AgendaPage() {
             </Box>
           </Box>
         </Popup>
-
-
-
-
 
         <Popup
           isOpen={isCustomerPopupOpen}
@@ -934,9 +815,6 @@ function AgendaPage() {
           duration={5000}
         />
 
-
-
-
         <Modal
           open={isEditPopupOpen}
           onClose={handleCloseEditPopup}
@@ -988,8 +866,7 @@ function AgendaPage() {
                 getOptionLabel={(option) => option}
                 value={editData.lugarRetiro}
                 onInputChange={(event, newInputValue) => {
-                  //Filtra los caracteres permitidos (letras, números, tildes, espacios)
-                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, '');
                   setEditData((prevData) => ({ ...prevData, lugarRetiro: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
@@ -1001,18 +878,18 @@ function AgendaPage() {
                     label="Lugar de Retiro"
                     margin="normal"
                     fullWidth
-                    error={editData.lugarRetiro.trim().length === 0} // Error si lugarRetiro está vacío
+                    error={editData.lugarRetiro.trim().length === 0}
                     helperText={
                       editData.lugarRetiro.trim().length === 0
                         ? "El lugar de retiro es obligatorio"
-                        : "" // Mensaje específico para lugarRetiro
+                        : ""
                     }
                     inputProps={{
                       ...params.inputProps,
                       onKeyPress: (event) => {
                         //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
                         if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                          event.preventDefault();
                         }
                       },
                     }}
@@ -1026,7 +903,7 @@ function AgendaPage() {
                 value={editData.lugarDevolucion}
                 onInputChange={(event, newInputValue) => {
                   //Filtra los caracteres permitidos (letras, números, tildes, espacios)
-                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Elimina cualquier carácter no permitido
+                  const filteredInput = newInputValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, '');
                   setEditData((prevData) => ({ ...prevData, lugarDevolucion: filteredInput }));
                 }}
                 onChange={(event, newValue) =>
@@ -1038,18 +915,18 @@ function AgendaPage() {
                     label="Lugar de Devolución"
                     margin="normal"
                     fullWidth
-                    error={editData.lugarDevolucion.trim().length === 0} // Error si lugarDevolucion está vacío
+                    error={editData.lugarDevolucion.trim().length === 0}
                     helperText={
                       editData.lugarDevolucion.trim().length === 0
                         ? "El lugar de devolución no puede estar vacío"
-                        : "" // Mensaje específico para lugarDevolucion
+                        : "" 
                     }
                     inputProps={{
                       ...params.inputProps,
                       onKeyPress: (event) => {
-                        //Bloquea cualquier tecla que no sea letra, número, tilde o espacio
+                        
                         if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                          event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                          event.preventDefault();
                         }
                       },
                     }}
@@ -1087,7 +964,7 @@ function AgendaPage() {
               onChange={(e) => {
                 const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]*$/; //Solo letras, espacios y tildes
                 if (regex.test(e.target.value)) {
-                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
+                  handleEditDatosCChange(e);
                 }
               }}
               fullWidth
@@ -1099,7 +976,7 @@ function AgendaPage() {
                   : editDatosC.nombre.length < 4
                   ? "El nombre debe tener al menos 4 caracteres"
                   : ""
-              } //Mensaje dinámico según la validación
+              }
             />
             <TextField
               label="Documento"
@@ -1108,7 +985,7 @@ function AgendaPage() {
               onChange={(e) => {
                 const regex = /^[a-zA-Z0-9]*$/; //Permitir solo números y letras
                 if (regex.test(e.target.value)) {
-                  handleEditDatosCChange(e); //Permitir el cambio solo si pasa la validación
+                  handleEditDatosCChange(e);
                 }
               }}
               fullWidth
@@ -1120,7 +997,7 @@ function AgendaPage() {
                   : editDatosC.documento.length < 7
                   ? "El documento debe tener al menos 7 caracteres"
                   : ""
-              } //Mostrar mensaje según el error
+              }
             />
             <TextField
               label="Teléfono"
@@ -1129,7 +1006,7 @@ function AgendaPage() {
               onChange={(e) => {
                 const regex = /^[0-9+]*$/; //Solo números y el símbolo "+"
                 if (regex.test(e.target.value)) {
-                  handleEditDatosCChange(e); //Permitir solo si cumple con la validación
+                  handleEditDatosCChange(e);
                 }
               }}
               fullWidth
@@ -1141,7 +1018,7 @@ function AgendaPage() {
                   : editDatosC.telefono.replace(/\D/g, '').length < 7
                   ? "El número de teléfono debe tener al menos 7 caracteres"
                   : ""
-              } //Mensaje dinámico según la validación
+              } 
             />
             <TextField
               label="Email"
@@ -1155,8 +1032,6 @@ function AgendaPage() {
             <Button color="secondary" onClick={() => setEditCustomerModalOpen(false)}>Cancelar</Button>
           </Box>
         </Modal>
-
-
 
         <Modal
           open={appointmentPago}
@@ -1178,19 +1053,16 @@ function AgendaPage() {
               Pago de Saldo
             </Typography>
 
-            {/* Mostrar saldo original */}
             <div className="payment-popup-item" style={{ padding: '10px' }}>
               <span className="payment-popup-label">Saldo Original:</span>
               <span style={{ paddingLeft: '10px' }}>{pagoTotal}</span>
             </div>
 
-            {/* Mostrar saldo pendiente actualizado */}
             <div className="payment-popup-item" style={{ padding: '10px', marginBottom: '20px' }}>
               <span className="payment-popup-label">Saldo Pendiente:</span>
-              <span style={{ paddingLeft: '10px' }}>{saldoP}</span> {/* saldoP se actualizará automáticamente si está correctamente enlazado */}
+              <span style={{ paddingLeft: '10px' }}>{saldoP}</span>
             </div>
 
-            {/* Campo para introducir el monto a pagar */}
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2, paddingLeft: '10px' }}>
               <TextField
                 label="Cantidad a Pagar"
@@ -1215,7 +1087,6 @@ function AgendaPage() {
               />
             </Box>
 
-
             <Box sx={{ pading: 20, marginTop: 4, paddingLeft: '10px' }}>
               <Button color="primary" onClick={handlePago} style={{ marginRight: 8 }}>
                 Realizar Pagos
@@ -1229,10 +1100,6 @@ function AgendaPage() {
             </Box>
           </Box>
         </Modal>
-
-
-
-
 
 <Modal
         open={isHistorialModalOpen}
@@ -1257,8 +1124,8 @@ function AgendaPage() {
           </Typography>
           <List
             sx={{
-              maxHeight: 300, // Limita la altura para scroll
-              overflowY: "auto", // Habilita el scroll vertical
+              maxHeight: 300,
+              overflowY: "auto",
             }}
             onScroll={handleScroll}
             ref={scrollableRef}
@@ -1275,11 +1142,6 @@ function AgendaPage() {
           </Button>
         </Box>
       </Modal>
-
-
-
-
-      
     </Box>
     </>
   );

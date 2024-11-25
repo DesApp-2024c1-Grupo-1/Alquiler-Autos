@@ -13,8 +13,6 @@ import { esNuevo } from "../services/Estadisticas";
 import DeleteCarDialog from "./DeleteCarDialog";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
-
-//Componente principal con la logica de la Card
 export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome }) {
   const configCard = isHomePage
     ? { justifyContent: 'space-between', height: '100%' }
@@ -55,7 +53,6 @@ export function CarCard({ car, isHomePage, deleteCarFromHome, editCarFromHome })
   );
 }
 
-//Contenido de la card comun para todas las apariciones de la Card
 function CarCardContent({ car }) {
   return (
     <div>
@@ -66,8 +63,7 @@ function CarCardContent({ car }) {
         alt="car image"
         sx={{
           width: '100%',
-          height: '100%', // Asegura que la imagen ocupe todo el espacio disponible
-          //minHeight: '300px', // Altura mínima de la imagen
+          height: '100%', 
           objectFit: 'cover'
         }}
       />
@@ -93,9 +89,6 @@ function CarCardContent({ car }) {
         <Typography gutterBottom variant="h6" component="div" sx={{ color: blueGrey[700] }}>
           {car.name}
         </Typography>
-
-        {/* <Typography variant="body2" color="text.secondary" >          
-            </Typography> */}
 
         <Grid container spacing={1}>
 
@@ -169,7 +162,6 @@ function CarCardContent({ car }) {
 }
 
 
-//Botones Borrar y Eliminar
 function CarCardBotones({ car, deleteCarFromHome, editCarFromHome }) {
 
   return (

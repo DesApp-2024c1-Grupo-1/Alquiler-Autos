@@ -23,7 +23,6 @@ import { useState } from 'react';
 
 export default function ButtonEditCar({ carData, editCarFromCard }) {
 
-    //const {carData} = car
     const [open, setOpen] = React.useState(false);
     const [combustible, setCombustible] = React.useState('');
     const [transmision, setTransmision] = React.useState('');
@@ -43,13 +42,12 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
 
     React.useEffect(() => {
       if (carData) {
-          // Si hay auto, se establece sus como valores iniciales
           setFormValues({
               id: carData.id || '',
               name: carData.name || '',
               brand: carData.brand || '',
               year: carData.year || '',
-              km: carData.km !== undefined ? carData.km : '', // Verifica explícitamente que no sea undefined
+              km: carData.km !== undefined ? carData.km : '',
               //km: carData.km || '',
               color: carData.color || '',
               price: carData.price || '',
@@ -61,7 +59,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
           setAc(carData.ac ? 'Sí' : 'No');
           setCapacidad(carData.capacidad || '');
       }
-  }, [carData]); // Se ejecuta cada vez que carData cambie
+  }, [carData]);
     
 
 
@@ -85,12 +83,11 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
         formJson.ac = ac === 'Sí' ? true : false;
         formJson.capacidad = capacidad;
 
-        // Convierte los Km en un numero antes de enviar
         formJson.km = Number(formJson.km);
     
         console.log("Ultimate JSON: ",formJson);
         putCar(formJson).then(() => {
-        editCarFromCard(formJson);  // Llamada a la función pasada por props
+        editCarFromCard(formJson); 
         setOpenSnack(true);
           handleClose();
         });
@@ -105,7 +102,6 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
   return (
     <React.Fragment>
           <Button variant="outlined" size="small" color="inherit" endIcon={<EditIcon />} sx={{color:blueGrey[700]}} onClick={handleClickOpen}>
-           {/* variant="contained" onClick={handleClickOpen} endIcon={<EditIcon />}> */}
             Editar
           </Button>
           <Dialog open={open} onClose={handleClose}>
@@ -273,19 +269,6 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                     </Select>
                 </FormControl>
                 
-                {/* <TextField
-                  autoFocus
-                  required
-                  margin="dense"
-                  id="patente"
-                  name="patente"
-                  label="Patente"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  value={formValues.patente}
-                  onChange={(e) => setFormValues({...formValues, patente: e.target.value })}
-                /> */}
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>

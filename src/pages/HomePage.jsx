@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, Container, Grid, Fab, Tooltip } from "@mui/material";
-import { KeyboardArrowUp } from '@mui/icons-material'; //Icono para el boton
+import { KeyboardArrowUp } from '@mui/icons-material';
 import { CarCard } from '../components/CarCard.jsx';
 import { getAllCarsAvailable } from "../services/CarsService";
 import Filtros from '../components/Filtros.jsx';
 import ButtonAddCar from "../components/ButtonAddCar.jsx";
-import { NavLink } from "react-router-dom";
-import { set } from "lodash";
 import faviconHome from '../assets/faviconHome.jpg';
 import { Skeleton } from "@mui/material";
 
@@ -19,11 +17,10 @@ export function HomePage() {
   const fetchAllCars = useCallback(async (filtros) => {
     setIsLoading(true);
     try {
-      //Descomentar para usar la Base de Datos
       const obtainedCars = await getAllCarsAvailable(filtros);
       setTimeout(() => {
         setAllCars(obtainedCars);
-        setIsLoading(false); // Espera 5 segundos antes de ocultar el loader
+        setIsLoading(false);
       },1000);
     } catch (error) {
       console.error("Failed to fetch cars:", error);
@@ -33,23 +30,19 @@ export function HomePage() {
       }, 1000);
     } 
   }, []);
-  const [showScrollButton, setShowScrollButton] = useState(false); //Estado para controlar la visibilidad del botón
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  //Icono de la página en la pestaña del navegador.
   useEffect(() => {
-      //Cambiar dinámicamente el favicon
       const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
       favicon.rel = 'icon';
       favicon.href = faviconHome;
       document.head.appendChild(favicon);
 
-      //Limpia el efecto al desmontar el componente, si es necesario
       return () => {
-          favicon.href = '/favicon.ico'; //Restaurar el favicon original, si corresponde
+          favicon.href = '/favicon.ico';
       };
-  }, []); //Solo se ejecuta al montar la página
+  }, []);
 
-  //Effect para controlar la visibilidad del botón de scroll
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.scrollY > 200);
@@ -58,7 +51,6 @@ export function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //Función para hacer scroll hacia arriba
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -73,7 +65,6 @@ export function HomePage() {
   }
 
   const editCarFromCard = (editCar) => {
-    //setAllCars([...allCars, editCar])
     setAllCars(allCars.map(car => car.id === editCar.id ? editCar : car));
   }
 
@@ -96,15 +87,12 @@ export function HomePage() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: '',
-              //  backgroundColor: "whitesmoke", 
               borderRadius: 5,
               pb: 3
             }}>
 
-            {/* <Buscador sx={{ mx: 20, my: 20 }} /> */}
             <ButtonAddCar setAllCars={setAllCars} allCars={allCars} />
             
-            {/* Botón para hacer scroll hacia arriba con Tooltip */}
             {showScrollButton && (
                   <Tooltip 
                     title={<span style={{ fontSize: '1.2rem' }}>Volver arriba</span>} //Tamaño de la leyenda
@@ -115,28 +103,27 @@ export function HomePage() {
                       color="primary"
                       onClick={scrollToTop}
                       sx={{
-                        width: 80, //Ancho del botón
-                        height: 80, //Alto del botón
+                        width: 80,
+                        height: 80,
                         position: 'fixed',
                         bottom: 16,
                         right: 16,
                         zIndex: 1000,
                       }}
                     >
-                      <KeyboardArrowUp sx={{ fontSize: '2rem' }} /> {/* Tamaño del ícono */}
+                      <KeyboardArrowUp sx={{ fontSize: '2rem' }} />
                     </Fab>
                   </Tooltip>
             )}
 
             <Grid container spacing={2} sx={{ mt: '1rem' }}>
               {isLoading ? (
-                // Muestra Skeletons mientras se cargan los datos
                 Array.from(new Array(6)).map((_, index) => (
                   <Grid key={index} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                     <Skeleton
                       variant="rectangular"
-                      height={200} // Altura del Skeleton
-                      animation="wave" // Animación (wave, pulse o false)
+                      height={200}
+                      animation="wave"
                       sx={{ borderRadius: 2 }}
                     />
                     <Skeleton width="80%" sx={{ mt: 1 }} />
@@ -144,7 +131,6 @@ export function HomePage() {
                   </Grid>
                 ))
               ) : allCars && allCars.length > 0 ? (
-                // Renderiza las tarjetas cuando los datos están disponibles
                 allCars.map((carData, index) => (
                   <Grid key={index} item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ px: 2, py: 0 }}>
                     <CarCard
@@ -156,7 +142,6 @@ export function HomePage() {
                   </Grid>
                 ))
               ) : (
-                // Mensaje de fallback si no hay autos
                 <Grid container justifyContent="center" sx={{ height: '100vh', textAlign: 'center' }}>
                   <Box sx={{ p: 2, borderRadius: 1, color: 'grey' }}>
                     <h2>No hay autos disponibles con esos criterios</h2>

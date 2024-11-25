@@ -138,35 +138,28 @@ const Filtros = ({ handleFiltros }) => {
     }
   }, [error]);
 
-  //Maneja los cambios en lugar de retiro
   const handleLugarRetiroChange = (event, newValue) => {
     dispatch(editLugarRetiro(newValue)); 
   };
 
-  //Maneja los cambios en lugar de devolución
   const handleLugarDevolucionChange = (event, newValue) => {
     dispatch(editLugarDevolucion(newValue)); 
   };
 
-  {
-    /* Campo de Lugar de Retiro y Devolucion modificado para usar Autocomplete */
-  }
   return (
     <Box
       sx={{ backgroundColor: "#B3D0FB", height: "100%", p: 3, borderRadius: 5 }}
     >
       <Box>
       <Grid container spacing={2}>
-          {/* Lugar de Retiro */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
-              options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarRetiro || ''} //Maneja el valor actual
+              options={lugaresFijos}
+              value={formAlquiler.lugarRetiro || ''}
               onInputChange={(event, newValue) => {
-                //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
-                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
-                handleLugarRetiroChange(event, filteredValue); //Actualiza el valor del lugar de retiro
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, '');
+                handleLugarRetiroChange(event, filteredValue);
               }}
               renderInput={(params) => (
                 <TextField
@@ -175,14 +168,13 @@ const Filtros = ({ handleFiltros }) => {
                   label="Lugar de Retiro"
                   sx={{
                     backgroundColor: "#B3D0FB",
-                    width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                    width: "100%",
                   }}
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
-                      //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
                       if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        event.preventDefault();
                       }
                     },
                   }}
@@ -191,16 +183,15 @@ const Filtros = ({ handleFiltros }) => {
             />
           </Grid>
 
-          {/* Lugar de Devolución */}
           <Grid item xs={12} sm={6}>
             <Autocomplete
               freeSolo
-              options={lugaresFijos} //Utiliza la misma lista de lugares predefinidos
-              value={formAlquiler.lugarDevolucion || ''} //Maneja el valor actual
+              options={lugaresFijos}
+              value={formAlquiler.lugarDevolucion || ''} 
               onInputChange={(event, newValue) => {
                 //Permitir solo letras, números, y el símbolo de tilde (´), excluyendo el "+"
-                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); //Filtra caracteres no permitidos
-                handleLugarDevolucionChange(event, filteredValue); //Actualiza el valor del lugar de devolución
+                const filteredValue = newValue.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/g, ''); 
+                handleLugarDevolucionChange(event, filteredValue);
               }}
               renderInput={(params) => (
                 <TextField
@@ -209,14 +200,14 @@ const Filtros = ({ handleFiltros }) => {
                   label="Lugar de Devolución"
                   sx={{
                     backgroundColor: "#B3D0FB",
-                    width: "100%", //Asegura que ocupe todo el ancho del Grid item
+                    width: "100%", 
                   }}
                   inputProps={{
                     ...params.inputProps,
                     onKeyPress: (event) => {
                       //Bloquear cualquier tecla que no sea letra, número, tilde o espacio
                       if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ´ ]/.test(event.key) || event.key === '+') {
-                        event.preventDefault(); //Bloquea los caracteres no permitidos, incluyendo "+"
+                        event.preventDefault();
                       }
                     },
                   }}
@@ -242,7 +233,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
-                minutesStep={30} //Horarios cada 30 minutos
+                minutesStep={30}
                 onError={(newError) => {
                   setError(newError);
                 }}
@@ -271,7 +262,7 @@ const Filtros = ({ handleFiltros }) => {
                   width: "100%",
                 }}
                 disablePast
-                minutesStep={30} //Horarios cada 30 minutos
+                minutesStep={30}
                 minDate={new Date(formAlquiler.fechaRetiro)}
                 onError={(newError) => {
                   setError(newError);

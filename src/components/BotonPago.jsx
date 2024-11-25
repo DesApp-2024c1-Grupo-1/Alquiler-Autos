@@ -1,4 +1,4 @@
-import { Button, Eventcalendar, formatDate, Popup, setOptions, Toast, localeEs } from '@mobiscroll/react';
+import { Button} from '@mobiscroll/react';
 
 
 export function BotonPago({setTooltipOpen, setAppointmentPago}) {

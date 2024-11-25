@@ -5,12 +5,8 @@ import { AppRouter } from './AppRouter';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import HomeIcon from '@mui/icons-material/Home';
-import LoginIcon from '@mui/icons-material/Login';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import axios from 'axios'
-
 
 const navArrayLinks = [
   
@@ -27,17 +23,9 @@ const navArrayLinks = [
   {
       title:"Estadisticas", path:"/estadisticas", icon: <LeaderboardIcon />
   },
-  /*
-  {
-      title:"Registrar Pago", path:"/registrarPago", icon: <CurrencyExchangeIcon />
-  },
-  */
   {
       title:"Home", path:"/", icon: <HomeIcon />
   },
-  {
-      title:"Login", path:"/login", icon: <LoginIcon />
-  }
 
 ]
 

@@ -21,7 +21,7 @@ function Taller() {
     const [exitDate, setExitDate] = useState('');
     const [razon, setRazon] = useState('');
     const [vehicleUnavailableDialogOpen, setVehicleUnavailableDialogOpen] = useState(false);
-    const [unavailableDates, setUnavailableDates] = useState([]); // Nuevo estado
+    const [unavailableDates, setUnavailableDates] = useState([]);
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [errorEntryDate, setErrorEntryDate] = React.useState(null);
     const [errorExitDate, setErrorExitDate] = React.useState(null);
@@ -222,7 +222,6 @@ function Taller() {
                                 marginBottom: "20px",
                                 marginTop: "10px",
                                 paddingRight: "10px",
-                                // marginLeft: "1px",
                             }}
                             disablePast
                             minDate={new Date()}
@@ -243,7 +242,6 @@ function Taller() {
                                 marginBottom: "20px",
                                 marginTop: "10px",
                                 paddingRight: "10px",
-                                // marginLeft: "1px",
                             }}
                             disablePast
                             minDate={entryDate}

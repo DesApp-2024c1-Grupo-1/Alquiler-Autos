@@ -12,8 +12,6 @@ export async function getCarById(id){
   }
 };
 
-
-  //Obtiene todos los autos filtrados y que no tienen un alquiler vigende
   export const getAllCarsAvailable = async(filtros) =>{
       try {
         const response = await axios.post(url + '/car/available', filtros);
@@ -34,8 +32,6 @@ export async function getCarById(id){
           throw error;
       }
     }
-
-    
 
     export const postCar = async(car) =>{
       try {

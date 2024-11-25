@@ -1,10 +1,5 @@
-import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText,  } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText,  } from '@mui/material';
 import React from 'react';
-// import ConstructionIcon from '@mui/icons-material/Construction';
-// import EventNoteIcon from '@mui/icons-material/EventNote';
-// import EventBusyIcon from '@mui/icons-material/EventBusy';
-// import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-// import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 function NavListDrawer({navArrayLinks, NavLink, setOpen}) {
     return (

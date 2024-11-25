@@ -1,20 +1,19 @@
-import * as React from 'react';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import CloseIcon from '@mui/icons-material/Close';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { editCliente } from "../store/alquilerFormSlice.js";
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
 import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { set } from 'lodash';
-import {registrarAlquiler} from '../services/AlquilerService.js'
+import { registrarAlquiler } from '../services/AlquilerService.js';
+import { editCliente } from "../store/alquilerFormSlice.js";
 
 
 function AddClientDialog({validated}) {
@@ -40,7 +39,7 @@ function AddClientDialog({validated}) {
     }
 
     const validarNombre = (value = "") => {
-        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]+$/; //Solo letras, espacios y tildes (obligatorio al menos un carácter)
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ´ ]+$/;
         if (!value) {
           setErrorNombre({ error: true, message: "El nombre no puede estar vacío" });
           return false;
@@ -57,7 +56,7 @@ function AddClientDialog({validated}) {
     };
   
     const validarDocumento = (value = "") => {
-        const regex = /^[a-zA-Z0-9]+$/; //Solo letras y números (obligatorio al menos un carácter)
+        const regex = /^[a-zA-Z0-9]+$/;
         if (!value) {
           setErrorDocumento({ error: true, message: "El documento no puede estar vacío" });
           return false;
@@ -74,7 +73,7 @@ function AddClientDialog({validated}) {
     };
   
     const validarTelefono = (value = "") => {
-        const regex = /^[0-9+]+$/; //Solo números y el símbolo "+"
+        const regex = /^[0-9+]+$/;
         if (!value) {
           setErrorTelefono({ error: true, message: "El teléfono no puede estar vacío" });
           return false;
@@ -89,11 +88,11 @@ function AddClientDialog({validated}) {
           return true;
         }
     };
-    //Validar todos los campos antes de enviar
+   
     function validarCampos() {
-        const nombreValido = validarNombre(nombre); //Usar el estado `nombre`
-        const documentoValido = validarDocumento(documento); //Usar el estado `documento`
-        const telefonoValido = validarTelefono(telefono); //Usar el estado `telefono`
+        const nombreValido = validarNombre(nombre); 
+        const documentoValido = validarDocumento(documento); 
+        const telefonoValido = validarTelefono(telefono); 
   
         return nombreValido && documentoValido && telefonoValido;
     }  
@@ -188,11 +187,11 @@ function AddClientDialog({validated}) {
                         name="nombre"
                         label="Nombre y Apellido"
                         type="text"
-                        error={errorNombre.error} //Mostrar error si aplica
-                        helperText={errorNombre.message} //Mostrar mensaje de error dinámico
+                        error={errorNombre.error} 
+                        helperText={errorNombre.message} 
                         onChange={(e) => {
-                            setNombre(e.target.value); //Actualiza el estado del nombre
-                            validarNombre(e.target.value); //Valida el nombre en tiempo real
+                            setNombre(e.target.value); 
+                            validarNombre(e.target.value); 
                         }}
                         fullWidth
                         variant="outlined"
@@ -206,11 +205,11 @@ function AddClientDialog({validated}) {
                         name="documento"
                         label="Documento"
                         type="text"
-                        error={errorDocumento.error} //Mostrar error si aplica
-                        helperText={errorDocumento.message} //Mostrar mensaje de error dinámico
+                        error={errorDocumento.error} 
+                        helperText={errorDocumento.message} 
                         onChange={(e) => {
-                            setDocumento(e.target.value); //Actualiza el estado del documento
-                            validarDocumento(e.target.value); //Valida el documento en tiempo real
+                            setDocumento(e.target.value); 
+                            validarDocumento(e.target.value);
                         }}
                         fullWidth
                         variant
@@ -224,11 +223,11 @@ function AddClientDialog({validated}) {
                         name="telefono"
                         label="Telefono"
                         type="text"
-                        error={errorTelefono.error} //Mostrar mensaje de error dinámico
-                        helperText={errorTelefono.message} //Mostrar mensaje de error dinámico
+                        error={errorTelefono.error} 
+                        helperText={errorTelefono.message} 
                         onChange={(e) => {
-                            setTelefono(e.target.value); //Actualiza el estado del teléfono
-                            validarTelefono(e.target.value); //Valida el teléfono en tiempo real
+                            setTelefono(e.target.value); 
+                            validarTelefono(e.target.value); 
                         }}
                         fullWidth
                         variant
@@ -236,7 +235,6 @@ function AddClientDialog({validated}) {
                     />
                     <TextField
                         autoFocus
-                        // required
                         margin="dense"
                         id="name"
                         name="email"
