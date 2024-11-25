@@ -299,7 +299,7 @@ function AgendaPage() {
       setToastOpen(true);
 
       setAppointments((appointments) =>
-        appointments.filter((item) => item.alquiler && item.alquiler.id !== appointment.alquiler.id)
+        appointments.filter((item) => item.alquiler && item.alquiler.id !== appointment.alquiler.id || item.alquiler === null)
       );
     } catch (error) {
       console.error('Error al eliminar el alquiler:', error);
