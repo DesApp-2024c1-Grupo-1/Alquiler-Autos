@@ -11,6 +11,7 @@ import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { es } from "date-fns/locale";
 import Swal from 'sweetalert2';
 import { formatearDateTime } from '../services/DateHelper';
+import faviconTaller from '../assets/faviconTaller.png';
 
 function Taller() {
     const [cars, setCars] = useState([]);
@@ -38,6 +39,18 @@ function Taller() {
     const getErrorMessage = (errorKey,picker) => {
        return errorMessages[errorKey+picker] || ""
     }
+
+    useEffect(() => {
+        //Cambiar dinámicamente el favicon
+        const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = faviconTaller;
+        document.head.appendChild(favicon);
+  
+        return () => {
+            favicon.href = '/favicon.ico';
+        };
+    }, []);
 
     useEffect(() => {
         getAllCarsAvailable()
