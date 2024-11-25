@@ -7,15 +7,26 @@ import Filtros from '../components/Filtros.jsx';
 import ButtonAddCar from "../components/ButtonAddCar.jsx";
 import faviconHome from '../assets/faviconHome.jpg';
 import { Skeleton } from "@mui/material";
+import { useSelector } from "react-redux";
 
 
 
 export function HomePage() {
   const [allCars, setAllCars] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const formAlquiler = useSelector(state => state.alquiler);
 
   const fetchAllCars = useCallback(async (filtros) => {
     setIsLoading(true);
+    if(!filtros){
+      filtros = {
+        ac: null,
+        capacidad: null,
+        fechaRetiro: formAlquiler.fechaRetiro,
+        fechaDevolucion: formAlquiler.fechaDevolucion,
+        transmision: null,
+      }
+    }
     try {
       const obtainedCars = await getAllCarsAvailable(filtros);
       setTimeout(() => {
