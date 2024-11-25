@@ -56,11 +56,11 @@ function Taller() {
         getAllCarsAvailable()
             .then((carsData) => {
                 setCars(carsData);
-                setTimeout(() => setIsLoading(false), 3000);
+                setTimeout(() => setIsLoading(false), 1500);
             })
             .catch((error) => {
                 console.error("Error al obtener los autos:", error);
-                setTimeout(() => setIsLoading(false), 3000);
+                setTimeout(() => setIsLoading(false), 1500);
             });
     }, []);
 
