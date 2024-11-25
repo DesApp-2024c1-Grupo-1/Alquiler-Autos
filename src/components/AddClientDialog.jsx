@@ -195,6 +195,7 @@ function AddClientDialog({validated}) {
                         }}
                         fullWidth
                         variant="outlined"
+                        autoComplete="off"
                     />
 
                     <TextField
@@ -214,6 +215,7 @@ function AddClientDialog({validated}) {
                         fullWidth
                         variant
                         ="outlined"
+                        autoComplete="off"
                     />
                     <TextField
                         autoFocus
@@ -232,6 +234,7 @@ function AddClientDialog({validated}) {
                         fullWidth
                         variant
                         ="outlined"
+                        autoComplete="off"
                     />
                     <TextField
                         autoFocus
@@ -244,6 +247,7 @@ function AddClientDialog({validated}) {
                         fullWidth
                         variant
                         ="outlined"
+                        autoComplete="off"
                     />
                 </DialogContent>
                 <DialogActions>

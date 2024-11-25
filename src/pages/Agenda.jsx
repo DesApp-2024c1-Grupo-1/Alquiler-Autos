@@ -979,6 +979,7 @@ function AgendaPage() {
                   ? "El nombre debe tener al menos 4 caracteres"
                   : ""
               }
+              autoComplete="off"
             />
             <TextField
               label="Documento"
@@ -1000,6 +1001,7 @@ function AgendaPage() {
                   ? "El documento debe tener al menos 7 caracteres"
                   : ""
               }
+              autoComplete="off"
             />
             <TextField
               label="Teléfono"
@@ -1020,7 +1022,8 @@ function AgendaPage() {
                   : editDatosC.telefono.replace(/\D/g, '').length < 7
                   ? "El número de teléfono debe tener al menos 7 caracteres"
                   : ""
-              } 
+              }
+              autoComplete="off" 
             />
             <TextField
               label="Email"
@@ -1029,6 +1032,7 @@ function AgendaPage() {
               onChange={handleEditDatosCChange}
               fullWidth
               sx={{ padding: 2 }}
+              autoComplete="off"
             />
             <Button color="primary" onClick={handleSaveCustomerChanges}>Guardar</Button>
             <Button color="secondary" onClick={() => setEditCustomerModalOpen(false)}>Cancelar</Button>
