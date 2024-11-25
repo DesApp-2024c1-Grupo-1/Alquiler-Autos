@@ -10,6 +10,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { es } from "date-fns/locale";
 import Swal from 'sweetalert2';
+import { formatearDateTime } from '../services/DateHelper';
 
 function Taller() {
     const [cars, setCars] = useState([]);
@@ -84,17 +85,19 @@ function Taller() {
                       });
                     closePopup();
                 } else {
-                    const fechasConflictivas = availability.eventosSuperpuestos
-                        .map(e => e.fecha)
-                        .join(", ");
-    
-                    Swal.fire({
-                        icon: "error",
-                        title: "Vehículo no disponible",
-                        html: `El vehículo seleccionado no está disponible para las fechas indicadas. <br><strong>Fechas conflictivas:</strong> ${fechasConflictivas}`,
-                    });
+                    closePopup();
+                    const fechasConflictivas = availability.events
+                    .map(e => formatearDateTime(e.start) + " - " + e.momento)
+                    .join("<br>");
+                
+                Swal.fire({
+                    icon: "error",
+                    title: "Vehículo no disponible",
+                    html: `El vehículo seleccionado no está disponible para las fechas indicadas. <br><strong><br>Fechas conflictivas:</strong><br>${fechasConflictivas}`,
+                });
                 }
             } catch (error) {
+                closePopup();
                 console.error("Error al verificar la disponibilidad:", error);
                 Swal.fire({
                     icon: "error",
