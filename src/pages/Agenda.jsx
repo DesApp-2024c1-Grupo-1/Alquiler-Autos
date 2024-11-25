@@ -553,6 +553,7 @@ function AgendaPage() {
           closeOnOverlayClick={true}
           contentPadding={false}
           display="anchored"
+          onOpen={() => setTooltipReparacionOpen(false)}
           isOpen={isTooltipOpen}
           showOverlay={false}
           touchUi={false}
@@ -599,6 +600,7 @@ function AgendaPage() {
         closeOnOverlayClick={true}
         contentPadding={false}
         display="anchored"
+        onOpen={() => setTooltipOpen(false)}
         isOpen={isTooltipReparacionOpen}
         showOverlay={false}
         touchUi={false}
