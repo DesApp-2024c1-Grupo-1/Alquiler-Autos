@@ -3,64 +3,34 @@ import {
     Button, Typography, Box, Grid, Dialog, DialogTitle, DialogContent,
     DialogActions, TextField, Skeleton
 } from '@mui/material';
-import { getAllCarsAvailable } from "../services/CarsService";
-import {  registrarReparacion  } from "../services/tallerService";
-import faviconTaller from '../assets/faviconTaller.png';
+import { getAllCarsAvailable, getCarAvailabilityById } from "../services/CarsService";
+import { registrarReparacion } from "../services/tallerService";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { es } from "date-fns/locale";
-import { getCarAvailabilityById } from "../services/CarsService";
+import Swal from 'sweetalert2';
 
 function Taller() {
     const [cars, setCars] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Estado para manejar el skeleton de carga
+    const [isLoading, setIsLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedCar, setSelectedCar] = useState(null);
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
     const [razon, setRazon] = useState('');
     const [vehicleUnavailableDialogOpen, setVehicleUnavailableDialogOpen] = useState(false);
-
-    // const getTodayDate = () => {
-    //     const today = new Date();
-    //     const year = today.getFullYear();
-    //     const month = String(today.getMonth() + 1).padStart(2, '0');
-    //     const day = String(today.getDate()).padStart(2, '0');
-    //     return `${year}-${month}-${day}`;
-    // };
-
-    // const todayDate = getTodayDate();
-
-    useEffect(() => {
-        const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.href = faviconTaller;
-        document.head.appendChild(favicon);
-
-        return () => {
-            favicon.href = '/favicon.ico';
-        };
-    }, []);
+    const [unavailableDates, setUnavailableDates] = useState([]); // Nuevo estado
 
     useEffect(() => {
         getAllCarsAvailable()
             .then((carsData) => {
-                console.log("Autos filtrados y disponibles: ", carsData);
                 setCars(carsData);
-
-                // Retrasar la visualización de los datos por 3 segundos
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 3000);
+                setTimeout(() => setIsLoading(false), 3000);
             })
             .catch((error) => {
                 console.error("Error al obtener los autos:", error);
-
-                // Manejar error y ocultar skeleton tras 3 segundos
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 3000);
+                setTimeout(() => setIsLoading(false), 3000);
             });
     }, []);
 
@@ -86,23 +56,6 @@ function Taller() {
         return diffDays;
     };
 
-    // const confirmIngreso = () => {
-    //     if (selectedCar !== null) {
-    //         const reparacion = {
-    //             fechaInicio: entryDate,
-    //             fechaFin: exitDate,
-    //             razon: razon,
-    //             cantidadDias: calcularCantidadDias(entryDate, exitDate),
-    //             car: selectedCar,
-    //         };
-    //         registrarReparacion(reparacion);
-    //         console.log('Reparación', reparacion);
-    //     } else {
-    //         console.error("No se seleccionó ningún auto.");
-    //     }
-    //     closePopup();
-    // };
-
     const confirmIngreso = async () => {
         if (selectedCar !== null) {
             const filtros = {
@@ -111,11 +64,9 @@ function Taller() {
             };
     
             try {
-                // Llamar al servicio para verificar disponibilidad
                 const availability = await getCarAvailabilityById(selectedCar.id, filtros);
     
                 if (availability.available) {
-                    // Si el auto está disponible, proceder a registrar la reparación
                     const reparacion = {
                         fechaInicio: entryDate,
                         fechaFin: exitDate,
@@ -126,15 +77,30 @@ function Taller() {
     
                     await registrarReparacion(reparacion);
                     console.log('Reparación registrada:', reparacion);
-                    alert('Reparación registrada con éxito.');
+                    Swal.fire({
+                        title: "Reparación registrada",
+                        text: "El vehículo ha sido ingresado al taller correctamente",
+                        icon: "success"
+                      });
                     closePopup();
                 } else {
-                    // Si el auto no está disponible, mostrar el popup de "Vehículo no disponible"
-                    setVehicleUnavailableDialogOpen(true);
+                    const fechasConflictivas = availability.eventosSuperpuestos
+                        .map(e => e.fecha)
+                        .join(", ");
+    
+                    Swal.fire({
+                        icon: "error",
+                        title: "Vehículo no disponible",
+                        html: `El vehículo seleccionado no está disponible para las fechas indicadas. <br><strong>Fechas conflictivas:</strong> ${fechasConflictivas}`,
+                    });
                 }
             } catch (error) {
                 console.error("Error al verificar la disponibilidad:", error);
-                alert("Ocurrió un error al verificar la disponibilidad. Inténtalo de nuevo.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al verificar la disponibilidad. Inténtalo de nuevo.",
+                });
             }
         } else {
             console.error("No se seleccionó ningún auto.");
@@ -148,7 +114,6 @@ function Taller() {
             </Typography>
             <Grid container spacing={2}>
                 {isLoading ? (
-                    // Mostrar Skeleton mientras se cargan los autos
                     Array.from({ length: 6 }).map((_, index) => (
                         <Grid item xs={12} sm={6} md={4} key={index}>
                             <Box
@@ -221,36 +186,34 @@ function Taller() {
             <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ mt: 1 }}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
-                <LocalizationProvider
-                        dateAdapter={AdapterDateFns}
-                        adapterLocale={es}
-                    >
+                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                         <MobileDateTimePicker
                             label="Fecha de Entrada"
                             value={entryDate}
                             onChange={(newEntryDate) => setEntryDate(newEntryDate)}
                             sx={{
-                                width: "100%",
+                                width: "50%",
                                 marginBottom: "20px",
                                 marginTop: "10px",
+                                marginLeft: "1px",
                             }}
                             disablePast
                             minutesStep={30}
                         />
-                    <MobileDateTimePicker
-                            label="Fecha de Entrada"
+                        <MobileDateTimePicker
+                            label="Fecha de Salida"
                             value={exitDate}
                             onChange={(newExitDate) => setExitDate(newExitDate)}
                             sx={{
-                                width: "100%",
+                                width: "50%",
                                 marginBottom: "20px",
                                 marginTop: "10px",
+                                marginLeft: "1px",
                             }}
                             disablePast
                             minutesStep={30}
                         />
                     </LocalizationProvider>
-                    
                     <TextField
                         fullWidth
                         label="Razón del Mantenimiento"
@@ -260,7 +223,6 @@ function Taller() {
                         rows={3}
                         placeholder="Escribe la razón del mantenimiento..."
                         sx={{ mb: 2, mt: 2 }}
-                        
                     />
                 </DialogContent>
                 <DialogActions>
@@ -278,27 +240,25 @@ function Taller() {
                 </DialogActions>
             </Dialog>
 
-            <Dialog
-                open={vehicleUnavailableDialogOpen}
-                onClose={() => setVehicleUnavailableDialogOpen(false)}
-                maxWidth="xs"
-            >
+            <Dialog open={vehicleUnavailableDialogOpen} onClose={() => setVehicleUnavailableDialogOpen(false)} maxWidth="xs">
                 <DialogTitle>Vehículo no disponible</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        El vehículo seleccionado no está disponible para las fechas indicadas. Por favor, selecciona otras fechas o intenta con otro vehículo.
+                        El vehículo seleccionado no está disponible para las fechas indicadas. 
+                        Las fechas conflictivas son:
                     </Typography>
+                    <ul>
+                        {unavailableDates.map((date, index) => (
+                            <li key={index}>{date}</li>
+                        ))}
+                    </ul>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={() => setVehicleUnavailableDialogOpen(false)}
-                        color="primary"
-                    >
+                    <Button onClick={() => setVehicleUnavailableDialogOpen(false)} color="primary">
                         Aceptar
                     </Button>
                 </DialogActions>
             </Dialog>
-            
         </Box>
     );
 }
