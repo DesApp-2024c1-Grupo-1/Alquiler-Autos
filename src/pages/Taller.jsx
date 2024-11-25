@@ -10,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { es } from "date-fns/locale";
+import { getCarAvailabilityById } from "../services/CarsService";
 
 function Taller() {
     const [cars, setCars] = useState([]);
@@ -19,6 +20,7 @@ function Taller() {
     const [entryDate, setEntryDate] = useState('');
     const [exitDate, setExitDate] = useState('');
     const [razon, setRazon] = useState('');
+    const [vehicleUnavailableDialogOpen, setVehicleUnavailableDialogOpen] = useState(false);
 
     const getTodayDate = () => {
         const today = new Date();
@@ -84,21 +86,59 @@ function Taller() {
         return diffDays;
     };
 
-    const confirmIngreso = () => {
+    // const confirmIngreso = () => {
+    //     if (selectedCar !== null) {
+    //         const reparacion = {
+    //             fechaInicio: entryDate,
+    //             fechaFin: exitDate,
+    //             razon: razon,
+    //             cantidadDias: calcularCantidadDias(entryDate, exitDate),
+    //             car: selectedCar,
+    //         };
+    //         registrarReparacion(reparacion);
+    //         console.log('Reparación', reparacion);
+    //     } else {
+    //         console.error("No se seleccionó ningún auto.");
+    //     }
+    //     closePopup();
+    // };
+
+    const confirmIngreso = async () => {
         if (selectedCar !== null) {
-            const reparacion = {
-                fechaInicio: entryDate,
-                fechaFin: exitDate,
-                razon: razon,
-                cantidadDias: calcularCantidadDias(entryDate, exitDate),
-                car: selectedCar,
+            const filtros = {
+                fechaRetiro: entryDate,
+                fechaDevolucion: exitDate,
             };
-            registrarReparacion(reparacion);
-            console.log('Reparación', reparacion);
+    
+            try {
+                // Llamar al servicio para verificar disponibilidad
+                const availability = await getCarAvailabilityById(selectedCar.id, filtros);
+    
+                if (availability.isAvailable) {
+                    // Si el auto está disponible, proceder a registrar la reparación
+                    const reparacion = {
+                        fechaInicio: entryDate,
+                        fechaFin: exitDate,
+                        razon: razon,
+                        cantidadDias: calcularCantidadDias(entryDate, exitDate),
+                        car: selectedCar,
+                    };
+    
+                    registrarReparacion(reparacion);
+                    console.log('Reparación registrada:', reparacion);
+                    alert('Reparación registrada con éxito.');
+                    closePopup();
+                } else {
+                    // Si el auto no está disponible, abrir el popup de "Vehículo no disponible"
+                    setVehicleUnavailableDialogOpen(true);
+                }
+            } catch (error) {
+                console.error("Error al verificar la disponibilidad:", error);
+                alert("Ocurrió un error al verificar la disponibilidad. Inténtalo de nuevo.");
+            }
         } else {
             console.error("No se seleccionó ningún auto.");
         }
-        closePopup();
     };
 
     return (
@@ -226,6 +266,7 @@ function Taller() {
                     </Button>
                 </DialogActions>
             </Dialog>
+            
         </Box>
     );
 }
