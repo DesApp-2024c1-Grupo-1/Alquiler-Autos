@@ -22,6 +22,22 @@ function Taller() {
     const [razon, setRazon] = useState('');
     const [vehicleUnavailableDialogOpen, setVehicleUnavailableDialogOpen] = useState(false);
     const [unavailableDates, setUnavailableDates] = useState([]); // Nuevo estado
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [errorEntryDate, setErrorEntryDate] = React.useState(null);
+    const [errorExitDate, setErrorExitDate] = React.useState(null);
+    
+    const errorMessages = {
+      minDate1: "Debe ser mayor a la fecha de hoy",
+      invalidDate1: "La fecha de entrada es inválida",
+      disablePast1: "Debe ser mayor a la fecha de hoy",
+      minDate2: "Debe ser mayor a la fecha de entrada",
+      invalidDate2: "La fecha de salida es inválida",
+      disablePast2: "Debe ser mayor a la fecha de entrada",
+    };
+    
+    const getErrorMessage = (errorKey,picker) => {
+       return errorMessages[errorKey+picker] || ""
+    }
 
     useEffect(() => {
         getAllCarsAvailable()
@@ -34,6 +50,14 @@ function Taller() {
                 setTimeout(() => setIsLoading(false), 3000);
             });
     }, []);
+
+    useEffect(() => {
+        if(!entryDate || !exitDate || entryDate === '' || exitDate === '' || entryDate > exitDate || entryDate < new Date()) {
+            setButtonDisabled(true);
+        }else{
+            setButtonDisabled(false);
+        }
+    }, [entryDate, exitDate]);
 
     const openPopup = (car) => {
         setSelectedCar(car);
@@ -198,10 +222,18 @@ function Taller() {
                                 width: "50%",
                                 marginBottom: "20px",
                                 marginTop: "10px",
-                                marginLeft: "1px",
+                                paddingRight: "10px",
+                                // marginLeft: "1px",
                             }}
                             disablePast
+                            minDate={new Date()}
                             minutesStep={30}
+                            onError={(error) => {setErrorEntryDate(error)}}
+                            slotProps={{
+                                textField: {
+                                  helperText: getErrorMessage(errorEntryDate, 1),
+                                },
+                              }}
                         />
                         <MobileDateTimePicker
                             label="Fecha de Salida"
@@ -211,10 +243,18 @@ function Taller() {
                                 width: "50%",
                                 marginBottom: "20px",
                                 marginTop: "10px",
-                                marginLeft: "1px",
+                                paddingRight: "10px",
+                                // marginLeft: "1px",
                             }}
                             disablePast
+                            minDate={entryDate}
                             minutesStep={30}
+                            onError={(error) => {setErrorExitDate(error)}}
+                            slotProps={{
+                                textField: {
+                                    helperText: getErrorMessage(errorExitDate, 2),
+                                },
+                              }}
                         />
                     </LocalizationProvider>
                     <TextField
@@ -236,7 +276,7 @@ function Taller() {
                         onClick={confirmIngreso}
                         variant="contained"
                         color="primary"
-                        disabled={!entryDate || !exitDate}
+                        disabled={buttonDisabled}
                     >
                         Confirmar Ingreso
                     </Button>
