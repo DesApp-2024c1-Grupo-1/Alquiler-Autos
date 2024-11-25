@@ -22,15 +22,15 @@ function Taller() {
     const [razon, setRazon] = useState('');
     const [vehicleUnavailableDialogOpen, setVehicleUnavailableDialogOpen] = useState(false);
 
-    const getTodayDate = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
+    // const getTodayDate = () => {
+    //     const today = new Date();
+    //     const year = today.getFullYear();
+    //     const month = String(today.getMonth() + 1).padStart(2, '0');
+    //     const day = String(today.getDate()).padStart(2, '0');
+    //     return `${year}-${month}-${day}`;
+    // };
 
-    const todayDate = getTodayDate();
+    // const todayDate = getTodayDate();
 
     useEffect(() => {
         const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
@@ -114,7 +114,7 @@ function Taller() {
                 // Llamar al servicio para verificar disponibilidad
                 const availability = await getCarAvailabilityById(selectedCar.id, filtros);
     
-                if (availability.isAvailable) {
+                if (availability.available) {
                     // Si el auto está disponible, proceder a registrar la reparación
                     const reparacion = {
                         fechaInicio: entryDate,
@@ -221,25 +221,36 @@ function Taller() {
             <Dialog open={openDialog} onClose={closePopup} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ mt: 1 }}>Mantenimiento Programado</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        fullWidth
-                        label="Fecha de Entrada"
-                        type="date"
-                        value={entryDate}
-                        onChange={(e) => setEntryDate(e.target.value)}
-                        sx={{ mb: 2, mt: 2 }}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ min: todayDate }}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Fecha de Salida"
-                        type="date"
-                        value={exitDate}
-                        onChange={(e) => setExitDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ min: entryDate || todayDate }}
-                    />
+                <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        adapterLocale={es}
+                    >
+                        <MobileDateTimePicker
+                            label="Fecha de Entrada"
+                            value={entryDate}
+                            onChange={(newEntryDate) => setEntryDate(newEntryDate)}
+                            sx={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                marginTop: "10px",
+                            }}
+                            disablePast
+                            minutesStep={30}
+                        />
+                    <MobileDateTimePicker
+                            label="Fecha de Entrada"
+                            value={exitDate}
+                            onChange={(newExitDate) => setExitDate(newExitDate)}
+                            sx={{
+                                width: "100%",
+                                marginBottom: "20px",
+                                marginTop: "10px",
+                            }}
+                            disablePast
+                            minutesStep={30}
+                        />
+                    </LocalizationProvider>
+                    
                     <TextField
                         fullWidth
                         label="Razón del Mantenimiento"
