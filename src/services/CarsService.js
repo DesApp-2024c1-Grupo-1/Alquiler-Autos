@@ -24,16 +24,18 @@ export async function getCarById(id){
       }
     }
 
-    export const getCarAvailabilityById = async (id, filtros) => {
-      try {
-          const response = await axios.post(`${url}/car/${id}/available`, filtros);
-          console.log("Disponibilidad del auto:", response.data);
-          return response.data;
-      } catch (error) {
-          console.error("Error al verificar la disponibilidad del auto:", error);
-          throw error;
-      }
-    }
+    // export const getCarAvailabilityById = async (id, filtros) => {
+    //   try {
+    //       const response = await axios.post(`${url}/car/${id}/available`, filtros);
+    //       console.log("Disponibilidad del auto:", response.data);
+    //       return response.data;
+    //   } catch (error) {
+    //       console.error("Error al verificar la disponibilidad del auto:", error);
+    //       throw error;
+    //   }
+    // }
+
+    
 
     export const postCar = async(car) =>{
       try {

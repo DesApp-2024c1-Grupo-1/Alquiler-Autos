@@ -124,12 +124,12 @@ function Taller() {
                         car: selectedCar,
                     };
     
-                    registrarReparacion(reparacion);
+                    await registrarReparacion(reparacion);
                     console.log('Reparación registrada:', reparacion);
                     alert('Reparación registrada con éxito.');
                     closePopup();
                 } else {
-                    // Si el auto no está disponible, abrir el popup de "Vehículo no disponible"
+                    // Si el auto no está disponible, mostrar el popup de "Vehículo no disponible"
                     setVehicleUnavailableDialogOpen(true);
                 }
             } catch (error) {
@@ -263,6 +263,27 @@ function Taller() {
                         disabled={!entryDate || !exitDate}
                     >
                         Confirmar Ingreso
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={vehicleUnavailableDialogOpen}
+                onClose={() => setVehicleUnavailableDialogOpen(false)}
+                maxWidth="xs"
+            >
+                <DialogTitle>Vehículo no disponible</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        El vehículo seleccionado no está disponible para las fechas indicadas. Por favor, selecciona otras fechas o intenta con otro vehículo.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setVehicleUnavailableDialogOpen(false)}
+                        color="primary"
+                    >
+                        Aceptar
                     </Button>
                 </DialogActions>
             </Dialog>
