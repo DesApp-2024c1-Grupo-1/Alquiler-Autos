@@ -81,14 +81,14 @@ export function PaymentModal({ isOpen, onClose, alquiler }: PaymentModalProps) {
         <DialogContent>
           <Box sx={{ mb: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              Monto total
+              Precio final:
             </Typography>
             <Typography variant="h6">{formatCurrency(alquiler.precioFinal)}</Typography>
           </Box>
 
           <Box sx={{ mb: 3 }}>
             <Typography variant="body2" color="text.secondary">
-              Saldo pendiente
+              Monto pendiente:
             </Typography>
             <Typography variant="h6" color="error">
               {formatCurrency(alquiler.saldoPendiente)}

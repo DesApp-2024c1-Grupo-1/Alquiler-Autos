@@ -66,7 +66,7 @@ export function PaymentHistoryModal({ isOpen, onClose, alquiler }: PaymentHistor
           
           <ListItem sx={{ justifyContent: 'space-between' }}>
             <Typography fontWeight="medium" color="error">
-              Saldo Pendiente
+              Monto Pendiente
             </Typography>
             <Typography fontWeight="medium" color="error">
               {formatCurrency(alquiler.saldoPendiente)}

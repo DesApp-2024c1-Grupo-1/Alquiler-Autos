@@ -579,7 +579,7 @@ function AgendaPage() {
                 </div>
 
                 <div className='mds-tooltip-label mbsc-margin'>
-                  Saldo pendiente: <span className='mbsc-light'> {saldoP}  </span>
+                  Monto pendiente: <span className='mbsc-light'> {saldoP}  </span>
                 </div>
 
                 <Button color="secondary" className="mds-tooltip-button" onClick={viewAppointmentFile}>Cliente</Button>
@@ -1054,12 +1054,12 @@ function AgendaPage() {
             </Typography>
 
             <div className="payment-popup-item" style={{ padding: '10px' }}>
-              <span className="payment-popup-label">Saldo Original:</span>
+              <span className="payment-popup-label">Precio final:</span>
               <span style={{ paddingLeft: '10px' }}>{pagoTotal}</span>
             </div>
 
             <div className="payment-popup-item" style={{ padding: '10px', marginBottom: '20px' }}>
-              <span className="payment-popup-label">Saldo Pendiente:</span>
+              <span className="payment-popup-label">Monto pendiente:</span>
               <span style={{ paddingLeft: '10px' }}>{saldoP}</span>
             </div>
 
