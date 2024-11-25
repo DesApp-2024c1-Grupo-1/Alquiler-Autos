@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  fechaRetiro: fechaActualDiaSiguienteHoraSiguiente(),
+  fechaRetiro: fechaActualDiaSiguienteHoraSiguiente(1),
   lugarRetiro: "",
-  fechaDevolucion: fechaActualDiaSiguienteHoraSiguiente(),
+  fechaDevolucion: fechaActualDiaSiguienteHoraSiguiente(2),
   lugarDevolucion: "",
   precioFinal: "",
   car: "",
@@ -71,9 +71,9 @@ function diffDeDias(fecha1, fecha2) {
 
 }
 
-function fechaActualDiaSiguienteHoraSiguiente(){
+function fechaActualDiaSiguienteHoraSiguiente(cantidadDeDiasASumar){
   const dia = new Date();
-  dia.setDate(dia.getDate() + 1);
+  dia.setDate(dia.getDate() + cantidadDeDiasASumar);
   dia.setHours(dia.getHours() + 1, 0, 0, 0);
 
   return dia;
