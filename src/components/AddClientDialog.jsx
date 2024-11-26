@@ -14,9 +14,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { registrarAlquiler } from '../services/AlquilerService.js';
 import { editCliente } from "../store/alquilerFormSlice.js";
+import { getCarAvailabilityById } from "../services/CarsService";
+import Swal from 'sweetalert2';
+import { formatearDateTime } from '../services/DateHelper';
 
 
-function AddClientDialog({validated}) {
+function AddClientDialog({validated, car}) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -97,10 +100,42 @@ function AddClientDialog({validated}) {
         return nombreValido && documentoValido && telefonoValido;
     }  
 
-    const handleClickOpen = () => {
+    const handleClickOpen = async () => {
         console.log("Validated: " + validated)
         if(validated){
-            setOpen(true);
+                if (car !== null) {
+                    const filtros = {
+                        fechaRetiro: alquiler.fechaRetiro,
+                        fechaDevolucion: alquiler.fechaDevolucion,
+                    };
+            
+                    try {
+                        const availability = await getCarAvailabilityById(car.id, filtros);
+            
+                        if (availability.available) {
+                            setOpen(true);
+                        } else {
+                            const fechasConflictivas = availability.events
+                            .map(e => formatearDateTime(e.start) + " - " + e.momento)
+                            .join("<br>");
+                        
+                        Swal.fire({
+                            icon: "error",
+                            title: "Vehículo no disponible",
+                            html: `El vehículo seleccionado no está disponible para las fechas indicadas. <br><strong><br>Fechas conflictivas:</strong><br>${fechasConflictivas}`,
+                        });
+                        }
+                    } catch (error) {
+                        console.error("Error al verificar la disponibilidad:", error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Ocurrió un error al verificar la disponibilidad. Inténtalo de nuevo.",
+                        });
+                    }
+                } else {
+                    console.error("No se seleccionó ningún auto.");
+                }
         }
         
     };
@@ -121,10 +156,14 @@ function AddClientDialog({validated}) {
         if (validarCampos()) {
           await editarCliente();
           setSuccess(true);
-          setTimeout(() => {
-            setOpen(false);
+          setOpen(false);
+          Swal.fire({
+            title: "Alquiler Registrado",
+            text: `El alquiler de ${alquiler.car.brand}, ${alquiler.car.name} por un valor de $${alquiler.precioFinal} durante ${alquiler.cantidadDias} día/s ha sido registrado`,
+            icon: "success"
+          }).then(() => {
             navigate("/agenda");
-          }, 2000);
+          });
         } else {
           console.log("No validado");
         }
@@ -252,21 +291,6 @@ function AddClientDialog({validated}) {
                 </DialogContent>
                 <DialogActions>
                     {!success && <Button hidden={true} disabled={false} type="submit" onClick={sumbit} >Registrar</Button>}
-                    {success &&
-                        <>
-                            <Alert sx={{ display: 'flex', alignSelf: 'center' }} icon={<CheckIcon fontSize="inherit" />} variant="filled" severity="success">
-                                Confirmado
-                            </Alert>
-                            <Snackbar
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                                open={success}
-                                onClose={handleClose}
-                                message="Alquiler registrado"
-                                key={{ vertical: 'bottom', horizontal: 'center' }}
-                            />
-                        </>
-                    }
-
                 </DialogActions>
             </Dialog>
         </React.Fragment>

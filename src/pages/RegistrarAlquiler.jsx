@@ -27,6 +27,7 @@ import faviconRegistrarAlquiler from '../assets/faviconRegistrarAlquiler.png';
 import { CarCard } from "../components/CarCard.jsx";
 import { lugaresFijos } from "../components/Filtros.jsx";
 
+
 export function FormAlquiler({ car }) {
 
   const dispatch = useDispatch();
@@ -296,7 +297,7 @@ export function FormAlquiler({ car }) {
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
           <Stack direction="row" spacing={2}>
-            <AddClientDialog validated={activeButton} />
+            <AddClientDialog validated={activeButton} car={car} />
             <Button variant="contained" color="error" onClick={cancelar}>
               Cancelar
             </Button>
