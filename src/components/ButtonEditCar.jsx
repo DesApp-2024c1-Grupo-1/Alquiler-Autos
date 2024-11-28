@@ -121,8 +121,8 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                   type="text"
                   fullWidth
                   variant="standard"
-                  value={formValues.name}
-                  onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
+                  value={formValues.brand}
+                  onChange={(e) => setFormValues({ ...formValues, brand: e.target.value })}
                 />
                 <TextField
                   autoFocus
@@ -134,8 +134,8 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                   type="text"
                   fullWidth
                   variant="standard"
-                  value={formValues.brand}
-                  onChange={(e) => setFormValues({ ...formValues, brand: e.target.value })}
+                  value={formValues.name}
+                  onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
                 />
                 <TextField
                   autoFocus
