@@ -212,7 +212,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                         onChange={(e) => setTransmision(e.target.value)}
                         label="transmision"
                     >
-                        <MenuItem value="Automática">Automática</MenuItem>
+                        <MenuItem value="Automatica">Automática</MenuItem>
                         <MenuItem value="Manual">Manual</MenuItem>
                     </Select>
                 </FormControl>
@@ -228,7 +228,7 @@ export default function ButtonEditCar({ carData, editCarFromCard }) {
                         label="Combustible"
                     >
                         <MenuItem value="Nafta">Nafta</MenuItem>
-                        <MenuItem value="Eléctrico">Eléctrico</MenuItem>
+                        <MenuItem value="Electrico">Eléctrico</MenuItem>
                     </Select>
                 </FormControl>
 

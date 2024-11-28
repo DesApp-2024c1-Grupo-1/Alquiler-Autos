@@ -316,7 +316,7 @@ function EditingCard({ setEditableCar, editableCar }) {
                   label="transmision"
                   size='small'
                 >
-                  <MenuItem value="Automática">Automática</MenuItem>
+                  <MenuItem value="Automatica">Automática</MenuItem>
                   <MenuItem value="Manual">Manual</MenuItem>
                 </Select>
               </FormControl>
@@ -341,7 +341,7 @@ function EditingCard({ setEditableCar, editableCar }) {
                   size='small'
                 >
                   <MenuItem value="Nafta">Nafta</MenuItem>
-                  <MenuItem value="Eléctrico">Eléctrico</MenuItem>
+                  <MenuItem value="Electrico">Eléctrico</MenuItem>
                 </Select>
               </FormControl>
             </Box>
