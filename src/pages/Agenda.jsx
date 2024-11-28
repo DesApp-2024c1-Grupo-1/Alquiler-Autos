@@ -336,12 +336,12 @@ function AgendaPage() {
     if (appointment?.alquiler?.car !== null) {
       const carId = appointment.alquiler.car.id;
       const filtros = {
-        fechaRetiro: editData.fechaRetiro,
-        fechaDevolucion: editData.fechaDevolucion,
+        fechaRetiro: new Date(editData.fechaRetiro),
+        fechaDevolucion: new Date(editData.fechaDevolucion),
       };
 
       try {
-        const availability = await getCarAvailabilityByIdExcludingEvents(carId, filtros,appointment.id);
+        const availability = await getCarAvailabilityByIdExcludingEvents(carId, filtros,appointment?.alquiler?.id);
 
         if (availability.available) {
           const isLugarRetiroValid = editData.lugarRetiro.trim().length > 0;

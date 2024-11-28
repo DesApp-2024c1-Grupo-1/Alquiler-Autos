@@ -33,9 +33,11 @@ export async function getCarById(id){
       }
     }
 
-    export const getCarAvailabilityByIdExcludingEvents = async (id, filtros,idEvento1,idEvento2) => {
+    export const getCarAvailabilityByIdExcludingEvents = async (id, filtros,idAlquiler) => {
       try {
-          const response = await axios.post(`${url}/car/${id}/available/excludingEvents/${idEvento1}/${idEvento2}`, filtros);
+          console.log(`${url}/car/${id}/available/excludingEvents/alquiler/${idAlquiler}`)
+          console.log("Test: ", id, filtros, idAlquiler)
+          const response = await axios.post(`${url}/car/${id}/available/excludingEvents/alquiler/${idAlquiler}`, filtros);
           console.log("Disponibilidad del auto:", response.data);
           return response.data;
       } catch (error) {

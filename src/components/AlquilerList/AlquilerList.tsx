@@ -141,7 +141,7 @@ export function AlquilerList({ alquileres }) {
                       }}
                     />
                     <Box sx={{ ml: 2 }}>
-                      <Typography variant="body1">{alquiler.car?.name}</Typography>
+                      <Typography variant="body1">{alquiler.car?.brand + " " + alquiler.car?.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
                         {alquiler.car.patente}
                       </Typography>
