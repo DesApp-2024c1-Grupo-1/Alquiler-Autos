@@ -21,6 +21,9 @@ import faviconAgenda from '../assets/faviconAgenda.png';
 import { BotonPago } from '../components/BotonPago.jsx';
 import { lugaresFijos } from "../components/Filtros.jsx";
 import { actualizarAlquiler, eliminarAlquiler, getEventos, registrarPago } from '../services/EventosService';
+import { getCarAvailabilityByIdExcludingEvents } from "../services/CarsService";
+import Swal from 'sweetalert2';
+import { formatearDateTime } from '../services/DateHelper';
 
 
 setOptions({
@@ -329,41 +332,86 @@ function AgendaPage() {
 
 
   const handleSaveChanges = async () => {
-    const isLugarRetiroValid = editData.lugarRetiro.trim().length > 0;
-    const isLugarDevolucionValid = editData.lugarDevolucion.trim().length > 0;
 
-    if (!isLugarRetiroValid || !isLugarDevolucionValid) {
-      setEditData((prevData) => ({
-        ...prevData,
-        lugarRetiro: prevData.lugarRetiro.trim(),
-        lugarDevolucion: prevData.lugarDevolucion.trim(),
-      }));
-      return; 
+    if (appointment?.alquiler?.car !== null) {
+      const carId = appointment.alquiler.car.id;
+      const filtros = {
+        fechaRetiro: editData.fechaRetiro,
+        fechaDevolucion: editData.fechaDevolucion,
+      };
+
+      try {
+        const availability = await getCarAvailabilityByIdExcludingEvents(carId, filtros,appointment.id);
+
+        if (availability.available) {
+          const isLugarRetiroValid = editData.lugarRetiro.trim().length > 0;
+          const isLugarDevolucionValid = editData.lugarDevolucion.trim().length > 0;
+
+          if (!isLugarRetiroValid || !isLugarDevolucionValid) {
+            setEditData((prevData) => ({
+              ...prevData,
+              lugarRetiro: prevData.lugarRetiro.trim(),
+              lugarDevolucion: prevData.lugarDevolucion.trim(),
+            }));
+            return;
+          }
+
+          const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
+          const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
+
+          const alquilerModificado = {
+            ...editData,
+            cantidadDias,
+            precioFinal,
+          };
+
+          console.log('Guardar cambios', alquilerModificado);
+
+          try {
+            const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
+            setAppointments((prevAppointments) => {
+              return prevAppointments.map((item) =>
+                item.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
+              );
+            });
+            fetchAllEvents();
+            setEditPopupOpen(false);
+            Swal.fire({
+              title: "Alquiler actualizado",
+              text: "El alquiler fue modificado correctamente",
+              icon: "success"
+            });
+          } catch (error) {
+            console.error('Hubo un error al actualizar el alquiler:', error);
+            Swal.fire({
+              icon: "error",
+              title: "Hubo un error al actualizar el alquiler",
+              text: "Hubo un error al actualizar el alquiler",
+            });
+          }
+        } else {
+          const fechasConflictivas = availability.events
+            .map(e => formatearDateTime(e.start) + " - " + e.momento)
+            .join("<br>");
+
+          Swal.fire({
+            icon: "error",
+            title: "Vehículo no disponible",
+            html: `El vehículo seleccionado no está disponible para las fechas indicadas. <br><strong><br>Fechas conflictivas:</strong><br>${fechasConflictivas}`,
+          });
+        }
+      } catch (error) {
+        console.error("Error al verificar la disponibilidad:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al verificar la disponibilidad. Inténtalo de nuevo.",
+        });
+      }
+    } else {
+      console.error("No se seleccionó ningún auto.");
     }
-  
-    const cantidadDias = calcularCantidadDias(editData.fechaRetiro, editData.fechaDevolucion);
-    const precioFinal = calcularPrecioFinal(cantidadDias, editData.car.price);
-  
-    const alquilerModificado = {
-      ...editData,
-      cantidadDias,
-      precioFinal,
-    };
-  
-    console.log('Guardar cambios', alquilerModificado);
-  
-    try {
-      const updateAlquiler = await actualizarAlquiler(appointment.alquiler.id, alquilerModificado);
-      setAppointments((prevAppointments) => {
-        return prevAppointments.map((item) =>
-          item.id === updateAlquiler.id ? { ...item, alquiler: updateAlquiler } : item
-        );
-      });
-      fetchAllEvents(); 
-      setEditPopupOpen(false);
-    } catch (error) {
-      console.error('Hubo un error al actualizar el alquiler:', error);
-    }
+
   };
 
   const handleCloseEditPopup = () => {
@@ -821,6 +869,7 @@ function AgendaPage() {
           onClose={handleCloseEditPopup}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
+          style={{ zIndex: 1000 }}
         >
           <Box
             sx={{
@@ -935,7 +984,7 @@ function AgendaPage() {
                 )}
               />
             </Box>
-            <Button color="primary" onClick={handleSaveChanges}>Guardar Cambios</Button>
+            <Button color="primary" onClick={handleSaveChanges}>Guardar cambios</Button>
             <Button color="secondary" onClick={handleCloseEditPopup}>Cancelar</Button>
           </Box>
         </Modal>
